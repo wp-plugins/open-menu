@@ -15,10 +15,11 @@ The Open Menu Plugin is the official plugin for Open Menu and adding menus to an
 
 Features:
 * Open Menu Custom Post Type
-* Widgets
+* Widgets: Restaurant Location / Specials / Cuisine Tag Cloud
 * [openmenu] Shortcode
 * Custom Functions
 * Site wide setiings
+
 
 == Detailed Features ==
 Open Menu Custom Post Type: 
@@ -78,6 +79,7 @@ Site Wide Open Menu Settings:
 3. Activate the plugin through the 'Plugins' menu in WordPress
 4. Update Site Wide options through the Settings -> Open Menu Options
 
+
 == Frequently Asked Questions ==
 
 = How do I get a menu in the Open Menu Format so I can use this awesome plugin? =
@@ -103,6 +105,7 @@ Yes.  All you need to do is use the shortcode described above.  Very simple and 
 2. Adding/Editing a Menu
 3. Open Menu Options
 4. Sample Rendered Menu
+
 
 == Changelog ==
 
