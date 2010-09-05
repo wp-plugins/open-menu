@@ -6,12 +6,12 @@ Requires at least: 3.0
 Tested up to: 3.0.1
 Stable tag: 1.0.1
 
-Easily create posts that are based on your Open Menu Format menu.  Fully integrates an Open Menu Format menu or menus into an existing theme.
+Easily create posts that are based on your Open Menu Format restaurant menu.  Fully integrates an Open Menu Format menu or menus into an existing theme.
 
 == Description ==
-This plugin allows you to easily create posts that are based on your Open Menu Format menu.  This plugin fully integrates an Open Menu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
+This plugin allows you to easily create posts that are based on your Open Menu Format menu and thus embedding restaurant menus in any Wordpress website.  This plugin fully integrates an Open Menu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 
-The Open Menu Plugin is the official plugin for Open Menu and adding menus to any Wordpress website.
+The Open Menu Plugin is the official plugin for Open Menu and adding restaurant menus to any Wordpress website.
 
 Features:
 
