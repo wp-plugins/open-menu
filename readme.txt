@@ -13,7 +13,14 @@ This plugin allows you to easily create posts that are based on your Open Menu F
 
 The Open Menu Plugin is the official plugin for Open Menu and adding menus to any Wordpress website.
 
+Features:
+* Open Menu Custom Post Type
+* Widgets
+* [openmenu] Shortcode
+* Custom Functions
+* Site wide setiings
 
+== Detailed Features ==
 Open Menu Custom Post Type: 
 	Create custom posts which are menus based off of your Open Menu Format menu.  Choose what to display, how to display it and the plugin does the rest.
 	
@@ -99,11 +106,11 @@ Yes.  All you need to do is use the shortcode described above.  Very simple and 
 
 == Changelog ==
 
-= 1.0 =
+= 1.0.1 =
 * Initial public release
 
 
 == Upgrade Notice ==
 
-= 1.0 =
+= 1.0.1 =
 * Initial public release
