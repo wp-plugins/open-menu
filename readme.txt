@@ -1,7 +1,7 @@
 === Open Menu - The official plugin for Open Menu ===
 Contributors: openmenu
 Donate link: http://openmenu.com
-Tags: openmenu, restaurant, menu, restaurants, menus, open menu
+Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.0.1
 Stable tag: 1.0.1
@@ -14,6 +14,7 @@ This plugin allows you to easily create posts that are based on your Open Menu F
 The Open Menu Plugin is the official plugin for Open Menu and adding menus to any Wordpress website.
 
 Features:
+
 * Open Menu Custom Post Type
 * Widgets: Restaurant Location / Specials / Cuisine Tag Cloud
 * [openmenu] Shortcode
@@ -84,12 +85,12 @@ Site Wide Open Menu Settings:
 
 = How do I get a menu in the Open Menu Format so I can use this awesome plugin? =
 
-Goto: [Open Menu]http://OpenMenu.com/about.php and read about Open Menu
-Online Menu Creator: [http://OpenMenu.com/creator]http://OpenMenu.com/creator
+Goto: http://OpenMenu.com/about.php and read about Open Menu
+Online Menu Creator: http://OpenMenu.com/creator
 
 = How do I find out about updates to this plugin? =
 
-Any updates will be posted on the Open Menu [Blog]http://OpenMenu.com/blog
+Any updates will be posted on the Open Menu - http://OpenMenu.com/blog
 
 = Can I display menus for multiple restaurants? =
 
