@@ -72,6 +72,7 @@ Site Wide Open Menu Settings:
 		Width override: Attempts to force the width of the post to this amount.  Can be helpful for adjusting the display on troublesome themes.
 		Menu background color: Set the background color the menu will display on (defaults to white - #fff)
 
+Icon designed by Ben Dunkle, core designer for Wordpress.org. Website: http://field2.com - Contact ben@field2.com
 
 == Installation ==
 
