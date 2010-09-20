@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 1.0.1
+Stable tag: 1.1
 
 Easily create posts that are based on your Open Menu Format restaurant menu.  Fully integrates an Open Menu Format menu or menus into an existing theme.
 
@@ -76,7 +76,7 @@ Site Wide Open Menu Settings:
 == Installation ==
 
 1. Unzip the openmenu.zip file
-2. Upload the entire 'openmenu' folder to the '/wp-content/plugins/' directory
+2. Upload the entire 'openmenu' folder to the '/wp-content/plugins/' directory - Must be located in a folder called 'openmenu'
 3. Activate the plugin through the 'Plugins' menu in WordPress
 4. Update Site Wide options through the Settings -> Open Menu Options
 
@@ -109,6 +109,14 @@ Yes.  All you need to do is use the shortcode described above.  Very simple and 
 
 
 == Changelog ==
+
+= 1.1 =
+* Added Menu / Menu Group Widget
+* Added auto-detection of installed plugin folder (no longer assume /openmenu folder)
+* Updated Restaurant Location widget to add the Include Hours setting
+* Updated Specials Widget to include Menu Name filter
+* Fixed issue where empty menu group (no menu items) caused crash
+
 
 = 1.0.1 =
 * Initial public release

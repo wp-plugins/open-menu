@@ -5,14 +5,18 @@
 
 /**
 	@package Open Menu
-	@version 1.0.1
+	@version 1.1
 
 	Plugin Name: Open Menu
-	Plugin URI: http://openmenu.com/
+	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your Open Menu Format menu.  This plugin fully integrates an Open Menu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 	Author: Open Menu, LLC
-	Version: 1.0.1
+	Version: 1.1
 	Author URI: http://openmenu.com
+
+	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
+	*	Website: http://field2.com
+	*	Contact ben@field2.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -31,15 +35,18 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Preload & Setup:
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	/** Install Folder */
+	define('OPENMENU_FOLDER', '/' . dirname( plugin_basename(__FILE__)));
+	
 	/** Path for Includes */
-	define('OPENMENU_PATH', WP_PLUGIN_DIR . '/openmenu');
+	define('OPENMENU_PATH', WP_PLUGIN_DIR . OPENMENU_FOLDER);
 
 	/** Path for front-end links */
-	define('OPENMENU_URL', WP_PLUGIN_URL . '/openmenu');
+	define('OPENMENU_URL', WP_PLUGIN_URL . OPENMENU_FOLDER);
 
 	/** Directory path for includes of template files  */
-	define('OPENMENU_TEMPLATES_PATH', WP_PLUGIN_DIR . '/openmenu/templates');
-	define('OPENMENU_TEMPLATES_URL', WP_PLUGIN_URL . '/openmenu/templates');
+	define('OPENMENU_TEMPLATES_PATH', WP_PLUGIN_DIR . OPENMENU_FOLDER. '/templates');
+	define('OPENMENU_TEMPLATES_URL', WP_PLUGIN_URL . OPENMENU_FOLDER . '/templates');
 	
 	// Post type
 	define('OPENMENU_POSTYPE', 'openmenu');
@@ -205,7 +212,8 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	add_action( 'init', 'create_post_type' );
 	add_action( 'init', 'register_my_taxonomies', 0 );
-
+	add_action( 'admin_head', 'my_custom_posttype_icon' );
+	
 	function create_post_type() {
 		// ------------------------------------- 
 		//  Register a custom post type
@@ -238,6 +246,7 @@
 			'rewrite' => array('slug' => OPENMENU_SLUG),
 			'query_var' => true,
 			'menu_position' => '5',
+			'menu_icon' => OPENMENU_URL .'/images/openmenu-16-color.png', 
 			'register_meta_box_cb' => 'sp_add_custom_box',
 			'supports' => array(
 				'title',
@@ -265,6 +274,25 @@
 			)
 		);
 
+	function my_custom_posttype_icon() {
+		
+		global $post_type;
+		$qry_postype = ( isset($_GET['post_type']) ) ? $_GET['post_type'] : '' ; 
+		
+		if (($qry_postype == OPENMENU_POSTYPE) || ($post_type == OPENMENU_POSTYPE)) {
+		    $icon_url = OPENMENU_URL . '/images/openmenu-32.png';
+		    ?>
+		    <style type="text/css" media="all">
+		    /*<![CDATA[*/
+		        .icon32 {
+		            background: url(<?php echo $icon_url; ?>) no-repeat 1px !important;
+		        }
+		    /*]]>*/
+		    </style>
+		    <?php
+		}
+	}
+	
 		// Some default values
 		//$default_values = array('American', 'Afghan', 'African', 'Argentinean', 'Asian/Oriental', 'Bakery', 'Barbeque', 'Brazilian', 'Brew/Pubs/Microbrewery', 'Cajun/Creole', 'California', 'Caribbean', 'Chinese', 'Coffee House', 'Continental', 'Cuban', 'Desserts', 'Diner', 'Ethiopian', 'Family/Homestyle', 'French/French Bistro', 'Fusion', 'German', 'Greek', 'Hamburger', 'Hawaiian', 'Hot Dog', 'Indian', 'International', 'Irish', 'Italian', 'Japanese', 'Latin', 'Kosher', 'Malaysian', 'Mediterranean', 'Mexican', 'Moroccan', 'Pacific Rim', 'Pizza', 'Portuguese', 'Russian', 'Sandwiches', 'Seafood', 'Soup', 'Southwest', 'Southern Cuisine', 'Spanish', 'Steakhouse', 'Sunday Brunch', 'Sushi', 'Tapas', 'Thai', 'Vegetarian', 'Vietnamese');
 		//foreach ($default_values AS $cuisine) {
@@ -854,49 +882,52 @@
 						// Start a group
 						$retval .= '<h2>'.clean($group['group_name']).'</h2>'."\n";
 						
-						foreach ($group['menu_items'] AS $item) {
-							$is_special = ($item['special'] == 1) ? '<span class="item_tag special">Special</span>' : '' ;
-							$is_vegetarian = ($item['vegetarian'] == 1) ? '<span class="item_tag vegetarian">Vegetarian</span>' : '' ;
-							$is_vegan = ($item['vegan'] == 1) ? '<span class="item_tag vegan">Vegan</span>' : '' ;
-							$is_kosher = ($item['kosher'] == 1) ? '<span class="item_tag kosher">Kosher</span>' : '' ;
-							$is_halal = ($item['halal'] == 1) ? '<span class="item_tag halal">Halal</span>' : '' ;
-							$tags = $is_special.$is_vegetarian.$is_vegan.$is_kosher.$is_halal;
-							$price = (!empty($item['menu_item_price'])) ? number_format($item['menu_item_price'], 2) : '' ;
-				            $retval .= '<dl>';
-				            $retval .= '<dt>'.$tags.clean($item['menu_item_name']).'</dt>';
-				            $retval .= '<dd class="price">'.$price.'</dd>';
-				            $retval .= '<dd class="description">'.clean($item['menu_item_description']).'</dd>';
+						if ( !empty($group['menu_items']) ) {
+							foreach ($group['menu_items'] AS $item) {
+								$is_special = ($item['special'] == 1) ? '<span class="item_tag special">Special</span>' : '' ;
+								$is_vegetarian = ($item['vegetarian'] == 1) ? '<span class="item_tag vegetarian">Vegetarian</span>' : '' ;
+								$is_vegan = ($item['vegan'] == 1) ? '<span class="item_tag vegan">Vegan</span>' : '' ;
+								$is_kosher = ($item['kosher'] == 1) ? '<span class="item_tag kosher">Kosher</span>' : '' ;
+								$is_halal = ($item['halal'] == 1) ? '<span class="item_tag halal">Halal</span>' : '' ;
+								$tags = $is_special.$is_vegetarian.$is_vegan.$is_kosher.$is_halal;
+								$price = (!empty($item['menu_item_price'])) ? number_format($item['menu_item_price'], 2) : '' ;
+					            $retval .= '<dl>';
+					            $retval .= '<dt>'.$tags.clean($item['menu_item_name']).'</dt>';
+					            $retval .= '<dd class="price">'.$price.'</dd>';
+					            $retval .= '<dd class="description">'.clean($item['menu_item_description']).'</dd>';
 
-				            // Check for item size
-				            if ( !empty($item['menu_item_sizes']) && is_array($item['menu_item_sizes']) ) {
-				            	$retval .= '<dd class="sizes">';
-					            foreach ($item['menu_item_sizes'] AS $size) {
-					            	$size_price = (!empty($size['menu_item_size_price'])) ? ' - '.number_format($size['menu_item_size_price'], 2) : '' ;
-					            	$retval .= '<span>'.clean($size['menu_item_size_name']).$size_price.'</span>';
-					            }
-					            $retval .= '</dd>';
-					        }
-					        
-					    	// Check for options
-				            if ( isset($item['menu_item_options']) && !empty($item['menu_item_options']) && is_array($item['menu_item_options']) ) {
-				            	$retval .= '<dd class="item_options">';
-					            foreach ($item['menu_item_options'] AS $option) {
-					            	$retval .= '<div><strong>'.clean($option['item_options_name']).'</strong>: ';
-					            	 if ( isset($option['option_items']) && !empty($option['option_items']) ) {
-					            	 	 foreach($option['option_items'] AS $option_item) { 
-					            	 	 	$retval .= clean($option_item['menu_item_option_name']).' | ';
-					            	 	 }
-					            	 }
-					            	
-					            	$retval .= '</div>';
-					            }
-					            $retval .= '</dd>';
-					        }
-					        
-					        // close the item
-				            $retval .= '</dl>'."\n";
-						} // end item
-						
+					            // Check for item size
+					            if ( !empty($item['menu_item_sizes']) && is_array($item['menu_item_sizes']) ) {
+					            	$retval .= '<dd class="sizes">';
+						            foreach ($item['menu_item_sizes'] AS $size) {
+						            	$size_price = (!empty($size['menu_item_size_price'])) ? ' - '.number_format($size['menu_item_size_price'], 2) : '' ;
+						            	$retval .= '<span>'.clean($size['menu_item_size_name']).$size_price.'</span>';
+						            }
+						            $retval .= '</dd>';
+						        }
+						        
+						    	// Check for options
+					            if ( isset($item['menu_item_options']) && !empty($item['menu_item_options']) && is_array($item['menu_item_options']) ) {
+					            	$retval .= '<dd class="item_options">';
+						            foreach ($item['menu_item_options'] AS $option) {
+						            	$retval .= '<div><strong>'.clean($option['item_options_name']).'</strong>: ';
+						            	 if ( isset($option['option_items']) && !empty($option['option_items']) ) {
+						            	 	 foreach($option['option_items'] AS $option_item) { 
+						            	 	 	$retval .= clean($option_item['menu_item_option_name']).' | ';
+						            	 	 }
+						            	 	 // Strip the trailing |
+											$retval = rtrim($retval, ' | ');
+						            	 }
+						            	
+						            	$retval .= '</div>';
+						            }
+						            $retval .= '</dd>';
+						        }
+						        
+						        // close the item
+					            $retval .= '</dl>'."\n";
+							} // end item
+						}
 						// Display Group Options
 						if ( isset($group['menu_group_options']) && is_array($group['menu_group_options']) ) { 
 							foreach($group['menu_group_options'] AS $option) { 
@@ -908,6 +939,8 @@
 									foreach($option['option_items'] AS $option_item) { 
 										$retval .= clean($option_item['menu_group_option_name']).' | ';
 									}
+									// Strip the trailing |
+									$retval = rtrim($retval, ' | ');
 								}
 								
 								$retval .= '</div>';
@@ -926,8 +959,10 @@
 					} // end group
 					
 					if ( !$one_column ) {
-					// Close the menu colums
-						$retval .= '</div><!-- END right menu -->'."\n";
+						// Close the menu colums
+						if ( $current_group > 1 ) {
+							echo '</div><!-- END right menu -->'."\n";
+						}
 						$retval .= '<div class="clear"></div>'."\n";
 					}
 					
