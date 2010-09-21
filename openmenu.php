@@ -5,13 +5,13 @@
 
 /**
 	@package Open Menu
-	@version 1.1
+	@version 1.1.1
 
 	Plugin Name: Open Menu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your Open Menu Format menu.  This plugin fully integrates an Open Menu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 	Author: Open Menu, LLC
-	Version: 1.1
+	Version: 1.1.1
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -563,8 +563,8 @@
             $num = number_format_i18n( $drafts );
             $text = _n( 'Menu Draft', 'Menu Drafts', intval($drafts) );
             if ( current_user_can( 'edit_posts' ) ) {
-                $num = "<a href='edit.php?post_status=draft&post_type='" . OPENMENU_POSTYPE . ">$num</a>";
-                $text = "<a href='edit.php?post_status=draft&post_type='" . OPENMENU_POSTYPE . ">$text</a>";
+                $num = '<a href="edit.php?post_status=draft&post_type=' . OPENMENU_POSTYPE . '">'.$num.'</a>';
+                $text = '<a href="edit.php?post_status=draft&post_type=' . OPENMENU_POSTYPE . '">'.$text.'</a>';
             }
             echo '<td class="first b b-openmenu">' . $num . '</td>';
             echo '<td class="t openmenu">' . $text . '</td>';
