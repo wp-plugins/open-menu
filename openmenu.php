@@ -5,13 +5,13 @@
 
 /**
 	@package Open Menu
-	@version 1.1.1
+	@version 1.1.2
 
 	Plugin Name: Open Menu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your Open Menu Format menu.  This plugin fully integrates an Open Menu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 	Author: Open Menu, LLC
-	Version: 1.1.1
+	Version: 1.1.2
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -388,7 +388,7 @@
 
 	// Add sub page to the Settings Menu
 	function openmenu_options_add_page_fn() {
-		add_options_page('Open Menu Options', 'Open Menu Options', 'manage_options', __FILE__, 'options_page_fn');
+		add_options_page('Open Menu Options', 'Open Menu', 'manage_options', __FILE__, 'options_page_fn');
 	}
 
 	// *************************
@@ -821,14 +821,12 @@
 		// ------------------------------------- 
 		//  Return the menu details from an OMF URL
 		// ------------------------------------- 
-		
+
 		$omf_details = false;
 		if ( !empty($omf_url) ) {
 			include_once OPENMENU_PATH.'/toolbox/class-omf-reader.php'; 
 			$omfr = new cOmfReader; 
-			if ( !empty($omf_url) ) { 
-				$omf_details = $omfr->read_file($omf_url); 
-			} 
+			$omf_details = $omfr->read_file($omf_url); 
 			unset($omfr);
 		}
 		
