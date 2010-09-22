@@ -13,19 +13,19 @@
  	// Get Post Settings
  	the_post();
 	$custom = get_post_custom(); 
-	$restaurant_name = $custom["_restaurant_name"][0];
-	$omf_url = $custom["_omf_url"][0];
+	$restaurant_name = (isset($custom["_restaurant_name"][0])) ? $custom["_restaurant_name"][0] : '' ;
+	$omf_url = (isset($custom["_omf_url"][0])) ? $custom["_omf_url"][0] : '' ;
 	$menu_filter = ( !empty($custom["_menu_filter"][0]) ) ? $custom["_menu_filter"][0] : false ;
 	
 	// Get the Open Menu Options
 	$options = get_option( 'openmenu_options' );
-	$hide_sidebar = ( $options['hide_sidebar'] ) ? true : false ;
-	$one_column = ( $options['display_columns'] == 'One' ) ? true : false ;
 	
-	$display_columns = ( $options['display_columns'] == 'One' ) ? '1' : '2' ;
+	$hide_sidebar = ( isset($options['hide_sidebar']) && $options['hide_sidebar'] ) ? true : false ;
+	$one_column = ( isset($options['display_columns']) && $options['display_columns'] == 'One' ) ? true : false ;
+	$display_columns = ( isset($options['display_columns']) && $options['display_columns'] == 'One' ) ? '1' : '2' ;
 	
-	$display_type = ( isset($options['display_type']) ) ? $options['display_type'] : 'Menu' ;
-	$background_color = ( isset($options['background_color']) && !empty($options['background_color']) ) ? $options['background_color'] : '#fff' ;
+	$display_type = (isset($options['display_type'])) ? $options['display_type'] : 'Menu' ;;
+	$background_color = ( !empty($options['background_color']) ) ? $options['background_color'] : '#fff' ;
 	
 	// See if we should override the width
 	if ( $hide_sidebar ) {
@@ -36,7 +36,6 @@
 	
 	// Get the menu
 	$omf_details = _get_menu_details( $omf_url ); 
-
 ?>
 
 <?php get_header() ?>
@@ -163,7 +162,6 @@
 	// Display the Menu
 	if ( strcasecmp($display_type, 'restaurant information / menu') == 0 || 
 	 strcasecmp($display_type, 'menu') == 0 ) {
-	
 		echo build_menu_from_details($omf_details, $display_columns, $menu_filter); 
 	
 	}
