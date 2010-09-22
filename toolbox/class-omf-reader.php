@@ -58,9 +58,9 @@ class cOmfReader {
 		// -------------------------------------
 		// Crawl an OMF file and return an array of the values
 		// -------------------------------------
-		
+
 		// Get the XML contents for the OMF file
-		$xml = @simplexml_load_file($omf_file_location);
+		$xml = $this->get_xml_from_url($omf_file_location);
 		
 		// Update the hash
 		$this->menu_hash = md5($xml);
@@ -504,6 +504,39 @@ class cOmfReader {
 		
 		return ( strcasecmp($expected_value, $set_value) === 0 ) ? 1 : '' ;
 	
+	}
+
+	private function get_xml_from_url( $omf_file_location ) {
+		// -------------------------------------
+		// Get the XML from the URL
+		// -------------------------------------
+		
+		$xml = false;
+		
+		// Get the XML contents for the OMF file
+		if ( false && function_exists('simplexml_load_file') ) {
+			$xml = @simplexml_load_file($omf_file_location);
+		} else {
+			if ( function_exists( 'curl_init' ) ) {
+
+				$curl = curl_init ();
+				curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 );
+				curl_setopt ( $curl, CURLOPT_URL, $omf_file_location );
+				$contents = curl_exec ( $curl );
+				curl_close ( $curl );
+
+				if ( $contents )
+					$xml = simplexml_load_string($contents);
+				else 
+					$xml = false;
+					
+			} else {
+				$xml = file_get_contents ( $omf_file_location );
+				$xml = simplexml_load_string($xml);
+			}
+		}
+
+		return $xml;
 	}
 	
 } // END CLASS
