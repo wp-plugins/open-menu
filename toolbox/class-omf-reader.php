@@ -526,13 +526,13 @@ class cOmfReader {
 				curl_close ( $curl );
 
 				if ( $contents )
-					$xml = simplexml_load_string($contents);
+					$xml = @simplexml_load_string($contents);
 				else 
 					$xml = false;
 					
 			} else {
 				$xml = file_get_contents ( $omf_file_location );
-				$xml = simplexml_load_string($xml);
+				$xml = @simplexml_load_string($xml);
 			}
 		}
 
