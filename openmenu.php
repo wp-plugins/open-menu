@@ -5,13 +5,13 @@
 
 /**
 	@package Open Menu
-	@version 1.1.2
+	@version 1.1.3
 
 	Plugin Name: Open Menu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your Open Menu Format menu.  This plugin fully integrates an Open Menu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 	Author: Open Menu, LLC
-	Version: 1.1.2
+	Version: 1.1.3
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -965,7 +965,7 @@
 					}
 					
 					// Close the menu 
-					$retval .= '</div><!-- END #menu -->'."\n";
+					$retval .= '</div><br clear="all" /><!-- END #menu -->'."\n";
 					
 					if ( !$one_column ) {
 						$retval .= '<div class="page-break"></div>'."\n";
@@ -1005,7 +1005,9 @@
 	
 	if ( ! function_exists( 'clean' ) ) :
 	function clean ($str) { 
-		return htmlentities($str, ENT_COMPAT, 'UTF-8');
+		// Function not required
+		return $str;
+		// return htmlentities($str, ENT_COMPAT, 'UTF-8');
 	}
 	endif;
 	
