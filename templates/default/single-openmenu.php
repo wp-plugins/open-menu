@@ -16,6 +16,7 @@
 	$restaurant_name = (isset($custom["_restaurant_name"][0])) ? $custom["_restaurant_name"][0] : '' ;
 	$omf_url = (isset($custom["_omf_url"][0])) ? $custom["_omf_url"][0] : '' ;
 	$menu_filter = ( !empty($custom["_menu_filter"][0]) ) ? $custom["_menu_filter"][0] : false ;
+	$group_filter = ( !empty($custom["_group_filter"][0]) ) ? $custom["_group_filter"][0] : false ;
 	
 	// Get the Open Menu Options
 	$options = get_option( 'openmenu_options' );
@@ -162,7 +163,7 @@
 	// Display the Menu
 	if ( strcasecmp($display_type, 'restaurant information / menu') == 0 || 
 	 strcasecmp($display_type, 'menu') == 0 ) {
-		echo build_menu_from_details($omf_details, $display_columns, $menu_filter); 
+		echo build_menu_from_details($omf_details, $display_columns, $menu_filter, $group_filter); 
 	
 	}
 ?>
