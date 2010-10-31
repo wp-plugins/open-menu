@@ -5,13 +5,13 @@
 
 /**
 	@package Open Menu
-	@version 1.1.3
+	@version 1.2
 
 	Plugin Name: Open Menu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your Open Menu Format menu.  This plugin fully integrates an Open Menu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 	Author: Open Menu, LLC
-	Version: 1.1.3
+	Version: 1.2
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -90,6 +90,7 @@
 		$atts = shortcode_atts(array(
 			'omf_url' => '',
 			'menu_filter' => '',
+			'group_filter' => '',
 			'display_columns' => $display_columns,
 			'display_type' => $display_type
 		), $atts);
@@ -101,7 +102,7 @@
 
 			if ( strcasecmp($atts['display_type'], 'restaurant information / menu') == 0 || 
 	 strcasecmp($atts['display_type'], 'menu') == 0 ) {
-				$display .= build_menu_from_details($omf_details, $atts['display_columns'], $atts['menu_filter']);
+				$display .= build_menu_from_details($omf_details, $atts['display_columns'], $atts['menu_filter'], $atts['group_filter']);
 			}
 			
 		} else {
@@ -667,7 +668,8 @@
 			array( '_omf_url', 'Location of the Open Menu Format menu (URL):', 'text', '(sample menu: http://openmenu.com/menus/sample.xml)' )
 		),
 		'Menu Settings' => array (
-			array( '_menu_filter', 'Filter - Menu Name to display:', 'text', '(Use the <strong>Menu Name</strong> field to display that menu only)' )
+			array( '_menu_filter', 'Menu Filter - Menu Name to display:', 'text', '(Use the <strong>Menu Name</strong> field to display that menu only)' ),
+			array( '_group_filter', 'Menu Group Filter - Group Name to display:', 'text', '(Use the <strong>Group Name</strong> field to display that group only)' )
 		),
 		'Restaurant Information' => array (
 			array( '_restaurant_name', 'Restaurant Name:', 'text', '' ),
@@ -833,7 +835,7 @@
 		return $omf_details;
 	}
 
-	function build_menu_from_details ($omf_details, $columns = '1', $menu_filter = '') {
+	function build_menu_from_details ($omf_details, $columns = '1', $menu_filter = '', $group_filter = '') {
 		// ------------------------------------- 
 		//  Create a menu display from OMF Details
 		// ------------------------------------- 
@@ -847,7 +849,7 @@
 		  if ( isset($omf_details['menus']) && !empty($omf_details['menus']) ) {
 			foreach ($omf_details['menus'] AS $menu) {
 				
-				// Check for a filter
+				// Check for a menu filter
 				if ( !$menu_filter || strcasecmp($menu_filter, $menu['menu_name']) == 0 ) {
 				
 					// Start a new menu
@@ -857,6 +859,10 @@
 						} else {
 							$retval .= clean(ucwords($menu['menu_duration_name']));
 						}
+					// Check for a description
+					if ( !empty($menu['menu_description']) ) {
+						$retval .= '<br /><span class="sm_norm">'.$menu['menu_description'].'</span>';
+					}
 					$retval .= '</div><div class="menu_content">'."\n";
 					
 					// How many groups are there in this menu
@@ -865,95 +871,108 @@
 					$current_group = 1;
 					
 					foreach ($menu['menu_groups'] AS $group) {
-						// Should we start the left or right column 
-						if ( !$one_column ) {
-							if ($current_group == 1) { 
-								// Start the left Column
-								$retval .= '<div class="left-menu">';
-							} elseif ($current_group == (1 + (int)($group_count/2)) ) {
-								// Close the left column and start the right
-								$retval .= '</div><!-- END left menu -->';
-								$retval .= '<div class="right-menu">';
-							}
-						}
-						
-						// Start a group
-						$retval .= '<h2>'.clean($group['group_name']).'</h2>'."\n";
-						
-						if ( !empty($group['menu_items']) ) {
-							foreach ($group['menu_items'] AS $item) {
-								$is_special = ($item['special'] == 1) ? '<span class="item_tag special">Special</span>' : '' ;
-								$is_vegetarian = ($item['vegetarian'] == 1) ? '<span class="item_tag vegetarian">Vegetarian</span>' : '' ;
-								$is_vegan = ($item['vegan'] == 1) ? '<span class="item_tag vegan">Vegan</span>' : '' ;
-								$is_kosher = ($item['kosher'] == 1) ? '<span class="item_tag kosher">Kosher</span>' : '' ;
-								$is_halal = ($item['halal'] == 1) ? '<span class="item_tag halal">Halal</span>' : '' ;
-								$tags = $is_special.$is_vegetarian.$is_vegan.$is_kosher.$is_halal;
-								$price = (!empty($item['menu_item_price'])) ? number_format($item['menu_item_price'], 2) : '' ;
-					            $retval .= '<dl>';
-					            $retval .= '<dt>'.$tags.clean($item['menu_item_name']).'</dt>';
-					            $retval .= '<dd class="price">'.$price.'</dd>';
-					            $retval .= '<dd class="description">'.clean($item['menu_item_description']).'</dd>';
-
-					            // Check for item size
-					            if ( !empty($item['menu_item_sizes']) && is_array($item['menu_item_sizes']) ) {
-					            	$retval .= '<dd class="sizes">';
-						            foreach ($item['menu_item_sizes'] AS $size) {
-						            	$size_price = (!empty($size['menu_item_size_price'])) ? ' - '.number_format($size['menu_item_size_price'], 2) : '' ;
-						            	$retval .= '<span>'.clean($size['menu_item_size_name']).$size_price.'</span>';
-						            }
-						            $retval .= '</dd>';
-						        }
-						        
-						    	// Check for options
-					            if ( isset($item['menu_item_options']) && !empty($item['menu_item_options']) && is_array($item['menu_item_options']) ) {
-					            	$retval .= '<dd class="item_options">';
-						            foreach ($item['menu_item_options'] AS $option) {
-						            	$retval .= '<div><strong>'.clean($option['item_options_name']).'</strong>: ';
-						            	 if ( isset($option['option_items']) && !empty($option['option_items']) ) {
-						            	 	 foreach($option['option_items'] AS $option_item) { 
-						            	 	 	$retval .= clean($option_item['menu_item_option_name']).' | ';
-						            	 	 }
-						            	 	 // Strip the trailing |
-											$retval = rtrim($retval, ' | ');
-						            	 }
-						            	
-						            	$retval .= '</div>';
-						            }
-						            $retval .= '</dd>';
-						        }
-						        
-						        // close the item
-					            $retval .= '</dl>'."\n";
-							} // end item
-						}
-						// Display Group Options
-						if ( isset($group['menu_group_options']) && is_array($group['menu_group_options']) ) { 
-							foreach($group['menu_group_options'] AS $option) { 
-								$retval .= '<div class="goptions">';
-								$retval .= '<div class="goptions-title">'.clean($option['group_options_name']).'</div>';
-								
-								// Check for Option Items
-								if ( isset($option['option_items']) && is_array($option['option_items']) ) { 
-									foreach($option['option_items'] AS $option_item) { 
-										$retval .= clean($option_item['menu_group_option_name']).' | ';
-									}
-									// Strip the trailing |
-									$retval = rtrim($retval, ' | ');
+						// Check for a group filter
+						if ( !$group_filter || strcasecmp($group_filter, $group['group_name']) == 0 ) {
+					
+							// Should we start the left or right column 
+							if ( !$one_column ) {
+								if ($current_group == 1) { 
+									// Start the left Column
+									$retval .= '<div class="left-menu">';
+								} elseif ($current_group == (1 + (int)($group_count/2)) ) {
+									// Close the left column and start the right
+									$retval .= '</div><!-- END left menu -->';
+									$retval .= '<div class="right-menu">';
 								}
+							}
+							
+							// Start a group
+							$retval .= '<h2>'.clean($group['group_name']);
+							
+							if ( !empty($group['group_description']) ) {
+								$retval .= '<br /><span class="sm_norm">'.$group['group_description'].'</span>';
+							}
+							$retval .= '</h2>'."\n";
+							
+							if ( !empty($group['menu_items']) ) {
+								foreach ($group['menu_items'] AS $item) {
+									$is_special = ($item['special'] == 1) ? '<span class="item_tag special">Special</span>' : '' ;
+									$is_vegetarian = ($item['vegetarian'] == 1) ? '<span class="item_tag vegetarian">Vegetarian</span>' : '' ;
+									$is_vegan = ($item['vegan'] == 1) ? '<span class="item_tag vegan">Vegan</span>' : '' ;
+									$is_kosher = ($item['kosher'] == 1) ? '<span class="item_tag kosher">Kosher</span>' : '' ;
+									$is_halal = ($item['halal'] == 1) ? '<span class="item_tag halal">Halal</span>' : '' ;
+									$tags = $is_special.$is_vegetarian.$is_vegan.$is_kosher.$is_halal;
+									$price = (!empty($item['menu_item_price'])) ? number_format($item['menu_item_price'], 2) : '' ;
+						            $retval .= '<dl>';
+						            $retval .= '<dt class="pepper_' . $item['menu_item_heat_index'] . '">' . $tags . clean($item['menu_item_name']) . '</dt>';
+						            $retval .= '<dd class="price">'.$price.'</dd>';
+						            $retval .= '<dd class="description">'.clean($item['menu_item_description']).'</dd>';
+
+						            // Check for item size
+						            if ( !empty($item['menu_item_sizes']) && is_array($item['menu_item_sizes']) ) {
+						            	$retval .= '<dd class="sizes">';
+							            foreach ($item['menu_item_sizes'] AS $size) {
+							            	$size_price = (!empty($size['menu_item_size_price'])) ? ' - '.number_format($size['menu_item_size_price'], 2) : '' ;
+							            	$retval .= '<span>'.clean($size['menu_item_size_name']).$size_price.'</span>';
+							            }
+							            $retval .= '</dd>';
+							        }
+							        
+							    	// Check for options
+						            if ( isset($item['menu_item_options']) && !empty($item['menu_item_options']) && is_array($item['menu_item_options']) ) {
+						            	$retval .= '<dd class="item_options">';
+							            foreach ($item['menu_item_options'] AS $option) {
+							            	$retval .= '<div><strong>'.clean($option['item_options_name']).'</strong>: ';
+							            	 if ( isset($option['option_items']) && !empty($option['option_items']) ) {
+							            	 	 foreach($option['option_items'] AS $option_item) { 
+							            	 	 	$retval .= clean($option_item['menu_item_option_name']).' | ';
+							            	 	 }
+							            	 	 // Strip the trailing |
+												$retval = rtrim($retval, ' | ');
+							            	 }
+							            	
+							            	$retval .= '</div>';
+							            }
+							            $retval .= '</dd>';
+							        }
+							        
+							        // close the item
+						            $retval .= '</dl>'."\n";
+								} // end item
+							}
+							// Display Group Options
+							if ( isset($group['menu_group_options']) && is_array($group['menu_group_options']) ) { 
+								foreach($group['menu_group_options'] AS $option) { 
+									$retval .= '<div class="goptions">';
+									$retval .= '<div class="goptions-title">'.clean($option['group_options_name']);
+									if ( !empty($option['menu_group_option_information']) ) {
+										$retval .= '<br /><span class="goptions-desc">'.$option['menu_group_option_information'].'</span>';
+									}
+									$retval .= '</div>';
 								
-								$retval .= '</div>';
-							} 
-						}
-						
-						// End a group
-						if ( $one_column ) {
-							$retval .= '<span class="separator big"></span>'."\n";
-						} else {
-							$retval .= '<span class="separator small"></span>'."\n";
-						}
-						
-						$current_group++;
-						
+									// Check for Option Items
+									if ( isset($option['option_items']) && is_array($option['option_items']) ) { 
+										foreach($option['option_items'] AS $option_item) { 
+											$retval .= clean($option_item['menu_group_option_name']).' | ';
+										}
+										// Strip the trailing |
+										$retval = rtrim($retval, ' | ');
+									}
+									
+									$retval .= '</div>';
+								} 
+							}
+							
+							// End a group
+							if ( $one_column ) {
+								$retval .= '<span class="separator big"></span>'."\n";
+							} else {
+								$retval .= '<span class="separator small"></span>'."\n";
+							}
+							
+							$current_group++;
+							
+						} // end group filter
 					} // end group
 					
 					if ( !$one_column ) {

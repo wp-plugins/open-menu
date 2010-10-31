@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 1.1.3
+Stable tag: 1.2
 
 Easily create posts that are based on your Open Menu Format restaurant menu.  Fully integrates an Open Menu Format menu or menus into an existing theme.
 
@@ -29,7 +29,9 @@ Open Menu Custom Post Type:
 	Settings:
 		Open Menu Location (URL) - This is a required field that points to your Open Menu Format menu
 		
-		Filter - Menu Name to display: If your Open Menu Format menu contains multiple menus (ex. Lunch / Dinner) you can choose which menu to display in your post by entering the menu name here.
+		Filters
+			Menu Name to display: If your Open Menu Format menu contains multiple menus (ex. Lunch / Dinner) you can choose which menu to display in your post by entering the menu name here.
+			Group Name to display: If your Open Menu Format menu contains multiple menu groups (ex. salads / deserts) you can choose which group to display in your post by entering the group name here.
 
 		Restaurant Information: Stores basic information about the restaurant that is referenced by the menu. This is primarly used in scenarios where many restaurant menu's will be displayed.  Information, along with the excerpt, will be used to generate a single page of all menus.
 
@@ -47,6 +49,7 @@ Short code:
 		omf_url         = URL pointing to the Open Menu Format menu
 		display_type    = menu (only option currently available)
 		menu_filter     = Will display only the menu name matching this filter
+		group_filter    = Will display only the group name matching this filter
 		display_columns = 1 | 2 - How many columns to display a menu in
 	
 		[defaults to Open Menu Option setting]
@@ -110,6 +113,10 @@ Yes.  All you need to do is use the shortcode described above.  Very simple and 
 
 
 == Changelog ==
+
+= 1.2 =
+* Updated to handle v1.2 of the Open Menu Format
+* Added group name filter to shortcode and Open Menu posts
 
 = 1.1.3 =
 * Fixed issue where special characters were being double encoded and therefore not dispayed properly
