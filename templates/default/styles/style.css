@@ -12,7 +12,6 @@
 #openmenu .clear { clear:both; }
 #openmenu small { font-size:.9em }
 
-
 #om_restaurant { margin-bottom:20px; }
 #om_restaurant #rest_name { font-weight:bold; font-size:1.1em; }
 #om_restaurant #locationmap { width:349px; height:300px }
@@ -36,6 +35,8 @@
 #om_menu dd { margin:0 }
 #om_menu dl { display:block; overflow:auto; margin: 0 0 0.7em 10px; background: url('../images/menu_dot.gif') repeat-x 0 14px }
 #om_menu dt, #openmenu dd.price { font-size:1em; font-weight:bold }
+
+#om_menu dl .mi_thumb { float:left; padding-right:5px }
 
 #om_menu dt.pepper_1 { background: #fff url('../images/peppers-1.png') no-repeat 0 0; padding-left:22px}
 #om_menu dt.pepper_2 { background: #fff url('../images/peppers-2.png') no-repeat 0 0; padding-left:32px}
@@ -70,6 +71,12 @@ background: transparent no-repeat url('../images/ico-16-menu.png') 0 5px; }
 #om_menu span.small { background:url('../images/menu_sm_separator.png') no-repeat top center }
 
 /*------------------------------------------------------------------
+	Misc
+-------------------------------------------------------------------*/
+.om_tag {font-size:.75em;color:#00f;text-align:center;}
+
+/*------------------------------------------------------------------
 	IE7 Hack
 -------------------------------------------------------------------*/
 *:first-child+html #om_menu dl {overflow:visible;}
+
