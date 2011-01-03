@@ -1,17 +1,17 @@
 <?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Open Menu Plugin, Copyright 2010  Open Menu, LLC
+// ** Open Menu Plugin, Copyright 2011  Open Menu, LLC
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
 	@package Open Menu
-	@version 1.2.1
+	@version 1.3
 
 	Plugin Name: Open Menu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your Open Menu Format menu.  This plugin fully integrates an Open Menu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 	Author: Open Menu, LLC
-	Version: 1.2.1
+	Version: 1.3
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -113,21 +113,21 @@
 	}
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Add Settings link to Open Menu on the plugin page
+// ** Add Settings link to Open Menu on the plugin page [REMOVED]
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-	add_filter('plugin_action_links', 'add_settings_link', 10, 2 );
-	
-	function add_settings_link($links, $file) {
-		static $this_plugin;
-		if (!$this_plugin) $this_plugin = plugin_basename(__FILE__);
+//	add_filter('plugin_action_links', 'add_settings_link', 10, 2 );
 
-		if ($file == $this_plugin){
-			$settings_link = '<a href="'.admin_url( 'options-general.php?page='. OPENMENU_POSTYPE . '/openmenu.php' ) . '">'.__("Settings", "openmenu-settings").'</a>';
-			array_unshift($links, $settings_link);
-		}
-		return $links;
-	}
+//	function add_settings_link($links, $file) {
+//		static $this_plugin;
+//		if (!$this_plugin) $this_plugin = plugin_basename(__FILE__);
+
+//		if ($file == $this_plugin){
+//			$settings_link = '<a href="'.admin_url( 'options-general.php?page='. OPENMENU_POSTYPE . '/openmenu.php' ) . '">'.__("Settings", "openmenu-settings").'</a>';
+//			array_unshift($links, $settings_link);
+//		}
+//		return $links;
+//	}
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Determines if Open Menu posts are shown on the homepage 
@@ -665,7 +665,7 @@
 
 	$sp_boxes = array (
 		'Open Menu Location (required)' => array (
-			array( '_omf_url', 'Location of the Open Menu Format menu (URL):', 'text', '(sample menu: http://openmenu.com/menus/sample.xml)' )
+			array( '_omf_url', 'Location of the Open Menu Format menu (URL):', 'text', '(sample menu: http://openmenu.com/menu/sample)' )
 		),
 		'Menu Settings' => array (
 			array( '_menu_filter', 'Menu Filter - Menu Name to display:', 'text', '(Use the <strong>Menu Name</strong> field to display that menu only)' ),
@@ -903,8 +903,18 @@
 									$is_halal = ($item['halal'] == 1) ? '<span class="item_tag halal">Halal</span>' : '' ;
 									$tags = $is_special.$is_vegetarian.$is_vegan.$is_kosher.$is_halal;
 									$price = (!empty($item['menu_item_price'])) ? number_format($item['menu_item_price'], 2) : '' ;
+									
+									// See if a thumbnail exists
+									$thumbnail = '';
+									if ( isset($item['menu_item_images']) ) {
+										$thumbnail = extract_thumbnail($item['menu_item_images']);
+										if ($thumbnail) {
+											$thumbnail = '<img class="mi_thumb" src="'.$thumbnail.'" />';
+										}
+									}
+
 						            $retval .= '<dl>';
-						            $retval .= '<dt class="pepper_' . $item['menu_item_heat_index'] . '">' . $tags . clean($item['menu_item_name']) . '</dt>';
+						            $retval .= '<dt class="pepper_' . $item['menu_item_heat_index'] . '">' . $thumbnail . $tags . clean($item['menu_item_name']) . '</dt>';
 						            $retval .= '<dd class="price">'.$price.'</dd>';
 						            $retval .= '<dd class="description">'.clean($item['menu_item_description']).'</dd>';
 
@@ -997,10 +1007,27 @@
 			$retval .= 'There was an error displaying this menu';
 		}
 	
-		$retval .= '<small><a href="http://openmenu.com" style="font-size:.9em;color:#00f;text-align:center;display:block">'.__('powered by').' Open Menu</a></small>';
+		$retval .= '<div class="om_tag"><a href="http://openmenu.com">'.__('powered by').' Open Menu</a></div>';
 		$retval .= '</div><!-- #om_menu -->';
 		}
 		
+		return $retval;
+	}
+	
+	function extract_thumbnail( $item_images ) {
+		// ------------------------------------- 
+		//  Attempt to extract a thumbnail image from a menu item's image list
+		//    Looks for a Thumbnail for a media type of Web
+		// ------------------------------------- 
+		$retval = '';
+		foreach ($item_images AS $img) {
+			if ( strcasecmp($img['image_type'], 'Thumbnail' ) === 0 && 
+				 strcasecmp($img['image_media'], 'Web' ) === 0 &&
+				 !empty($img['image_url']) ) {
+				$retval = $img['image_url'];
+			}
+		}
+
 		return $retval;
 	}
 	

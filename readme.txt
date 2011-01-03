@@ -1,10 +1,10 @@
 === Open Menu - The official plugin for Open Menu ===
 Contributors: openmenu
 Donate link: http://openmenu.com
-Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
+Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food, openmenu
 Requires at least: 3.0
-Tested up to: 3.0.1
-Stable tag: 1.2.1
+Tested up to: 3.0.4
+Stable tag: 1.3
 
 Easily create posts that are based on your Open Menu Format restaurant menu.  Fully integrates an Open Menu Format menu or menus into an existing theme.
 
@@ -55,8 +55,8 @@ Short code:
 		[defaults to Open Menu Option setting]
 
 	Samples: 
-		[openmenu omf_url="http://openmenu.com/menus/sample.xml"]
-		[openmenu omf_url="http://openmenu.com/menus/sample.xml" display_type="menu" display_columns="1"]
+		[openmenu omf_url="http://openmenu.com/menu/sample"]
+		[openmenu omf_url="http://openmenu.com/menu/sample" display_type="menu" display_columns="1"]
 
 Custom Functions: 
 	Display a location block: openmenu_location( post_id, title );
@@ -113,6 +113,12 @@ Yes.  All you need to do is use the shortcode described above.  Very simple and 
 
 
 == Changelog ==
+
+= 1.3 =
+* Added Thumbnail images to menu listing
+* Remove Setting link from plugin page (permission issue for some users)
+* Update the location of the sample menu to http://openmenu.com/menu/sample
+* Moved the styling of the Open Menu tag to the Open Menu theme stylesheet
 
 = 1.2.1 =
 * Fixed display issue with 2-column menu
