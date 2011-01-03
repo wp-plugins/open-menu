@@ -44,9 +44,9 @@
 <?php
 	// Get the post options
 	$custom = get_post_custom( get_the_ID() ); 
-	$restaurant_name = $custom["_restaurant_name"][0];
-	$location = $custom["_restaurant_location"][0];
-	$description = $custom["_brief_description"][0];
+	$restaurant_name = ( isset($custom["_restaurant_name"][0]) ) ? $custom["_restaurant_name"][0] : '' ;
+	$location = ( isset($custom["_restaurant_location"][0]) ) ? $custom["_restaurant_location"][0] : '' ;
+	$description = ( isset($custom["_brief_description"][0]) ) ? $custom["_brief_description"][0] : '' ;
 	
 	echo '<div class="om_list_rest">' . $restaurant_name . '</div>';
 	echo '<div class="om_list_location">' . $location . '</div>';

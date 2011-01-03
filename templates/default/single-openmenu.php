@@ -112,7 +112,7 @@
 	              title: '<?php echo addslashes($omf_details['restaurant_info']['restaurant_name']); ?>'
 	          });
 	        } else {
-	          alert("Geocode could not process the requested address\n" + status);
+	          // alert("Geocode could not process the requested address\n" + status);
 	        }
 	      });
 	    }
@@ -134,7 +134,7 @@
 		            <p>
 		            	<strong><?php _e('Address') ?>:</strong><br />
 		            	<?php echo clean($omf_details['restaurant_info']['address_1']); ?><br />
-		            	<?php echo clean($omf_details['restaurant_info']['city_town']); ?>, <?php echo $omf_details['restaurant_info']['country']; ?> <?php echo $omf_details['restaurant_info']['postal_code']; ?>
+		            	<?php echo clean($omf_details['restaurant_info']['city_town']); ?>, <?php echo $omf_details['restaurant_info']['state_province']; ?> <?php echo $omf_details['restaurant_info']['postal_code']; ?> <?php echo $omf_details['restaurant_info']['country']; ?>
 		            </p>
 		            <p>
 			            <strong><?php _e('Phone') ?>: </strong> <?php echo $omf_details['restaurant_info']['phone']; ?><br />
