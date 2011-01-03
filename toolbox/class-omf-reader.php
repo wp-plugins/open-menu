@@ -14,16 +14,13 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Includes: 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Constants: 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	define('OMF_VERSION', '1.2');
+	define('OMF_VERSION', '1.3');
 	
 	// Days
 	define('WEEKDAY_1', 'mon');
@@ -66,6 +63,7 @@ class cOmfReader {
 		// Now parse it
 		if ($xml) {
 			// OMF information
+			$omf_data['omf_uuid'] = $this->_clean(@$xml['uuid']);
 			$omf_data['omf_version'] = $this->_clean(@$xml->omf_version->version);
 			$omf_data['omf_editor'] = $this->_clean(@$xml->omf_version->editor);
 			$omf_data['omf_general_info'] = $this->_clean(@$xml->omf_version->general_info);
@@ -233,7 +231,7 @@ class cOmfReader {
 					$omf_data['menus'][$menu_id]['menu_name'] = $this->_clean(@$menu['name'], 50);
 					$omf_data['menus'][$menu_id]['menu_description'] = $this->_clean(@$menu->menu_description, 255);
 					$omf_data['menus'][$menu_id]['currency_symbol'] = $this->_clean(@$menu['currency_symbol'], 3);
-					$omf_data['menus'][$menu_id]['menu_uid'] = $this->_clean(@$menu['uid'], 36);
+					$omf_data['menus'][$menu_id]['menu_uid'] = $this->_clean(@$menu['uid']);
 					$omf_data['menus'][$menu_id]['disabled'] = $this->check_attribute('disabled', @$menu['disabled']);
 							
 					// Grab the duration for this menu
@@ -248,7 +246,7 @@ class cOmfReader {
 					    	// Grab the group name
 					    	$omf_data['menus'][$menu_id]['menu_groups'][$group_id]['group_name'] = $this->_clean(@$group['name'], 50);
 					    	$omf_data['menus'][$menu_id]['menu_groups'][$group_id]['group_description'] = $this->_clean(@$group->menu_group_description, 255);
-							$omf_data['menus'][$menu_id]['menu_groups'][$group_id]['group_uid'] = $this->_clean(@$group['uid'], 36);
+							$omf_data['menus'][$menu_id]['menu_groups'][$group_id]['group_uid'] = $this->_clean(@$group['uid']);
 							$omf_data['menus'][$menu_id]['menu_groups'][$group_id]['disabled'] = $this->check_attribute('disabled', @$group['disabled']);
 
 							// Group Options
@@ -289,7 +287,7 @@ class cOmfReader {
 									$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['menu_item_allergy_information'] = $this->_clean(@$item->menu_item_allergy_information, 450);
 									$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['menu_item_allergy_information_allergens'] = $this->_clean(@$item->menu_item_allergy_information['allergens']);
 									
-									$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['item_uid'] = $this->_clean(@$item['uid'], 36);
+									$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['item_uid'] = $this->_clean(@$item['uid']);
 									$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['disabled'] = $this->check_attribute('disabled', @$item['disabled']);
 									$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['special'] = $this->check_attribute('special', @$item['special']);
 									$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['vegetarian'] = $this->check_attribute('vegetarian', @$item['vegetarian']);
@@ -326,7 +324,7 @@ class cOmfReader {
 							    	if (isset($item->menu_item_image_urls)) {
 								    	foreach ($item->menu_item_image_urls->menu_item_image_url AS $image) {
 									    	// Menu item images
-									    	$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id] ['menu_item_images'] [$image_id] ['menu_item_image_url'] = $this->_clean(@$image);
+									    	$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id] ['menu_item_images'] [$image_id] ['image_url'] = $this->_clean(@$image);
 									    	$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id] ['menu_item_images'] [$image_id] ['width'] = $this->_clean(@$image['width']);
 									    	$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id] ['menu_item_images'] [$image_id] ['height'] = $this->_clean(@$image['height']);
 									    	$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id] ['menu_item_images'] [$image_id] ['image_type'] = $this->_clean(@$image['type']);
