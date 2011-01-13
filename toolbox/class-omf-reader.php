@@ -2,15 +2,15 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Open Menu, LLC http://www.openmenu.com
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Copyright (C) 2010 Open Menu, All rights reserved
+// ** Copyright (C) 2010, 2011 OpenMenu, All rights reserved
 // **		Authored By: Chris Hanscom
 // **
-// **		This library is copyrighted software by Open Menu; you can not
+// **		This library is copyrighted software by OpenMenu; you can not
 // **		redistribute it and/or modify it in any way without expressed written
 // **		consent from Open Menu or Author.
 // **
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.2
+// ** Version: 1.3
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
