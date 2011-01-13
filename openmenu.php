@@ -1,17 +1,17 @@
 <?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Open Menu Plugin, Copyright 2011  Open Menu, LLC
+// ** OpenMenu Plugin, Copyright 2010, 2011  OpenMenu, LLC
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
-	@package Open Menu
-	@version 1.3
+	@package OpenMenu
+	@version 1.3.1
 
-	Plugin Name: Open Menu
+	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
-	Description: This plugin allows you to easily create posts that are based on your Open Menu Format menu.  This plugin fully integrates an Open Menu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
-	Author: Open Menu, LLC
-	Version: 1.3
+	Description: This plugin allows you to easily create posts that are based on your OpenMenu Format menu.  This plugin fully integrates an OpenMenu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
+	Author: OpenMenu, LLC
+	Version: 1.3.1
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -54,7 +54,7 @@
 
 	// Make sure we don't expose any info if called directly
 	if ( !function_exists( 'add_action' ) ) {
-		echo "Open Menu Plugin - http://OpenMenu.com ...";
+		echo "OpenMenu Plugin - http://OpenMenu.com ...";
 		exit;
 	}
 
@@ -106,7 +106,7 @@
 			}
 			
 		} else {
-			$display = __('Open Menu Format URL must be provided');
+			$display = __('OpenMenu Format URL must be provided');
 		}
 		
 		return $display;
@@ -223,8 +223,8 @@
 		
 		// Define the labels
 		$labels = array(
-			'name' => _x('Open Menu', 'post type general name'),
-			'singular_name' => _x('Open Menu', 'post type singular name'),
+			'name' => _x('OpenMenu', 'post type general name'),
+			'singular_name' => _x('OpenMenu', 'post type singular name'),
 			'add_new' => _x('Add New Menu', 'restaurant menu'),
 			'add_new_item' => __('Add New Menu'),
 			'edit_item' => __('Edit Menu'),
@@ -375,7 +375,7 @@
 		add_settings_field('radio_buttons', __('How many columns?'), 'setting_displaycolumn_fn', __FILE__, 'lookfeel_section');
 		add_settings_field('drop_down2', __('Theme'), 'setting_theme_fn', __FILE__, 'lookfeel_section');
 		
-		add_settings_section('om_section', __('Open Menu Listing'), 'section_om_fn', __FILE__);
+		add_settings_section('om_section', __('OpenMenu Listing'), 'section_om_fn', __FILE__);
 		add_settings_field('plugin_om_title', __('Title'), 'setting_om_title_fn', __FILE__, 'om_section');
 		add_settings_field('plugin_om_description', __('Description'), 'setting_om_description_fn', __FILE__, 'om_section');
 		
@@ -389,7 +389,7 @@
 
 	// Add sub page to the Settings Menu
 	function openmenu_options_add_page_fn() {
-		add_options_page('Open Menu Options', 'Open Menu', 'manage_options', __FILE__, 'options_page_fn');
+		add_options_page('OpenMenu Options', 'OpenMenu', 'manage_options', __FILE__, 'options_page_fn');
 	}
 
 	// *************************
@@ -404,7 +404,7 @@
 		echo '<p>'.__('Changes how the menu interacts with the current theme').'</p>';
 	}
 	function  section_om_fn() {
-		echo '<p>'.__('Controls the main Open Menu page (used to display a list of all menus in the system)').'</p>';
+		echo '<p>'.__('Controls the main OpenMenu page (used to display a list of all menus in the system)').'</p>';
 	}
 	
 	// DROP-DOWN-BOX - Name: plugin_options[display_type]
@@ -456,7 +456,7 @@
 	// Open Menu title
 	function setting_om_title_fn() {
 		$options = get_option('openmenu_options');
-		echo "<input id='plugin_text_string' name='openmenu_options[om_title]' size='20' type='text' value='{$options['om_title']}' /> ".__('(defaults to Open Menu)');
+		echo "<input id='plugin_text_string' name='openmenu_options[om_title]' size='20' type='text' value='{$options['om_title']}' /> ".__('(defaults to OpenMenu)');
 	}
 
 	// Open Menu Description
@@ -492,7 +492,7 @@
 	?>
 		<div class="wrap">
 			<div class="icon32" id="icon-options-general"><br></div>
-			<h2><?php _e('Open Menu Options Page'); ?></h2>
+			<h2><?php _e('OpenMenu Options Page'); ?></h2>
 			<?php _e('Control the overall look and feel for the menus displayed.'); ?>
 			<form action="options.php" method="post">
 			<?php settings_fields('openmenu_options'); ?>
@@ -664,8 +664,8 @@
 */
 
 	$sp_boxes = array (
-		'Open Menu Location (required)' => array (
-			array( '_omf_url', 'Location of the Open Menu Format menu (URL):', 'text', '(sample menu: http://openmenu.com/menu/sample)' )
+		'OpenMenu Location (required)' => array (
+			array( '_omf_url', 'Location of the OpenMenu Format menu (URL):', 'text', '(sample menu: http://openmenu.com/menu/sample)' )
 		),
 		'Menu Settings' => array (
 			array( '_menu_filter', 'Menu Filter - Menu Name to display:', 'text', '(Use the <strong>Menu Name</strong> field to display that menu only)' ),
@@ -1007,7 +1007,7 @@
 			$retval .= 'There was an error displaying this menu';
 		}
 	
-		$retval .= '<div class="om_tag"><a href="http://openmenu.com">'.__('powered by').' Open Menu</a></div>';
+		$retval .= '<div class="om_tag"><a href="http://openmenu.com">'.__('powered by').' OpenMenu</a></div>';
 		$retval .= '</div><!-- #om_menu -->';
 		}
 		
