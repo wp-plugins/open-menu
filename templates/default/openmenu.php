@@ -1,6 +1,6 @@
 <?php
 /*
-	Template Name: Open Menu (page)
+	Template Name: OpenMenu (page)
 */
 	
 	$options = get_option( 'openmenu_options' );

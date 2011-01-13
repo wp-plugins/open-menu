@@ -2,7 +2,7 @@
 /**
  * The Template for displaying all single posts.
  *
- * @plugin Open Menu
+ * @plugin OpenMenu
  */
 
 	// Load Stuff for Google Maps
