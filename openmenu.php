@@ -1,17 +1,17 @@
 <?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** OpenMenu Plugin, Copyright 2010, 2011  OpenMenu, LLC
+// ** OpenMenu Plugin, Copyright 2011, 2011  OpenMenu, LLC
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
 	@package OpenMenu
-	@version 1.3.1
+	@version 1.3.2
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu Format menu.  This plugin fully integrates an OpenMenu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.3.1
+	Version: 1.3.2
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -51,13 +51,13 @@
 	// Post type
 	define('OPENMENU_POSTYPE', 'openmenu');
 	define('OPENMENU_SLUG', 'openmenu');
-
+	
 	// Make sure we don't expose any info if called directly
 	if ( !function_exists( 'add_action' ) ) {
 		echo "OpenMenu Plugin - http://OpenMenu.com ...";
 		exit;
 	}
-
+	
 	// Include widgets module
 	include OPENMENU_PATH . '/widgets.php';
 	
@@ -70,7 +70,21 @@
 	//wp_register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js', false, '1.4.2');
 	//wp_enqueue_script('jquery');
 
-
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// ** Activation hook for flushing 
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	
+	register_activation_hook( __FILE__, 'openmenu_activate' );
+	
+	function openmenu_activate() { 
+		// ------------------------------------- 
+		//  Perform stuff on activation
+		// ------------------------------------- 
+		
+		// plugin uses WP Rewrite, need to flush rules so they get added properly
+		flush_rewrite_rules();
+	}
+	
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Add Shortcode [openmenu parameter="value"]
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -82,7 +96,7 @@
 		//  Create / Handle the openmenu shortcode
 		// ------------------------------------- 
 		
-		// Get the Open Menu Options
+		// Get the OpenMenu Options
 		$options = get_option( 'openmenu_options' );
 		$display_columns = ( $options['display_columns'] == 'Two' ) ? '2' : '1' ;
 		$display_type = ( isset($options['display_type']) ) ? $options['display_type'] : 'Menu' ;
@@ -113,7 +127,7 @@
 	}
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Add Settings link to Open Menu on the plugin page [REMOVED]
+// ** Add Settings link to OpenMenu on the plugin page [REMOVED]
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 //	add_filter('plugin_action_links', 'add_settings_link', 10, 2 );
@@ -130,7 +144,7 @@
 //	}
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Determines if Open Menu posts are shown on the homepage 
+// ** Determines if OpenMenu posts are shown on the homepage 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	
 	//if( is_home() ){
@@ -212,7 +226,6 @@
 // ** Custom Post Type:
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	add_action( 'init', 'create_post_type' );
-	add_action( 'init', 'register_my_taxonomies', 0 );
 	add_action( 'admin_head', 'my_custom_posttype_icon' );
 	
 	function create_post_type() {
@@ -254,10 +267,7 @@
 			//	'excerpt',
 				'editor')
 		));
-		flush_rewrite_rules();
-	}
 
-	function register_my_taxonomies() {
 		// ------------------------------------- 
 		//  Register custom for taxonomies OpenMenu
 		// ------------------------------------- 
@@ -274,6 +284,8 @@
 				 'rewrite' => array('slug' => 'cuisine_type' )
 			)
 		);
+		
+	}
 
 	function my_custom_posttype_icon() {
 		
@@ -303,8 +315,6 @@
 		//	  )
 		//	);
 		//}
-		
-	}
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Custom Filter in Edit Post by Taxonomy:
@@ -349,7 +359,7 @@
 	// TODO: Add Default Cusine list based on current specification
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Open Menu Settings:
+// ** OpenMenu Settings:
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 	register_activation_hook(__FILE__, 'add_defaults_fn');
@@ -453,13 +463,13 @@
 		echo "<input id='plugin_text_string' name='openmenu_options[background_color]' size='10' type='text' value='{$options['background_color']}' /> ".__('(Background color - HTML color format: #ffffff)');
 	}
 	
-	// Open Menu title
+	// OpenMenu title
 	function setting_om_title_fn() {
 		$options = get_option('openmenu_options');
 		echo "<input id='plugin_text_string' name='openmenu_options[om_title]' size='20' type='text' value='{$options['om_title']}' /> ".__('(defaults to OpenMenu)');
 	}
 
-	// Open Menu Description
+	// OpenMenu Description
 	function setting_om_description_fn() {
 		$options = get_option('openmenu_options');
 		echo "<textarea id='plugin_textarea_string' name='openmenu_options[om_description]' rows='7' cols='50' type='textarea'>{$options['om_description']}</textarea>";
@@ -537,8 +547,8 @@
         $num = number_format_i18n( $publish );
         $text = _n( 'Menu', 'Menus', intval($publish) );
         if ( current_user_can( 'edit_posts' ) ) {
-            $num = "<a href='edit.php?post_type='" . OPENMENU_POSTYPE . ">$num</a>";
-            $text = "<a href='edit.php?post_type='" . OPENMENU_POSTYPE . ">$text</a>";
+            $num = '<a href="edit.php?post_type=' . OPENMENU_POSTYPE . '">' . $num . '</a>';
+            $text = '<a href="edit.php?post_type=' . OPENMENU_POSTYPE . '">' . $text . '</a>';
         }
         echo '<td class="first b b_pages">' . $num . '</td>';
         echo '<td class="t posts">' . $text . '</td>';
@@ -550,8 +560,8 @@
             $num = number_format_i18n( $pending );
             $text = _n( 'Menu Pending', 'Menus Pending', intval($pending) );
             if ( current_user_can( 'edit_posts' ) ) {
-                $num = "<a href='edit.php?post_status=pending&post_type='" . OPENMENU_POSTYPE . ">$num</a>";
-                $text = "<a href='edit.php?post_status=pending&post_type='" . OPENMENU_POSTYPE . ">$text</a>";
+                $num = '<a href="edit.php?post_status=pending&post_type=' . OPENMENU_POSTYPE . '">' . $num . '</a>';
+                $text = '<a href="edit.php?post_status=pending&post_type=' . OPENMENU_POSTYPE . '">' . $text . '</a>';
             }
             echo '<td class="first b b-openmenu">' . $num . '</td>';
             echo '<td class="t openmenu">' . $text . '</td>';
@@ -626,7 +636,7 @@
 		
 	function add_new_openmenu_columns($openmenu_columns) {
 		// ------------------------------------- 
-		//  Define the columns for the Open Menu post type
+		//  Define the columns for the OpenMenu post type
 		// ------------------------------------- 
 		
 		$new_columns['cb'] = '<input type="checkbox" />';
