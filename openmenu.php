@@ -1,17 +1,17 @@
 <?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** OpenMenu Plugin, Copyright 2011, 2011  OpenMenu, LLC
+// ** OpenMenu Plugin, Copyright 2010 - 2011  Open Menu, LLC
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
 	@package OpenMenu
-	@version 1.3.2
+	@version 1.3.3
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu Format menu.  This plugin fully integrates an OpenMenu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.3.2
+	Version: 1.3.3
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -847,7 +847,7 @@
 
 	function build_menu_from_details ($omf_details, $columns = '1', $menu_filter = '', $group_filter = '') {
 		// ------------------------------------- 
-		//  Create a menu display from OMF Details
+		//  Create a menu display from OMF Details 
 		// ------------------------------------- 
 		
 		$retval = '';
@@ -912,7 +912,7 @@
 									$is_kosher = ($item['kosher'] == 1) ? '<span class="item_tag kosher">Kosher</span>' : '' ;
 									$is_halal = ($item['halal'] == 1) ? '<span class="item_tag halal">Halal</span>' : '' ;
 									$tags = $is_special.$is_vegetarian.$is_vegan.$is_kosher.$is_halal;
-									$price = (!empty($item['menu_item_price'])) ? number_format($item['menu_item_price'], 2) : '' ;
+									$price = fix_price($item['menu_item_price'], $menu['currency_symbol']);
 									
 									// See if a thumbnail exists
 									$thumbnail = '';
@@ -927,12 +927,27 @@
 						            $retval .= '<dt class="pepper_' . $item['menu_item_heat_index'] . '">' . $thumbnail . $tags . clean($item['menu_item_name']) . '</dt>';
 						            $retval .= '<dd class="price">'.$price.'</dd>';
 						            $retval .= '<dd class="description">'.clean($item['menu_item_description']).'</dd>';
+									
+									// Check for Allergy / Allergen information
+									if ( !empty($item['menu_item_allergy_information']) ||
+											 !empty($item['menu_item_allergy_information_allergens']) ) {
+										$retval .= '<dd class="allergy">';
+										
+										$retval .= 'Allergy Information: ' . clean($item['menu_item_allergy_information']);
+											
+										if (!empty($item['menu_item_allergy_information_allergens'])) {
+											$retval .= ' [ allergens: ';
+											$retval .= $item['menu_item_allergy_information_allergens'] . ' ]';
+										}
 
+										$retval .= '</dd>';
+									} 
+									
 						            // Check for item size
 						            if ( !empty($item['menu_item_sizes']) && is_array($item['menu_item_sizes']) ) {
 						            	$retval .= '<dd class="sizes">';
 							            foreach ($item['menu_item_sizes'] AS $size) {
-							            	$size_price = (!empty($size['menu_item_size_price'])) ? ' - '.number_format($size['menu_item_size_price'], 2) : '' ;
+							            	$size_price = ' - '.fix_price($size['menu_item_size_price'], $menu['currency_symbol']);
 							            	$retval .= '<span>'.clean($size['menu_item_size_name']).$size_price.'</span>';
 							            }
 							            $retval .= '</dd>';
@@ -1023,6 +1038,18 @@
 		
 		return $retval;
 	}
+
+	function fix_price ( $price, $currency_code ) { 
+		// -------------------------------------
+		// Handles localization of prices with adding currency symbols
+		// -------------------------------------
+		$retval = '' ;
+		if ( !empty($price) ) {
+			$retval = number_format($price, 2);
+			$retval = get_currency_symbol($currency_code, $retval, true);
+		}
+		return $retval;
+	}
 	
 	function extract_thumbnail( $item_images ) {
 		// ------------------------------------- 
@@ -1038,6 +1065,203 @@
 			}
 		}
 
+		return $retval;
+	}
+
+	function get_currency_symbol ($currency_code, $amount = '', $html_encode = false) {
+		
+		$currency_symbols = array(
+			'AFN' => '',
+			'ALL' => 'Lek',
+			'DZD' => '',
+			'AOA' => '',
+			'ARS' => '',
+			'AMD' => '',
+			'AWG' => 'ƒ',
+			'AUD' => '$',
+			'AZN' => '',
+			'BSD' => '$',
+			'BHD' => '',
+			'BDT' => '',
+			'BBD' => '$',
+			'BYR' => '',
+			'BZD' => '',
+			'BMD' => '$',
+			'BTN' => '',
+			'BOB' => '$b',
+			'BAM' => '',
+			'BWP' => '',
+			'BRL' => 'R$',
+			'BND' => '$',
+			'BGN' => '',
+			'BIF' => '',
+			'KHR' => '',
+			'CAD' => '$',
+			'CVE' => '',
+			'KYD' => '$',
+			'CLP' => '$',
+			'CNY' => '¥',
+			'COP' => '',
+			'XOF' => '',
+			'XAF' => '',
+			'KMF' => '',
+			'XPF' => '',
+			'CDF' => '',
+			'CRC' => '',
+			'HRK' => 'kn',
+			'CUP' => '',
+			'CYP' => '',
+			'CZK' => ' K&#269;',
+			'DKK' => ' kr',
+			'DJF' => '',
+			'DOP' => 'RD$',
+			'XCD' => '$',
+			'EGP' => '£',
+			'SVC' => '$',
+			'ERN' => '',
+			'EEK' => '',
+			'ETB' => '',
+			'EUR' => '€',
+			'FKP' => '£',
+			'FJD' => '',
+			'GMD' => '',
+			'GEL' => '',
+			'GHS' => '',
+			'GIP' => '£',
+			'XAU' => '',
+			'GTQ' => 'Q',
+			'GGP' => '',
+			'GNF' => '',
+			'GYD' => '$',
+			'HTG' => '',
+			'HNL' => 'L',
+			'HKD' => '$',
+			'HUF' => 'Ft',
+			'ISK' => ' kr',
+			'INR' => '',
+			'IDR' => '',
+			'XDR' => '',
+			'IRR' => '',
+			'IQD' => '',
+			'IMP' => '£',
+			'ILS' => '',
+			'JMD' => 'J$',
+			'JPY' => '¥',
+			'JEP' => '£',
+			'JOD' => '',
+			'KZT' => '',
+			'KES' => '',
+			'KPW' => '',
+			'KRW' => '',
+			'KWD' => '',
+			'KGS' => '',
+			'LAK' => '',
+			'LVL' => '',
+			'LBP' => '£',
+			'LSL' => '',
+			'LRD' => '$',
+			'LYD' => '',
+			'LTL' => ' Lt',
+			'MOP' => '',
+			'MKD' => '',
+			'MGA' => '',
+			'MWK' => '',
+			'MYR' => '',
+			'MVR' => '',
+			'MTL' => '',
+			'MRO' => '',
+			'MUR' => '',
+			'MXN' => '$',
+			'MDL' => '',
+			'MNT' => '',
+			'MAD' => '',
+			'MZN' => '',
+			'MMK' => '',
+			'NAD' => '$',
+			'NPR' => '',
+			'ANG' => '',
+			'NZD' => '',
+			'NIO' => 'C$',
+			'NGN' => '',
+			'NOK' => ' kr',
+			'OMR' => '',
+			'PKR' => '',
+			'XPD' => '',
+			'PAB' => '',
+			'PGK' => '',
+			'PYG' => 'Gs',
+			'PEN' => '',
+			'PHP' => '',
+			'XPT' => '',
+			'PLN' => '',
+			'QAR' => '',
+			'RON' => '',
+			'RUB' => '',
+			'RWF' => '',
+			'STD' => '',
+			'SHP' => '£',
+			'WST' => '',
+			'SAR' => '',
+			'SPL' => '',
+			'RSD' => '',
+			'SCR' => '',
+			'SLL' => '',
+			'XAG' => '',
+			'SGD' => '$',
+			'SBD' => '',
+			'SOS' => 'S',
+			'ZAR' => 'R',
+			'LKR' => '',
+			'SDG' => '',
+			'SRD' => '$',
+			'SZL' => '',
+			'SEK' => ' kr',
+			'CHF' => 'CHF',
+			'SYP' => '£',
+			'TWD' => '',
+			'TJS' => '',
+			'TZS' => '',
+			'THB' => ' &#3647;',
+			'TOP' => '',
+			'TTD' => 'TT$',
+			'TND' => '',
+			'TRY' => 'TL',
+			'TMM' => '',
+			'TVD' => '$',
+			'UGX' => '',
+			'UAH' => '',
+			'AED' => '',
+			'GBP' => '£',
+			'USD' => '$',
+			'UYU' => '',
+			'UZS' => '',
+			'VUV' => '',
+			'VEB' => '',
+			'VEF' => '',
+			'VND' => '&#8363;',
+			'YER' => '',
+			'ZMK' => '',
+			'ZWD' => 'Z$'
+		);
+		
+		$symbol_after_amount = array(
+				"ISK", "ITL", "LTL", "NOK", "SEK", "THB", "CZK", "DKK"
+		);
+		
+		$currency_symbol = '';
+		if ( isset($currency_symbols[$currency_code]) ) {
+			$currency_symbol = ( $html_encode ) ? htmlentities($currency_symbols[$currency_code], ENT_COMPAT, 'UTF-8') : $currency_symbols[$currency_code] ; 
+		}
+		
+		// formatted value
+		if ( strlen($amount) > 0 ) {
+			// Format with the passed amount
+			$retval = ( in_array($currency_code, $symbol_after_amount) ) ? $amount.$currency_symbol : $currency_symbol.$amount ;
+		} else {
+			// Just return any found currency symbol
+			$retval = $currency_symbol;
+		}
+		
 		return $retval;
 	}
 	

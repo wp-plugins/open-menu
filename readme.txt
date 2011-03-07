@@ -3,8 +3,8 @@ Contributors: openmenu
 Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food, openmenu
 Requires at least: 3.0
-Tested up to: 3.0.4
-Stable tag: 1.3.2
+Tested up to: 3.1
+Stable tag: 1.3.3
 
 Easily create posts that are based on your OpenMenu Format restaurant menu.  Fully integrates an OpenMenu Format menu or menus into an existing theme.
 
@@ -113,6 +113,15 @@ Yes.  All you need to do is use the shortcode described above.  Very simple and 
 
 
 == Changelog ==
+
+= 1.3.3 =
+* Added Currency Symbols to menu item prices and alternate size prices
+
+= 1.3.2 =
+* Minor bug fixes
+
+= 1.3.1 =
+* Text and copy changes only
 
 = 1.3 =
 * Added Thumbnail images to menu listing
