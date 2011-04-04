@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.3.3
+	@version 1.3.4
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu Format menu.  This plugin fully integrates an OpenMenu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.3.3
+	Version: 1.3.4
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -129,6 +129,26 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Add Settings link to OpenMenu on the plugin page [REMOVED]
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+	//add_filter('plugin_action_links', 'myplugin_plugin_action_links', 10, 2);
+
+	function myplugin_plugin_action_links($links, $file) {
+	    static $this_plugin;
+
+	    if (!$this_plugin) {
+	        $this_plugin = plugin_basename(__FILE__);
+	    }
+
+	    if ($file == $this_plugin) {
+	        // The "page" query string value must be equal to the slug
+	        // of the Settings admin page we defined earlier, which in
+	        // this case equals "myplugin-settings".
+	        $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page='. OPENMENU_POSTYPE . '">'.__("Settings", "openmenu-settings").'</a>';
+	        array_unshift($links, $settings_link);
+	    }
+
+	    return $links;
+	}
 
 //	add_filter('plugin_action_links', 'add_settings_link', 10, 2 );
 
@@ -865,9 +885,9 @@
 					// Start a new menu
 					$retval .= '<div class="menu_name">';
 						if ( !empty($menu['menu_name']) ) {
-							$retval .= clean($menu['menu_name']);
+							$retval .= $menu['menu_name'];
 						} else {
-							$retval .= clean(ucwords($menu['menu_duration_name']));
+							$retval .= ucwords($menu['menu_duration_name']);
 						}
 					// Check for a description
 					if ( !empty($menu['menu_description']) ) {
@@ -877,9 +897,10 @@
 					
 					// How many groups are there in this menu
 					//  used for 2 column displays
-					$group_count = count($menu['menu_groups']);
+					$group_count = (!empty($menu['menu_groups'])) ? count($menu['menu_groups']) : 0 ;
 					$current_group = 1;
 					
+					if ( !empty($menu['menu_groups']) ) {
 					foreach ($menu['menu_groups'] AS $group) {
 						// Check for a group filter
 						if ( !$group_filter || strcasecmp($group_filter, $group['group_name']) == 0 ) {
@@ -897,7 +918,7 @@
 							}
 							
 							// Start a group
-							$retval .= '<h2>'.clean($group['group_name']);
+							$retval .= '<h2>'.$group['group_name'];
 							
 							if ( !empty($group['group_description']) ) {
 								$retval .= '<br /><span class="sm_norm">'.$group['group_description'].'</span>';
@@ -919,21 +940,21 @@
 									if ( isset($item['menu_item_images']) ) {
 										$thumbnail = extract_thumbnail($item['menu_item_images']);
 										if ($thumbnail) {
-											$thumbnail = '<img class="mi_thumb" src="'.$thumbnail.'" />';
+											$thumbnail = '<img class="mi_thumb" src="'.$thumbnail.'" width="32" height="32" />';
 										}
 									}
 
 						            $retval .= '<dl>';
-						            $retval .= '<dt class="pepper_' . $item['menu_item_heat_index'] . '">' . $thumbnail . $tags . clean($item['menu_item_name']) . '</dt>';
+						            $retval .= '<dt class="pepper_' . $item['menu_item_heat_index'] . '">' . $thumbnail . $tags . $item['menu_item_name'] . '</dt>';
 						            $retval .= '<dd class="price">'.$price.'</dd>';
-						            $retval .= '<dd class="description">'.clean($item['menu_item_description']).'</dd>';
+						            $retval .= '<dd class="description">'.$item['menu_item_description'].'</dd>';
 									
 									// Check for Allergy / Allergen information
 									if ( !empty($item['menu_item_allergy_information']) ||
 											 !empty($item['menu_item_allergy_information_allergens']) ) {
 										$retval .= '<dd class="allergy">';
 										
-										$retval .= 'Allergy Information: ' . clean($item['menu_item_allergy_information']);
+										$retval .= 'Allergy Information: ' . $item['menu_item_allergy_information'];
 											
 										if (!empty($item['menu_item_allergy_information_allergens'])) {
 											$retval .= ' [ allergens: ';
@@ -948,7 +969,7 @@
 						            	$retval .= '<dd class="sizes">';
 							            foreach ($item['menu_item_sizes'] AS $size) {
 							            	$size_price = ' - '.fix_price($size['menu_item_size_price'], $menu['currency_symbol']);
-							            	$retval .= '<span>'.clean($size['menu_item_size_name']).$size_price.'</span>';
+							            	$retval .= '<span>'.$size['menu_item_size_name'].$size_price.'</span>';
 							            }
 							            $retval .= '</dd>';
 							        }
@@ -957,10 +978,10 @@
 						            if ( isset($item['menu_item_options']) && !empty($item['menu_item_options']) && is_array($item['menu_item_options']) ) {
 						            	$retval .= '<dd class="item_options">';
 							            foreach ($item['menu_item_options'] AS $option) {
-							            	$retval .= '<div><strong>'.clean($option['item_options_name']).'</strong>: ';
+							            	$retval .= '<div><strong>'.$option['item_options_name'].'</strong>: ';
 							            	 if ( isset($option['option_items']) && !empty($option['option_items']) ) {
 							            	 	 foreach($option['option_items'] AS $option_item) { 
-							            	 	 	$retval .= clean($option_item['menu_item_option_name']).' | ';
+							            	 	 	$retval .= $option_item['menu_item_option_name'].' | ';
 							            	 	 }
 							            	 	 // Strip the trailing |
 												$retval = rtrim($retval, ' | ');
@@ -979,7 +1000,7 @@
 							if ( isset($group['menu_group_options']) && is_array($group['menu_group_options']) ) { 
 								foreach($group['menu_group_options'] AS $option) { 
 									$retval .= '<div class="goptions">';
-									$retval .= '<div class="goptions-title">'.clean($option['group_options_name']);
+									$retval .= '<div class="goptions-title">'.$option['group_options_name'];
 									if ( !empty($option['menu_group_option_information']) ) {
 										$retval .= '<br /><span class="goptions-desc">'.$option['menu_group_option_information'].'</span>';
 									}
@@ -988,7 +1009,7 @@
 									// Check for Option Items
 									if ( isset($option['option_items']) && is_array($option['option_items']) ) { 
 										foreach($option['option_items'] AS $option_item) { 
-											$retval .= clean($option_item['menu_group_option_name']).' | ';
+											$retval .= $option_item['menu_group_option_name'].' | ';
 										}
 										// Strip the trailing |
 										$retval = rtrim($retval, ' | ');
@@ -1009,6 +1030,7 @@
 							
 						} // end group filter
 					} // end group
+					} // end group check 
 					
 					if ( !$one_column ) {
 						// Close the menu colums
@@ -1282,13 +1304,4 @@
 		);
 	}
 	endif;
-	
-	if ( ! function_exists( 'clean' ) ) :
-	function clean ($str) { 
-		// Function not required
-		return $str;
-		// return htmlentities($str, ENT_COMPAT, 'UTF-8');
-	}
-	endif;
-	
 ?>
