@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food, openmenu
 Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 
 Easily create posts that are based on your OpenMenu Format restaurant menu.  Fully integrates an OpenMenu Format menu or menus into an existing theme.
 
@@ -113,6 +113,9 @@ Yes.  All you need to do is use the shortcode described above.  Very simple and 
 
 
 == Changelog ==
+
+= 1.3.5 =
+* Fixed issue with widgets (missing function)
 
 = 1.3.4 =
 * Removed unused function

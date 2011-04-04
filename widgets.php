@@ -1,7 +1,7 @@
 <?php
 /**
  * @package OpenMenu
- * @version 1.3.4
+ * @version 1.3.5
  */
 /*
 
@@ -412,8 +412,8 @@ Copyright 2010, 2011  OpenMenu, LLC
 		if ( !empty($omf_details) ) {
 			$location .= '<div style="margin-top:5px;">';
 			$location .= '<p><strong>Address:</strong><br />';
-		    $location .= clean($omf_details['restaurant_info']['address_1']).'<br />';
-		    $location .= clean($omf_details['restaurant_info']['city_town']).', '.
+		    $location .= $omf_details['restaurant_info']['address_1'].'<br />';
+		    $location .= $omf_details['restaurant_info']['city_town'].', '.
 		    			$omf_details['restaurant_info']['country'].' '.
 		    		    $omf_details['restaurant_info']['postal_code'].'<br />'.
 		    	        '<strong>Phone: </strong> '.$omf_details['restaurant_info']['phone'];
