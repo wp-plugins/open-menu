@@ -126,15 +126,15 @@
 				</div>
 				
 				<!--
-				<div id="rest_name"><?php echo clean($omf_details['restaurant_info']['restaurant_name']); ?></div>
+				<div id="rest_name"><?php echo $omf_details['restaurant_info']['restaurant_name']; ?></div>
 				-->
 				
 				<div id="details">
-		            <p><?php echo clean($omf_details['restaurant_info']['brief_description']); ?></p>
+		            <p><?php echo $omf_details['restaurant_info']['brief_description']; ?></p>
 		            <p>
 		            	<strong><?php _e('Address') ?>:</strong><br />
-		            	<?php echo clean($omf_details['restaurant_info']['address_1']); ?><br />
-		            	<?php echo clean($omf_details['restaurant_info']['city_town']); ?>, <?php echo $omf_details['restaurant_info']['state_province']; ?> <?php echo $omf_details['restaurant_info']['postal_code']; ?> <?php echo $omf_details['restaurant_info']['country']; ?>
+		            	<?php echo $omf_details['restaurant_info']['address_1']; ?><br />
+		            	<?php echo $omf_details['restaurant_info']['city_town']; ?>, <?php echo $omf_details['restaurant_info']['state_province']; ?> <?php echo $omf_details['restaurant_info']['postal_code']; ?> <?php echo $omf_details['restaurant_info']['country']; ?>
 		            </p>
 		            <p>
 			            <strong><?php _e('Phone') ?>: </strong> <?php echo $omf_details['restaurant_info']['phone']; ?><br />
@@ -150,7 +150,7 @@
 ?>
 			        </p>
 			        
-			        <div><strong><?php _e('Type') ?>:</strong> <?php echo clean($omf_details['environment_info']['cuisine_type_primary']); ?></div>
+			        <div><strong><?php _e('Type') ?>:</strong> <?php echo $omf_details['environment_info']['cuisine_type_primary']; ?></div>
 				</div>
 
 			<div class="clear"></div>
