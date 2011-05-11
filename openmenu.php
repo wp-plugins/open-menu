@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.3.6
+	@version 1.3.7
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu Format menu.  This plugin fully integrates an OpenMenu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.3.6
+	Version: 1.3.7
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -878,9 +878,8 @@
 
 		  if ( isset($omf_details['menus']) && !empty($omf_details['menus']) ) {
 			foreach ($omf_details['menus'] AS $menu) {
-				
 				// Check for a menu filter
-				if ( !$menu_filter || strcasecmp($menu_filter, $menu['menu_name']) == 0 ) {
+				if ( !$menu_filter || strcasecmp(html_entity_decode($menu_filter), html_entity_decode($menu['menu_name'])) == 0 ) {
 				
 					// Start a new menu
 					$retval .= '<div class="menu_name">';
@@ -903,7 +902,7 @@
 					if ( !empty($menu['menu_groups']) ) {
 					foreach ($menu['menu_groups'] AS $group) {
 						// Check for a group filter
-						if ( !$group_filter || strcasecmp($group_filter, $group['group_name']) == 0 ) {
+						if ( !$group_filter || strcasecmp(html_entity_decode($group_filter), html_entity_decode($group['group_name']) ) == 0 ) {
 					
 							// Should we start the left or right column 
 							if ( !$one_column ) {
@@ -965,7 +964,7 @@
 									} 
 									
 						            // Check for item size
-						            if ( !empty($item['menu_item_sizes']) && is_array($item['menu_item_sizes']) ) {
+						            if ( isset($item['menu_item_sizes']) && !empty($item['menu_item_sizes']) && is_array($item['menu_item_sizes']) ) {
 						            	$retval .= '<dd class="sizes">';
 							            foreach ($item['menu_item_sizes'] AS $size) {
 							            	$size_price = ' - '.fix_price($size['menu_item_size_price'], $menu['currency_symbol']);
