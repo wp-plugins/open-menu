@@ -1,8 +1,8 @@
 <?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Open Menu, LLC http://www.openmenu.com
+// ** OpenMenu, LLC http://openmenu.com
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Copyright (C) 2010, 2011 OpenMenu, All rights reserved
+// ** Copyright (C) 2011 OpenMenu, All rights reserved
 // **		Authored By: Chris Hanscom
 // **
 // **		This library is copyrighted software by OpenMenu; you can not
@@ -10,7 +10,7 @@
 // **		consent from Open Menu or Author.
 // **
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.3
+// ** Version: 1.4.1
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -20,7 +20,7 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Constants: 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	define('OMF_VERSION', '1.3');
+	define('OMF_VERSION', '1.4');
 	
 	// Days
 	define('WEEKDAY_1', 'mon');
@@ -64,9 +64,8 @@ class cOmfReader {
 		if ($xml) {
 			// OMF information
 			$omf_data['omf_uuid'] = $this->_clean(@$xml['uuid']);
+			$omf_data['omf_accuracy'] = $this->_clean(@$xml['accuracy']);
 			$omf_data['omf_version'] = $this->_clean(@$xml->omf_version->version);
-			$omf_data['omf_editor'] = $this->_clean(@$xml->omf_version->editor);
-			$omf_data['omf_general_info'] = $this->_clean(@$xml->omf_version->general_info);
 			
 			$omf_data['restaurant_info']['restaurant_name'] = $this->_clean(@$xml->restaurant_info->restaurant_name, 255);
 		    $omf_data['restaurant_info']['brief_description'] = $this->_clean(@$xml->restaurant_info->brief_description, 255);
@@ -93,11 +92,14 @@ class cOmfReader {
 		    $omf_data['environment_info']['smoking_allowed'] = $this->_clean(@$xml->restaurant_info->environment->smoking_allowed, 1);
 		    $omf_data['environment_info']['takeout_available'] = $this->_clean(@$xml->restaurant_info->environment->takeout_available, 1);
 		    $omf_data['environment_info']['delivery_available'] = $this->_clean(@$xml->restaurant_info->environment->delivery_available, 1);
+		    $omf_data['environment_info']['delivery_radius'] = $this->_clean(@$xml->restaurant_info->environment->delivery_available['radius']);
+		    $omf_data['environment_info']['delivery_fee'] = $this->_clean(@$xml->restaurant_info->environment->delivery_available['fee']);
 		    $omf_data['environment_info']['catering_available'] = $this->_clean(@$xml->restaurant_info->environment->catering_available, 1);
 		    $omf_data['environment_info']['reservations'] = $this->_clean(@$xml->restaurant_info->environment->reservations, 9);
 		    $omf_data['environment_info']['alcohol_type'] = $this->_clean(@$xml->restaurant_info->environment->alcohol_type, 13);
 		    $omf_data['environment_info']['music_type'] = $this->_clean(@$xml->restaurant_info->environment->music_type, 13);
 		    $omf_data['environment_info']['pets_allowed'] = $this->_clean(@$xml->restaurant_info->environment->pets_allowed, 1);
+		    $omf_data['environment_info']['wheelchair_accessible'] = $this->_clean(@$xml->restaurant_info->environment->wheelchair_accessible, 1);
 		    $omf_data['environment_info']['max_group_size'] = $this->_clean(@$xml->restaurant_info->environment->max_group_size);
 		    $omf_data['environment_info']['dress_code'] = $this->_clean(@$xml->restaurant_info->environment->dress_code);
 			$omf_data['environment_info']['age_level_preference'] = $this->_clean(@$xml->restaurant_info->environment->age_level_preference, 4);
@@ -149,7 +151,7 @@ class cOmfReader {
 		    $omf_data['seating_locations'] = array();
 		    if (isset($xml->restaurant_info->environment->seating_locations)) {
 			    foreach ($xml->restaurant_info->environment->seating_locations->seating_location AS $seating) {
-				    $omf_data['seating_locations'][] = $this->_clean(@$seating);
+				    $omf_data['seating_locations'][]['seating_location'] = $this->_clean(@$seating);
 			    }
 		    }
 		    
@@ -157,7 +159,7 @@ class cOmfReader {
 		    $omf_data['accepted_currencies'] = array();
 		    if (isset($xml->restaurant_info->environment->accepted_currencies)) {
 			    foreach ($xml->restaurant_info->environment->accepted_currencies->accepted_currency AS $currency) {
-				    $omf_data['accepted_currencies'][] = $this->_clean(@$currency);
+				    $omf_data['accepted_currencies'][]['accepted_currency'] = $this->_clean(@$currency);
 			    }
 		    }
 			
@@ -187,6 +189,21 @@ class cOmfReader {
 			    		$omf_data['online_reservations'][$i]['online_reservation_name'] = $this->_clean(@$reserv->online_reservation_name, 50);
 					    $omf_data['online_reservations'][$i]['online_reservation_url'] = $this->_clean(@$reserv->online_reservation_url, 120);
 					    $omf_data['online_reservations'][$i]['online_reservation_type'] = $this->_clean(@$reserv['type']);
+
+					    $i++;
+					}
+			    }
+		    }
+
+		    // Get Online Ordering
+		    $omf_data['online_ordering'] = array();
+		    if (isset($xml->restaurant_info->environment->online_ordering)) {
+		    	$i=0;
+			    foreach ($xml->restaurant_info->environment->online_ordering->online_order AS $order) {
+			    	if ( !empty($order) ) {
+			    		$omf_data['online_ordering'][$i]['online_order_name'] = $this->_clean(@$order->online_order_name, 50);
+					    $omf_data['online_ordering'][$i]['online_order_url'] = $this->_clean(@$order->online_order_url, 120);
+					    $omf_data['online_ordering'][$i]['online_order_type'] = $this->_clean(@$order['type']);
 
 					    $i++;
 					}
@@ -340,7 +357,7 @@ class cOmfReader {
 								    	foreach ($item->menu_item_tags->menu_item_tag AS $tag) {
 									    	// Menu item size
 									    	$omf_data['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['menu_item_tags'] [$tag_id] ['menu_item_tag'] = $this->_clean(@$tag, 35);
-									    	$size_id++;
+									    	$tag_id++;
 									    	
 								    	} // efs
 								    } // es
@@ -407,6 +424,7 @@ class cOmfReader {
 	    $omf_data['environment_info']['smoking_allowed'] = '';
 	    $omf_data['environment_info']['takeout_available'] = '';
 	    $omf_data['environment_info']['pets_allowed'] = '';
+	    $omf_data['environment_info']['wheelchair_accessible'] = '';
 	    $omf_data['environment_info']['dress_code'] = '';
 
 		$omf_data['parent_company']['parent_company_name'] = '';
@@ -566,7 +584,7 @@ class cOmfReader {
 				curl_close ( $curl );
 
 				if ( $contents )
-					$xml = simplexml_load_string($contents);
+					$xml = @simplexml_load_string($contents);
 				else 
 					$xml = false;
 					
