@@ -3,8 +3,8 @@ Contributors: openmenu
 Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food, openmenu
 Requires at least: 3.0
-Tested up to: 3.1.2
-Stable tag: 1.3.7
+Tested up to: 3.2
+Stable tag: 1.4
 
 Easily create posts that are based on your OpenMenu Format restaurant menu.  Fully integrates an OpenMenu Format menu or menus into an existing theme.
 
@@ -46,12 +46,13 @@ Short code:
 	[openmenu]
 	
 	Parameters:
-		omf_url         = URL pointing to the OpenMenu Format menu
-		display_type    = menu (only option currently available)
-		menu_filter     = Will display only the menu name matching this filter
-		group_filter    = Will display only the group name matching this filter
-		display_columns = 1 | 2 - How many columns to display a menu in
-	
+		omf_url          = URL pointing to the OpenMenu Format menu
+		display_type     = menu (only option currently available)
+		menu_filter      = Will display only the menu name matching this filter
+		group_filter     = Will display only the group name matching this filter
+		display_columns  = 1 | 2 - How many columns to display a menu in
+		background_color = Set the background color the menu will display on
+
 		[defaults to OpenMenu Option setting]
 
 	Samples: 
@@ -104,6 +105,9 @@ Yes.  This is the main reason for using custom post types.  This allows you to c
 
 Yes.  All you need to do is use the shortcode described above.  Very simple and can be added anywhere in a page in minutes.
 
+= My menu breaks my theme, what can I do? =
+
+An issue that sometimes comes up is the slug of the page conflicts with theme styles.  Avoid a page slug like 'menu' which may conflict with menu stylings.
 
 == Screenshots ==
 1. OpenMenu Overview
@@ -113,6 +117,12 @@ Yes.  All you need to do is use the shortcode described above.  Very simple and 
 
 
 == Changelog ==
+= 1.4 =
+* Added background_color attribute to the OpenMenu shortcode
+* Modified CSS on default theme - change dl from overflow:auto to overflow:hidden
+* Updated main code to read OpenMenu's (v1.4)
+* Updated some code to be compatible with Wordpress 3.2
+
 = 1.3.7 =
 * Fixed issue with special characters in the menu or group filter not working properly
 

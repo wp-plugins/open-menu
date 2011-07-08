@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.3.7
+	@version 1.4
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu Format menu.  This plugin fully integrates an OpenMenu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.3.7
+	Version: 1.4
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -100,11 +100,13 @@
 		$options = get_option( 'openmenu_options' );
 		$display_columns = ( $options['display_columns'] == 'Two' ) ? '2' : '1' ;
 		$display_type = ( isset($options['display_type']) ) ? $options['display_type'] : 'Menu' ;
+		$background_color = ( isset($options['background_color']) && !empty($options['background_color']) ) ? $options['background_color'] : '#fff' ;
 		
 		$atts = shortcode_atts(array(
 			'omf_url' => '',
 			'menu_filter' => '',
 			'group_filter' => '',
+			'background_color' => $background_color,
 			'display_columns' => $display_columns,
 			'display_type' => $display_type
 		), $atts);
@@ -113,10 +115,10 @@
 		if ( !empty($atts['omf_url']) ) {
 			// Get the menu
 			$omf_details = _get_menu_details( $atts['omf_url'] ); 
-
+			
 			if ( strcasecmp($atts['display_type'], 'restaurant information / menu') == 0 || 
 	 strcasecmp($atts['display_type'], 'menu') == 0 ) {
-				$display .= build_menu_from_details($omf_details, $atts['display_columns'], $atts['menu_filter'], $atts['group_filter']);
+				$display .= build_menu_from_details($omf_details, $atts['display_columns'], $atts['menu_filter'], $atts['group_filter'], $atts['background_color']);
 			}
 			
 		} else {
@@ -350,7 +352,7 @@
 	        $cuisine_type_taxonomy = get_taxonomy($taxonomy);
 	        $selected = (isset($wp_query->query['term'])) ? $wp_query->query['term'] : '' ;
 	        wp_dropdown_categories(array(
-	            'show_option_all' =>  __("Show All Cuisine Types {$cuisine_type_taxonomy->label}"),
+	            'show_option_all' =>  __("Show All {$cuisine_type_taxonomy->label}"),
 	            'taxonomy'        =>  $taxonomy,
 	            'name'            =>  'cuisine_type',
 	            'orderby'         =>  'name',
@@ -452,6 +454,7 @@
 	// DROP-DOWN-BOX - Name: plugin_options[theme]
 	function  setting_theme_fn() {
 		$options = get_option('openmenu_options');
+		$options['theme'] = (isset($options['theme'])) ? $options['theme'] : '(default)';
 		$items = array("(default)");
 		echo "<select id='drop_down2' name='openmenu_options[theme]'>";
 		foreach($items as $item) {
@@ -474,24 +477,28 @@
 	// Width override
 	function setting_widthoverride_fn() {
 		$options = get_option('openmenu_options');
+		$options['width_override'] = (isset($options['width_override'])) ? $options['width_override'] : '';
 		echo "<input id='plugin_text_string' name='openmenu_options[width_override]' size='10' type='text' value='{$options['width_override']}' /> ".__('(Used when hiding sidebar - add units: ex. 900px or 95%)');
 	}
 
 	// Background Color
 	function setting_backgroundcolor_fn() {
 		$options = get_option('openmenu_options');
+		$options['background_color'] = (isset($options['background_color'])) ? $options['background_color'] : '';
 		echo "<input id='plugin_text_string' name='openmenu_options[background_color]' size='10' type='text' value='{$options['background_color']}' /> ".__('(Background color - HTML color format: #ffffff)');
 	}
 	
 	// OpenMenu title
 	function setting_om_title_fn() {
 		$options = get_option('openmenu_options');
+		$options['om_title'] = (isset($options['om_title'])) ? $options['om_title'] : '';
 		echo "<input id='plugin_text_string' name='openmenu_options[om_title]' size='20' type='text' value='{$options['om_title']}' /> ".__('(defaults to OpenMenu)');
 	}
 
 	// OpenMenu Description
 	function setting_om_description_fn() {
 		$options = get_option('openmenu_options');
+		$options['om_description'] = (isset($options['om_description'])) ? $options['om_description'] : '';
 		echo "<textarea id='plugin_textarea_string' name='openmenu_options[om_description]' rows='7' cols='50' type='textarea'>{$options['om_description']}</textarea>";
 	}
 	
@@ -865,14 +872,20 @@
 		return $omf_details;
 	}
 
-	function build_menu_from_details ($omf_details, $columns = '1', $menu_filter = '', $group_filter = '') {
+	function build_menu_from_details ($omf_details, $columns = '1', $menu_filter = '', $group_filter = '', $background_color = false) {
 		// ------------------------------------- 
 		//  Create a menu display from OMF Details 
 		// ------------------------------------- 
 		
 		$retval = '';
 		$one_column = ($columns == '1') ? true : false ;
-
+		
+		if ( $background_color ) {
+			$retval .= '<style type="text/css">';
+			$retval .= '#om_menu, #om_menu dt, #om_menu dd.price { background-color:'.$background_color.' }';
+			$retval .= '</style>';
+		}
+		
 		if ( !empty($omf_details) ) {
 			$retval .= '<div id="om_menu">';
 
