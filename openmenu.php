@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.4
+	@version 1.4.1
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
-	Description: This plugin allows you to easily create posts that are based on your OpenMenu Format menu.  This plugin fully integrates an OpenMenu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
+	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.4
+	Version: 1.4.1
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -845,8 +845,8 @@
 	}
 	
 	// A simple function to get data stored in a custom field
-	if ( !function_exists('get_custom_field') ) {
-		function get_custom_field($field) {
+	if ( !function_exists('om_get_custom_field') ) {
+		function om_get_custom_field($field) {
 		   global $post;
 		   $custom_field = get_post_meta($post->ID, $field, true);
 		   echo $custom_field;

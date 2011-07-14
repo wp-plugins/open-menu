@@ -1,15 +1,15 @@
 === OpenMenu - The official plugin for OpenMenu ===
 Contributors: openmenu
 Donate link: http://openmenu.com
-Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food, openmenu
+Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
-Tested up to: 3.2
-Stable tag: 1.4
+Tested up to: 3.2.1
+Stable tag: 1.4.1
 
-Easily create posts that are based on your OpenMenu Format restaurant menu.  Fully integrates an OpenMenu Format menu or menus into an existing theme.
+Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenus into an existing theme.
 
 == Description ==
-This plugin allows you to easily create posts that are based on your OpenMenu Format menu and thus embedding restaurant menus in any Wordpress website.  This plugin fully integrates an OpenMenu Format menu or menus into an existing theme.  Widget / Menu ready themes work best.
+This plugin allows you to easily create posts that are based on your OpenMenu and thus embedding restaurant menus in any Wordpress website.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 
 The OpenMenu Plugin is the official plugin for OpenMenu and adding restaurant menus to any Wordpress website.
 
@@ -117,6 +117,10 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 
 
 == Changelog ==
+= 1.4.1 =
+* Added Menu URL and Menu URL Title to the Menu Widget
+* Rename get_custom_field to om_get_custom_field to prevent conflicts with themes
+
 = 1.4 =
 * Added background_color attribute to the OpenMenu shortcode
 * Modified CSS on default theme - change dl from overflow:auto to overflow:hidden
