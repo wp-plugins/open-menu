@@ -10,7 +10,7 @@
 // **		consent from Open Menu or Author.
 // **
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.4.1
+// ** Version: 1.5
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -20,7 +20,7 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Constants: 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	define('OMF_VERSION', '1.4');
+	define('OMF_VERSION', '1.5');
 	
 	// Days
 	define('WEEKDAY_1', 'mon');
@@ -52,10 +52,10 @@ class cOmfReader {
 		// -------------------------------------
 		// Crawl an OMF file and return an array of the values
 		// -------------------------------------
-
+		
 		// Get the XML contents for the OMF file
 		$xml = $this->get_xml_from_url($omf_file_location);
-
+		
 		// Update the hash
 		$this->menu_hash = md5($xml);
 		
@@ -65,8 +65,24 @@ class cOmfReader {
 			// OMF information
 			$omf_data['omf_uuid'] = $this->_clean(@$xml['uuid']);
 			$omf_data['omf_accuracy'] = $this->_clean(@$xml['accuracy']);
-			$omf_data['omf_version'] = $this->_clean(@$xml->omf_version->version);
+			if (isset($xml->openmenu->version)) {
+				$omf_data['omf_version'] = $this->_clean(@$xml->openmenu->version);
+			} else {
+				$omf_data['omf_version'] = $this->_clean(@$xml->omf_version->version);
+			}
 			
+		    // Get the Crosswalks
+		    $omf_data['openmenu']['crosswalks'] = array();
+		    if (isset($xml->openmenu->crosswalks)) {
+		    	$i=0;
+			    foreach ($xml->openmenu->crosswalks->crosswalk AS $crosswalk) {
+				    $omf_data['openmenu'][$i]['crosswalk_id'] = $this->_clean(@$crosswalk->crosswalk_id);
+				    $omf_data['openmenu'][$i]['crosswalk_company'] = $this->_clean(@$crosswalk->crosswalk_company);
+				    $omf_data['openmenu'][$i]['crosswalk_url'] = $this->_clean(@$crosswalk->crosswalk_url);
+				    $i++;
+			    }
+		    }
+		    
 			$omf_data['restaurant_info']['restaurant_name'] = $this->_clean(@$xml->restaurant_info->restaurant_name, 255);
 		    $omf_data['restaurant_info']['brief_description'] = $this->_clean(@$xml->restaurant_info->brief_description, 255);
 		    $omf_data['restaurant_info']['full_description'] = $this->_clean(@$xml->restaurant_info->full_description, 2000);
@@ -86,7 +102,7 @@ class cOmfReader {
 		    $omf_data['restaurant_info']['website_url'] = $this->_clean(@$xml->restaurant_info->website_url, 120);
 		    $omf_data['restaurant_info']['omf_file_url'] = $this->_clean(@$xml->restaurant_info->omf_file_url, 120);
 			$omf_data['formatted_address'] = $this->format_address($omf_data['restaurant_info']['address_1'], $omf_data['restaurant_info']['city_town'], $omf_data['restaurant_info']['state_province'], $omf_data['restaurant_info']['postal_code'], $omf_data['restaurant_info']['country']);
-		
+			
 			// Environment Information
 		    $omf_data['environment_info']['seating_qty'] = $this->_clean(@$xml->restaurant_info->environment->seating_qty);
 		    $omf_data['environment_info']['smoking_allowed'] = $this->_clean(@$xml->restaurant_info->environment->smoking_allowed, 1);
