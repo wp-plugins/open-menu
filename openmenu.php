@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.4.2
+	@version 1.4.3
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.4.2
+	Version: 1.4.3
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -993,7 +993,8 @@
 							            	$retval .= '<div><strong>'.$option['item_options_name'].'</strong>: ';
 							            	 if ( isset($option['option_items']) && !empty($option['option_items']) ) {
 							            	 	 foreach($option['option_items'] AS $option_item) { 
-							            	 	 	$retval .= $option_item['menu_item_option_name'].' | ';
+							            	 	 	 $opt_price = fix_price($option_item['menu_item_option_additional_cost'], $menu['currency_symbol'], ' - ');
+							            	 	 	$retval .= $option_item['menu_item_option_name'].$opt_price.' | ';
 							            	 	 }
 							            	 	 // Strip the trailing |
 												$retval = rtrim($retval, ' | ');
@@ -1021,7 +1022,8 @@
 									// Check for Option Items
 									if ( isset($option['option_items']) && is_array($option['option_items']) ) { 
 										foreach($option['option_items'] AS $option_item) { 
-											$retval .= $option_item['menu_group_option_name'].' | ';
+											$opt_price = fix_price($option_item['menu_group_option_additional_cost'], $menu['currency_symbol'], ' - ');
+											$retval .= $option_item['menu_group_option_name'].$opt_price.' | ';
 										}
 										// Strip the trailing |
 										$retval = rtrim($retval, ' | ');
@@ -1073,7 +1075,7 @@
 		return $retval;
 	}
 
-	function fix_price ( $price, $currency_code ) { 
+	function fix_price ( $price, $currency_code, $prefix = '', $suffix = '' ) { 
 		// -------------------------------------
 		// Handles localization of prices with adding currency symbols
 		// -------------------------------------
@@ -1081,6 +1083,7 @@
 		if ( !empty($price) ) {
 			$retval = number_format($price, 2);
 			$retval = get_currency_symbol($currency_code, $retval, true);
+			$retval = $prefix.$retval.$suffix;
 		}
 		return $retval;
 	}
