@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: 1.4.4
+Stable tag: 1.4.5
 
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenus into an existing theme.
 
@@ -117,6 +117,9 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 
 
 == Changelog ==
+= 1.4.5 =
+* Fixed bom issue causing problems
+
 = 1.4.4 =
 * Fixed issue with encoding on currency symbols
 

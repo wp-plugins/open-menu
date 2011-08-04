@@ -1,17 +1,17 @@
-﻿<?php
+<?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** OpenMenu Plugin, Copyright 2010 - 2011  Open Menu, LLC
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
 	@package OpenMenu
-	@version 1.4.4
+	@version 1.4.5
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.4.4
+	Version: 1.4.5
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -128,6 +128,33 @@
 		return $display;
 	}
 
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// ** Add Shortcode [openmenu_qrcode parameter="value"]
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	
+	add_shortcode('openmenu_qrcode', 'openmenu_qrcode_shortcode');
+	
+	function openmenu_qrcode_shortcode($atts, $content = null) { 
+		// ------------------------------------- 
+		//  Create / Handle the openmenu_qrcode shortcode
+		// ------------------------------------- 
+		
+		$atts = shortcode_atts(array(
+			'openmenu_id' => '',
+			'size' => '128'
+		), $atts);
+		
+		$display = '';
+		if ( !empty($atts['openmenu_id']) ) {
+			$display = openmenu_qrcode($atts['openmenu_id'], $atts['size']);
+		} else {
+			$display = __('OpenMenu ID must be provided');
+		}
+		
+		return $display;
+	}
+	
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Add Settings link to OpenMenu on the plugin page [REMOVED]
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -1073,6 +1100,20 @@
 		}
 		
 		return $retval;
+	}
+	
+	function openmenu_qrcode ( $openmenu_id, $size = 128 ) { 
+		// -------------------------------------
+		// Create a QR Code image for an OpenMenu ID
+		// -------------------------------------
+		
+		$url = urlencode('http://openmenu.com/m/restaurant/'.$openmenu_id);
+		return '<img src="http://chart.apis.google.com/chart?'.
+				'chs='.$size.'x'.$size.
+				'&cht=qr'.
+				'&chld=L|0'.
+				'&chl='.$url.'" '.
+				'alt="OpenMenu QR code" width="'.$size.'" height="'.$size.'"/>';
 	}
 
 	function fix_price ( $price, $currency_code, $prefix = '', $suffix = '' ) { 

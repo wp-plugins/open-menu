@@ -1,7 +1,7 @@
 <?php
 /**
  * @package OpenMenu
- * @version 1.4.4
+ * @version 1.4.5
  */
 /*
 
@@ -17,7 +17,8 @@ Copyright 2010, 2011  OpenMenu, LLC
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_specials");'));
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_tagcloud");'));
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_menu");'));
-
+	//add_action('widgets_init', create_function('', 'return register_widget("openmenu_qrcode");'));
+	
 	class openmenu_menu extends WP_Widget {  
 		function openmenu_menu() {  
 			/* Widget settings. */
@@ -26,7 +27,7 @@ Copyright 2010, 2011  OpenMenu, LLC
 			/* Widget control settings. */
 			$control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-menu' );
 
-		    parent::WP_Widget('om-menu', 'Open Menu: Menu Listing', $widget_ops, $control_ops );
+		    parent::WP_Widget('om-menu', 'OpenMenu: Menu Listing', $widget_ops, $control_ops );
 		}
 		
 		function form($instance) {  
@@ -128,7 +129,7 @@ Copyright 2010, 2011  OpenMenu, LLC
 			// $control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-tagcloud' );
 			$control_ops = array( 'id_base' => 'om-tagcloud' );
 			
-		    parent::WP_Widget('om-tagcloud', 'Open Menu: Tag Cloud', $widget_ops, $control_ops );
+		    parent::WP_Widget('om-tagcloud', 'OpenMenu: Tag Cloud', $widget_ops, $control_ops );
 		}
 		
 		function form($instance) {  
@@ -198,7 +199,7 @@ Copyright 2010, 2011  OpenMenu, LLC
 			/* Widget control settings. */
 			$control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-specials' );
 
-		    parent::WP_Widget('om-specials', 'Open Menu: Specials', $widget_ops, $control_ops );
+		    parent::WP_Widget('om-specials', 'OpenMenu: Specials', $widget_ops, $control_ops );
 		}
 		
 		function form($instance) {  
@@ -274,7 +275,7 @@ Copyright 2010, 2011  OpenMenu, LLC
 			/* Widget control settings. */
 			$control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-restaurant-location' );
 
-		    parent::WP_Widget('om-restaurant-location', 'Open Menu: Restaurant Location', $widget_ops, $control_ops );
+		    parent::WP_Widget('om-restaurant-location', 'OpenMenu: Restaurant Location', $widget_ops, $control_ops );
 		}
 		
 		function form($instance) {  
@@ -336,6 +337,81 @@ Copyright 2010, 2011  OpenMenu, LLC
 		        echo _get_restaurant_location($omf_details, $include_hours);
 				unset($omf_details);
 
+			}
+
+			/* After widget (defined by themes). */
+			echo $after_widget;
+		}  
+	}
+
+	class openmenu_qrcode extends WP_Widget {  
+		function openmenu_qrcode() {  
+			/* Widget settings. */
+			$widget_ops = array( 'classname' => 'om-qrcode', 'description' => __('Displays a QR Code to your mobile site on OpenMenu') );
+
+			/* Widget control settings. */
+			$control_ops = array( 'id_base' => 'om-qrcode' );
+
+		    parent::WP_Widget('om-qrcode', 'OpenMenu: QR Code', $widget_ops, $control_ops );
+		}
+		
+		function form($instance) {  
+		     // outputs the options form on admin
+		     
+			/* Set up some default widget settings. */
+			$defaults = array( 
+							'title' => 'QR Code', 
+							'openmenu_id' => '', 
+							'qr_size' => '128', 
+						);
+			$instance = wp_parse_args( (array) $instance, $defaults ); ?>
+			<p>
+				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e('Title'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
+			</p>
+			<p>
+				<label for="<?php echo $this->get_field_id( 'openmenu_id' ); ?>"><?php _e('OpenMenu ID'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'openmenu_id' ); ?>" name="<?php echo $this->get_field_name( 'openmenu_id' ); ?>" value="<?php echo $instance['openmenu_id']; ?>" />
+				<br /><span style="font-size:.9em">(use the OpenMenu ID of <em>sample</em> for testing)</span>
+			</p>
+			<p>
+				<label for="<?php echo $this->get_field_id( 'qr_size' ); ?>"><?php _e('Size (max: 500): '); ?></label>
+				<input id="<?php echo $this->get_field_id( 'qr_size' ); ?>" name="<?php echo $this->get_field_name( 'qr_size' ); ?>" value="<?php echo $instance['qr_size']; ?>" size="3" />
+			</p>
+		<?php
+		}
+		
+		function update($new_instance, $old_instance) {  
+		     // processes widget options to be saved  
+			$instance = $old_instance;
+
+			/* Strip tags (if needed) and update the widget settings. */
+			$instance['title'] = strip_tags( $new_instance['title'] );
+			$instance['openmenu_id'] = $new_instance['openmenu_id'];
+			$instance['qr_size'] = $new_instance['qr_size'];
+			
+			return $instance;
+		}
+		
+		function widget($args, $instance) {  
+			extract( $args );
+
+			/* User-selected settings. */
+			$title = apply_filters('widget_title', $instance['title'] );
+			$openmenu_id = isset( $instance['openmenu_id'] ) ? $instance['openmenu_id'] : false;
+			$qr_size = isset( $instance['qr_size'] ) ? $instance['qr_size'] : '128';
+			
+			/* Before widget (defined by themes). */
+			echo $before_widget;
+
+			/* Title of widget (before and after defined by themes). */
+			if ( $title )
+				echo $before_title . $title . $after_title;
+			
+			if ( $openmenu_id ) {
+				// QR Code
+				echo '<div style="text-align:center">'.openmenu_qrcode($openmenu_id, $qr_size).'</div>';
+				
 			}
 
 			/* After widget (defined by themes). */
@@ -419,7 +495,6 @@ Copyright 2010, 2011  OpenMenu, LLC
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Private functions:
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
 	function _get_restaurant_location ( $omf_details, $include_hours = true ) {
 		// ------------------------------------- 
 		//  Return a a restaurants address
