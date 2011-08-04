@@ -1,17 +1,17 @@
-<?php
+ï»¿<?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** OpenMenu Plugin, Copyright 2010 - 2011  Open Menu, LLC
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
 	@package OpenMenu
-	@version 1.4.3
+	@version 1.4.4
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.4.3
+	Version: 1.4.4
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -946,7 +946,7 @@
 									$is_halal = ($item['halal'] == 1) ? '<span class="item_tag halal">Halal</span>' : '' ;
 									$tags = $is_special.$is_vegetarian.$is_vegan.$is_kosher.$is_halal;
 									$price = fix_price($item['menu_item_price'], $menu['currency_symbol']);
-									
+
 									// See if a thumbnail exists
 									$thumbnail = '';
 									if ( isset($item['menu_item_images']) ) {
@@ -1114,7 +1114,7 @@
 			'AOA' => '',
 			'ARS' => '',
 			'AMD' => '',
-			'AWG' => 'ƒ',
+			'AWG' => 'Æ’',
 			'AUD' => '$',
 			'AZN' => '',
 			'BSD' => '$',
@@ -1137,7 +1137,7 @@
 			'CVE' => '',
 			'KYD' => '$',
 			'CLP' => '$',
-			'CNY' => '¥',
+			'CNY' => 'Â¥',
 			'COP' => '',
 			'XOF' => '',
 			'XAF' => '',
@@ -1148,23 +1148,23 @@
 			'HRK' => 'kn',
 			'CUP' => '',
 			'CYP' => '',
-			'CZK' => ' K&#269;',
+			'CZK' => ' KÄ',
 			'DKK' => ' kr',
 			'DJF' => '',
 			'DOP' => 'RD$',
 			'XCD' => '$',
-			'EGP' => '£',
+			'EGP' => 'Â£',
 			'SVC' => '$',
 			'ERN' => '',
 			'EEK' => '',
 			'ETB' => '',
-			'EUR' => '€',
-			'FKP' => '£',
+			'EUR' => 'â‚¬',
+			'FKP' => 'Â£',
 			'FJD' => '',
 			'GMD' => '',
 			'GEL' => '',
 			'GHS' => '',
-			'GIP' => '£',
+			'GIP' => 'Â£',
 			'XAU' => '',
 			'GTQ' => 'Q',
 			'GGP' => '',
@@ -1180,11 +1180,11 @@
 			'XDR' => '',
 			'IRR' => '',
 			'IQD' => '',
-			'IMP' => '£',
+			'IMP' => 'Â£',
 			'ILS' => '',
 			'JMD' => 'J$',
-			'JPY' => '¥',
-			'JEP' => '£',
+			'JPY' => 'Â¥',
+			'JEP' => 'Â£',
 			'JOD' => '',
 			'KZT' => '',
 			'KES' => '',
@@ -1194,7 +1194,7 @@
 			'KGS' => '',
 			'LAK' => '',
 			'LVL' => '',
-			'LBP' => '£',
+			'LBP' => 'Â£',
 			'LSL' => '',
 			'LRD' => '$',
 			'LYD' => '',
@@ -1236,7 +1236,7 @@
 			'RUB' => '',
 			'RWF' => '',
 			'STD' => '',
-			'SHP' => '£',
+			'SHP' => 'Â£',
 			'WST' => '',
 			'SAR' => '',
 			'SPL' => '',
@@ -1254,11 +1254,11 @@
 			'SZL' => '',
 			'SEK' => ' kr',
 			'CHF' => 'CHF',
-			'SYP' => '£',
+			'SYP' => 'Â£',
 			'TWD' => '',
 			'TJS' => '',
 			'TZS' => '',
-			'THB' => ' &#3647;',
+			'THB' => ' à¸¿',
 			'TOP' => '',
 			'TTD' => 'TT$',
 			'TND' => '',
@@ -1268,14 +1268,14 @@
 			'UGX' => '',
 			'UAH' => '',
 			'AED' => '',
-			'GBP' => '£',
+			'GBP' => 'Â£',
 			'USD' => '$',
 			'UYU' => '',
 			'UZS' => '',
 			'VUV' => '',
 			'VEB' => '',
 			'VEF' => '',
-			'VND' => '&#8363;',
+			'VND' => 'â‚«',
 			'YER' => '',
 			'ZMK' => '',
 			'ZWD' => 'Z$'
@@ -1287,7 +1287,7 @@
 		
 		$currency_symbol = '';
 		if ( isset($currency_symbols[$currency_code]) ) {
-			$currency_symbol = ( $html_encode ) ? htmlentities($currency_symbols[$currency_code], ENT_COMPAT, 'UTF-8') : $currency_symbols[$currency_code] ; 
+			$currency_symbol = ( $html_encode ) ? htmlentities($currency_symbols[$currency_code], ENT_COMPAT, 'UTF-8') : $currency_symbols[$currency_code] ;
 		}
 		
 		// formatted value
