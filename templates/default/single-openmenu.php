@@ -22,9 +22,7 @@
 	$options = get_option( 'openmenu_options' );
 	
 	$hide_sidebar = ( isset($options['hide_sidebar']) && $options['hide_sidebar'] ) ? true : false ;
-	$one_column = ( isset($options['display_columns']) && $options['display_columns'] == 'One' ) ? true : false ;
 	$display_columns = ( isset($options['display_columns']) && $options['display_columns'] == 'One' ) ? '1' : '2' ;
-	
 	$display_type = (isset($options['display_type'])) ? $options['display_type'] : 'Menu' ;;
 	$background_color = ( !empty($options['background_color']) ) ? $options['background_color'] : '#fff' ;
 	
@@ -163,7 +161,7 @@
 	// Display the Menu
 	if ( strcasecmp($display_type, 'restaurant information / menu') == 0 || 
 	 strcasecmp($display_type, 'menu') == 0 ) {
-		echo build_menu_from_details($omf_details, $display_columns, $menu_filter, $group_filter); 
+		echo build_menu_from_details($omf_details, $display_columns, $menu_filter, $group_filter, false); 
 	
 	}
 ?>

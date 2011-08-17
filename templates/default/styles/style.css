@@ -47,6 +47,7 @@
 #om_menu dt.pepper_5 { background-image: url('../images/peppers-5.png'); background-position: 0 0; background-repeat: no-repeat; padding-left:74px}
 
 #om_menu dd.price { color:#406F0D; background-color:#fff; font-weight:normal; font-size:15px; float:right; padding-left:5px; }
+#om_menu dd.om_calories { font-size:1em; font-weight:normal; float:left; width:100%; text-align:left; color:#646464 }
 #om_menu dd.description { color:#7D898F; font-size:14px; font-style:italic; font-weight:normal; line-height:20px; float:left; width:100%; padding: 3px 0 0 0; }
 #om_menu dd.sizes { font-size:1.1em; font-weight:normal; float:left; width:100%; text-align:left }
 #om_menu dd.sizes span { padding-right:15px }
