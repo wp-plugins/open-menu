@@ -1,7 +1,7 @@
 <?php
 /**
  * @package OpenMenu
- * @version 1.4.5
+ * @version 1.5
  */
 /*
 
@@ -17,7 +17,7 @@ Copyright 2010, 2011  OpenMenu, LLC
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_specials");'));
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_tagcloud");'));
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_menu");'));
-	//add_action('widgets_init', create_function('', 'return register_widget("openmenu_qrcode");'));
+	add_action('widgets_init', create_function('', 'return register_widget("openmenu_qrcode");'));
 	
 	class openmenu_menu extends WP_Widget {  
 		function openmenu_menu() {  

@@ -4,9 +4,9 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: 1.4.5
+Stable tag: 1.5
 
-Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenus into an existing theme.
+Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's into an existing theme.
 
 == Description ==
 This plugin allows you to easily create posts that are based on your OpenMenu and thus embedding restaurant menus in any Wordpress website.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
@@ -16,10 +16,11 @@ The OpenMenu Plugin is the official plugin for OpenMenu and adding restaurant me
 Features:
 
 * OpenMenu Custom Post Type
-* Widgets: Restaurant Location / Specials / Cuisine Tag Cloud
-* [openmenu] Shortcode
+* Widgets: Restaurant Location / Specials / Cuisine Tag Cloud / QR Code
+* [openmenu] and [openmenu_qrcode] Shortcodes
 * Custom Functions
 * Site wide setiings
+* Lots of settings to control the look and feel of the way menus look
 
 
 == Detailed Features ==
@@ -41,6 +42,7 @@ Widgets:
 	OpenMenu: Location  - Displays the restaurants location and hours
 	OpenMenu: Specials  - Displays the menu items marked as special
 	OpenMenu: Tag Cloud - A tag cloud for the cuisine types
+	OpenMenu: QR Code - Displays a QR Code to your mobile site on OpenMenu 
 
 Short code:
 	[openmenu]
@@ -51,6 +53,7 @@ Short code:
 		menu_filter      = Will display only the menu name matching this filter
 		group_filter     = Will display only the group name matching this filter
 		display_columns  = 1 | 2 - How many columns to display a menu in
+		split_on  		 = item | group - In 2 column display what do we split on
 		background_color = Set the background color the menu will display on
 
 		[defaults to OpenMenu Option setting]
@@ -58,6 +61,17 @@ Short code:
 	Samples: 
 		[openmenu omf_url="http://openmenu.com/menu/sample"]
 		[openmenu omf_url="http://openmenu.com/menu/sample" display_type="menu" display_columns="1"]
+
+	[openmenu_qrcode]
+	
+	Parameters:
+		openmenu_id	= OpenMenu ID (not the OpenMenu URL, just the ID part)
+		size		= size for the QR Code (max 500) - defaults to 128
+
+	Samples: 
+		[openmenu_qrcode openmenu_id="sample"]
+		[openmenu_qrcode openmenu_id="sample" size="256"]
+
 
 Custom Functions: 
 	Display a location block: openmenu_location( post_id, title );
@@ -69,7 +83,11 @@ Site Wide OpenMenu Settings:
 		Display Type: What information will be displayed: Menu, Restaurant Information or Both
 		How many columns: How many columns will be used to display a menu (1 or 2)
 		Theme: only default is currently supported
-	
+
+	Your Menu: 
+		Show Allergy Information: Determines if Allergy Information is displayed in a menu
+		Show Calories: Determines if Calories are displayed in a menu
+
 	Wordpress Theme: 
 		Show posts on homepage: Determines whether OpenMenu post types are displayed on the homepage blog post listing and in the RSS feed for the website.
 		Hidesidebar: Forces the sidebar of a post to be hidden.  Gives the impression of a full-width page and may be more desirable when displaying menus.
@@ -117,6 +135,13 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 
 
 == Changelog ==
+= 1.5 =
+* Added QR Code widget
+* Added shortcode for QR Codes (openmenu_qrcode)
+* Added new Your Menu section to OpenMenu Settings allowing you to control some of the menu information displayed
+* Update OpenMenu settings to include Split On (you control whether the menu split 2 column displays on Menu Groups or Menu Items - defaults to Menu Item
+* Update openmenu shortcode to include the new split_on parameter
+
 = 1.4.5 =
 * Fixed bom issue causing problems
 

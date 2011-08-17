@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.4.5
+	@version 1.5
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.4.5
+	Version: 1.5
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -100,6 +100,7 @@
 		$options = get_option( 'openmenu_options' );
 		$display_columns = ( $options['display_columns'] == 'Two' ) ? '2' : '1' ;
 		$display_type = ( isset($options['display_type']) ) ? $options['display_type'] : 'Menu' ;
+		$split_on = ( isset($options['split_on']) ) ? $options['split_on'] : 'item' ;
 		$background_color = ( isset($options['background_color']) && !empty($options['background_color']) ) ? $options['background_color'] : '#fff' ;
 		
 		$atts = shortcode_atts(array(
@@ -108,6 +109,7 @@
 			'group_filter' => '',
 			'background_color' => $background_color,
 			'display_columns' => $display_columns,
+			'split_on' => $split_on,
 			'display_type' => $display_type
 		), $atts);
 		
@@ -118,7 +120,7 @@
 			
 			if ( strcasecmp($atts['display_type'], 'restaurant information / menu') == 0 || 
 	 strcasecmp($atts['display_type'], 'menu') == 0 ) {
-				$display .= build_menu_from_details($omf_details, $atts['display_columns'], $atts['menu_filter'], $atts['group_filter'], $atts['background_color']);
+				$display .= build_menu_from_details($omf_details, $atts['display_columns'], $atts['menu_filter'], $atts['group_filter'], $atts['background_color'], $atts['split_on']);
 			}
 			
 		} else {
@@ -419,7 +421,14 @@
 	function add_defaults_fn() {
 		$tmp = get_option('openmenu_options');
 	    if( !is_array($tmp) ) {
-			$arr = array("display_type"=>"Menu", "hide_sidebar" => "on", "display_columns" => "One");
+			$arr = array(
+					"display_type"=>"Menu", 
+					"hide_sidebar" => "on", 
+					"display_columns" => "One", 
+					"split_on" => "item",
+					"show_allergy" => "on", 
+					"show_calories" => "on"
+				);
 			update_option('openmenu_options', $arr);
 		}
 	}
@@ -432,7 +441,12 @@
 
 		add_settings_field('drop_down1', __('Display Type'), 'setting_displaytype_fn', __FILE__, 'lookfeel_section');
 		add_settings_field('radio_buttons', __('How many columns?'), 'setting_displaycolumn_fn', __FILE__, 'lookfeel_section');
+		add_settings_field('radio_buttons_split', __('Split on (2 column menu)'), 'setting_spliton_fn', __FILE__, 'lookfeel_section');
 		add_settings_field('drop_down2', __('Theme'), 'setting_theme_fn', __FILE__, 'lookfeel_section');
+		
+		add_settings_section('menu_section', __('Your Menu'), 'section_data_fn', __FILE__);
+		add_settings_field('plugin_chk_allergy', __('Show Allergy Information'), 'setting_showallergy_fn', __FILE__, 'menu_section');
+		add_settings_field('plugin_chk_calories', __('Show Calories'), 'setting_showcalories_fn', __FILE__, 'menu_section');
 		
 		add_settings_section('om_section', __('OpenMenu Listing'), 'section_om_fn', __FILE__);
 		add_settings_field('plugin_om_title', __('Title'), 'setting_om_title_fn', __FILE__, 'om_section');
@@ -465,8 +479,24 @@
 	function  section_om_fn() {
 		echo '<p>'.__('Controls the main OpenMenu page (used to display a list of all menus in the system)').'</p>';
 	}
+	function  section_data_fn() {
+		echo '<p>'.__('What information do you want to show/hide from your menu').'</p>';
+	}
+
+	function setting_showcalories_fn() {
+		$checked = '';
+		$options = get_option('openmenu_options');
+		if( isset($options['show_calories']) ) { $checked = ' checked="checked" '; }
+		echo "<input ".$checked." id='plugin_chk_calories' name='openmenu_options[show_calories]' type='checkbox' />";
+	}
 	
-	// DROP-DOWN-BOX - Name: plugin_options[display_type]
+	function setting_showallergy_fn() {
+		$checked = '';
+		$options = get_option('openmenu_options');
+		if( isset($options['show_allergy']) ) { $checked = ' checked="checked" '; }
+		echo "<input ".$checked." id='plugin_chk_allergy' name='openmenu_options[show_allergy]' type='checkbox' />";
+	}
+	
 	function  setting_displaytype_fn() {
 		$options = get_option('openmenu_options');
 		$items = array("Menu", "Restaurant Information", "Restaurant Information / Menu");
@@ -478,7 +508,6 @@
 		echo "</select>";
 	}
 
-	// DROP-DOWN-BOX - Name: plugin_options[theme]
 	function  setting_theme_fn() {
 		$options = get_option('openmenu_options');
 		$options['theme'] = (isset($options['theme'])) ? $options['theme'] : '(default)';
@@ -491,7 +520,6 @@
 		echo "</select>";
 	}
 	
-	// RADIO-BUTTON - Name: plugin_options[display_columns]
 	function setting_displaycolumn_fn() {
 		$options = get_option('openmenu_options');
 		$items = array("One", "Two");
@@ -500,42 +528,45 @@
 			echo "<label><input ".$checked." value='$item' name='openmenu_options[display_columns]' type='radio' /> $item</label><br />";
 		}
 	}
-
-	// Width override
+	
+	function setting_spliton_fn() {
+		$options = get_option('openmenu_options');
+		$items = array("item", "group");
+		foreach($items as $item) {
+			$checked = (isset($options['split_on']) && $options['split_on']==$item) ? ' checked="checked" ' : '';
+			echo "<label><input ".$checked." value='$item' name='openmenu_options[split_on]' type='radio' /> $item</label><br />";
+		}
+	}
+	
 	function setting_widthoverride_fn() {
 		$options = get_option('openmenu_options');
 		$options['width_override'] = (isset($options['width_override'])) ? $options['width_override'] : '';
 		echo "<input id='plugin_text_string' name='openmenu_options[width_override]' size='10' type='text' value='{$options['width_override']}' /> ".__('(Used when hiding sidebar - add units: ex. 900px or 95%)');
 	}
 
-	// Background Color
 	function setting_backgroundcolor_fn() {
 		$options = get_option('openmenu_options');
 		$options['background_color'] = (isset($options['background_color'])) ? $options['background_color'] : '';
 		echo "<input id='plugin_text_string' name='openmenu_options[background_color]' size='10' type='text' value='{$options['background_color']}' /> ".__('(Background color - HTML color format: #ffffff)');
 	}
 	
-	// OpenMenu title
 	function setting_om_title_fn() {
 		$options = get_option('openmenu_options');
 		$options['om_title'] = (isset($options['om_title'])) ? $options['om_title'] : '';
 		echo "<input id='plugin_text_string' name='openmenu_options[om_title]' size='20' type='text' value='{$options['om_title']}' /> ".__('(defaults to OpenMenu)');
 	}
 
-	// OpenMenu Description
 	function setting_om_description_fn() {
 		$options = get_option('openmenu_options');
 		$options['om_description'] = (isset($options['om_description'])) ? $options['om_description'] : '';
 		echo "<textarea id='plugin_textarea_string' name='openmenu_options[om_description]' rows='7' cols='50' type='textarea'>{$options['om_description']}</textarea>";
 	}
 	
-	// PASSWORD-TEXTBOX - Name: plugin_options[pass_string]
 	function setting_pass_fn() {
 		$options = get_option('openmenu_options');
 		echo "<input id='plugin_text_pass' name='openmenu_options[pass_string]' size='40' type='password' value='{$options['pass_string']}' />";
 	}
 
-	// CHECKBOX - Name: plugin_options[hide_sidebar]
 	function setting_hidesidebar_fn() {
 		$checked = '';
 		$options = get_option('openmenu_options');
@@ -543,7 +574,6 @@
 		echo "<input ".$checked." id='plugin_chk2' name='openmenu_options[hide_sidebar]' type='checkbox' />";
 	}
 
-	// CHECKBOX - Name: plugin_options[show_posts_homepage]
 	function setting_showposts_fn() {
 		$checked = '';
 		$options = get_option('openmenu_options');
@@ -899,9 +929,11 @@
 		return $omf_details;
 	}
 
-	function build_menu_from_details ($omf_details, $columns = '1', $menu_filter = '', $group_filter = '', $background_color = false) {
+	function build_menu_from_details ($omf_details, $columns = '1', $menu_filter = '', $group_filter = '', 
+					$background_color = false, $split_on = false) {
 		// ------------------------------------- 
 		//  Create a menu display from OMF Details 
+		//   shortcode can override some of the Global settings
 		// ------------------------------------- 
 		
 		$retval = '';
@@ -913,190 +945,27 @@
 			$retval .= '</style>';
 		}
 		
-		if ( !empty($omf_details) ) {
-			$retval .= '<div id="om_menu">';
-
-		  if ( isset($omf_details['menus']) && !empty($omf_details['menus']) ) {
-			foreach ($omf_details['menus'] AS $menu) {
-				// Check for a menu filter
-				if ( !$menu_filter || strcasecmp(html_entity_decode($menu_filter), html_entity_decode($menu['menu_name'])) == 0 ) {
-				
-					// Start a new menu
-					$retval .= '<div class="menu_name">';
-						if ( !empty($menu['menu_name']) ) {
-							$retval .= $menu['menu_name'];
-						} else {
-							$retval .= ucwords($menu['menu_duration_name']);
-						}
-					// Check for a description
-					if ( !empty($menu['menu_description']) ) {
-						$retval .= '<br /><span class="sm_norm">'.$menu['menu_description'].'</span>';
-					}
-					$retval .= '</div><div class="menu_content">'."\n";
-					
-					// How many groups are there in this menu
-					//  used for 2 column displays
-					$group_count = (!empty($menu['menu_groups'])) ? count($menu['menu_groups']) : 0 ;
-					$current_group = 1;
-					
-					if ( !empty($menu['menu_groups']) ) {
-					foreach ($menu['menu_groups'] AS $group) {
-						// Check for a group filter
-						if ( !$group_filter || strcasecmp(html_entity_decode($group_filter), html_entity_decode($group['group_name']) ) == 0 ) {
-					
-							// Should we start the left or right column 
-							if ( !$one_column ) {
-								if ($current_group == 1) { 
-									// Start the left Column
-									$retval .= '<div class="left-menu">';
-								} elseif ($current_group == (1 + (int)($group_count/2)) ) {
-									// Close the left column and start the right
-									$retval .= '</div><!-- END left menu -->';
-									$retval .= '<div class="right-menu">';
-								}
-							}
-							
-							// Start a group
-							$retval .= '<h2>'.$group['group_name'];
-							
-							if ( !empty($group['group_description']) ) {
-								$retval .= '<br /><span class="sm_norm">'.$group['group_description'].'</span>';
-							}
-							$retval .= '</h2>'."\n";
-							
-							if ( !empty($group['menu_items']) ) {
-								foreach ($group['menu_items'] AS $item) {
-									$is_special = ($item['special'] == 1) ? '<span class="item_tag special">Special</span>' : '' ;
-									$is_vegetarian = ($item['vegetarian'] == 1) ? '<span class="item_tag vegetarian">Vegetarian</span>' : '' ;
-									$is_vegan = ($item['vegan'] == 1) ? '<span class="item_tag vegan">Vegan</span>' : '' ;
-									$is_kosher = ($item['kosher'] == 1) ? '<span class="item_tag kosher">Kosher</span>' : '' ;
-									$is_halal = ($item['halal'] == 1) ? '<span class="item_tag halal">Halal</span>' : '' ;
-									$tags = $is_special.$is_vegetarian.$is_vegan.$is_kosher.$is_halal;
-									$price = fix_price($item['menu_item_price'], $menu['currency_symbol']);
-
-									// See if a thumbnail exists
-									$thumbnail = '';
-									if ( isset($item['menu_item_images']) ) {
-										$thumbnail = extract_thumbnail($item['menu_item_images']);
-										if ($thumbnail) {
-											$thumbnail = '<img class="mi_thumb" src="'.$thumbnail.'" width="32" height="32" />';
-										}
-									}
-
-						            $retval .= '<dl>';
-						            $retval .= '<dt class="pepper_' . $item['menu_item_heat_index'] . '">' . $thumbnail . $tags . $item['menu_item_name'] . '</dt>';
-						            $retval .= '<dd class="price">'.$price.'</dd>';
-						            $retval .= '<dd class="description">'.$item['menu_item_description'].'</dd>';
-									
-									// Check for Allergy / Allergen information
-									if ( !empty($item['menu_item_allergy_information']) ||
-											 !empty($item['menu_item_allergy_information_allergens']) ) {
-										$retval .= '<dd class="allergy">';
-										
-										$retval .= 'Allergy Information: ' . $item['menu_item_allergy_information'];
-											
-										if (!empty($item['menu_item_allergy_information_allergens'])) {
-											$retval .= ' [ allergens: ';
-											$retval .= $item['menu_item_allergy_information_allergens'] . ' ]';
-										}
-
-										$retval .= '</dd>';
-									} 
-									
-						            // Check for item size
-						            if ( isset($item['menu_item_sizes']) && !empty($item['menu_item_sizes']) && is_array($item['menu_item_sizes']) ) {
-						            	$retval .= '<dd class="sizes">';
-							            foreach ($item['menu_item_sizes'] AS $size) {
-							            	$size_price = ' - '.fix_price($size['menu_item_size_price'], $menu['currency_symbol']);
-							            	$retval .= '<span>'.$size['menu_item_size_name'].$size_price.'</span>';
-							            }
-							            $retval .= '</dd>';
-							        }
-							        
-							    	// Check for options
-						            if ( isset($item['menu_item_options']) && !empty($item['menu_item_options']) && is_array($item['menu_item_options']) ) {
-						            	$retval .= '<dd class="item_options">';
-							            foreach ($item['menu_item_options'] AS $option) {
-							            	$retval .= '<div><strong>'.$option['item_options_name'].'</strong>: ';
-							            	 if ( isset($option['option_items']) && !empty($option['option_items']) ) {
-							            	 	 foreach($option['option_items'] AS $option_item) { 
-							            	 	 	 $opt_price = fix_price($option_item['menu_item_option_additional_cost'], $menu['currency_symbol'], ' - ');
-							            	 	 	$retval .= $option_item['menu_item_option_name'].$opt_price.' | ';
-							            	 	 }
-							            	 	 // Strip the trailing |
-												$retval = rtrim($retval, ' | ');
-							            	 }
-							            	
-							            	$retval .= '</div>';
-							            }
-							            $retval .= '</dd>';
-							        }
-							        
-							        // close the item
-						            $retval .= '</dl>'."\n";
-								} // end item
-							}
-							// Display Group Options
-							if ( isset($group['menu_group_options']) && is_array($group['menu_group_options']) ) { 
-								foreach($group['menu_group_options'] AS $option) { 
-									$retval .= '<div class="goptions">';
-									$retval .= '<div class="goptions-title">'.$option['group_options_name'];
-									if ( !empty($option['menu_group_option_information']) ) {
-										$retval .= '<br /><span class="goptions-desc">'.$option['menu_group_option_information'].'</span>';
-									}
-									$retval .= '</div>';
-								
-									// Check for Option Items
-									if ( isset($option['option_items']) && is_array($option['option_items']) ) { 
-										foreach($option['option_items'] AS $option_item) { 
-											$opt_price = fix_price($option_item['menu_group_option_additional_cost'], $menu['currency_symbol'], ' - ');
-											$retval .= $option_item['menu_group_option_name'].$opt_price.' | ';
-										}
-										// Strip the trailing |
-										$retval = rtrim($retval, ' | ');
-									}
-									
-									$retval .= '</div>';
-								} 
-							}
-							
-							// End a group
-							if ( $one_column ) {
-								$retval .= '<span class="separator big"></span>'."\n";
-							} else {
-								$retval .= '<span class="separator small"></span>'."\n";
-							}
-							
-							$current_group++;
-							
-						} // end group filter
-					} // end group
-					} // end group check 
-					
-					if ( !$one_column ) {
-						// Close the menu colums
-						if ( $current_group > 1 ) {
-							$retval .= '</div><!-- END right menu -->'."\n";
-						}
-						$retval .= '<div class="clear"></div>'."\n";
-					}
-					
-					// Close the menu 
-					$retval .= '</div><br clear="all" /><!-- END #menu -->'."\n";
-					
-					if ( !$one_column ) {
-						$retval .= '<div class="page-break"></div>'."\n";
-					}
-				
-				} // end menu filter
-				
-			} // end menu loop
-		} else {
-			$retval .= 'There was an error displaying this menu';
+		// Get the Global options
+		$options = get_option( 'openmenu_options' );
+		$show_allergy = ( isset($options['show_allergy']) && $options['show_allergy'] ) ? true : false ;
+		$show_calories = ( isset($options['show_calories']) && $options['show_calories'] ) ? true : false ;
+		// Only get Split On Global if shortcode isn't overriding
+		if (!$split_on) {
+			$split_on = ( isset($options['split_on']) ) ? $options['split_on'] : 'group' ;
 		}
-	
-		$retval .= '<div class="om_tag"><a href="http://openmenu.com">'.__('powered by').' OpenMenu</a></div>';
-		$retval .= '</div><!-- #om_menu -->';
+
+		if ( !empty($omf_details) ) {
+			include_once OPENMENU_PATH.'/toolbox/class-omf-render.php'; 
+			$render = new cOmfRender; 
+			$render->disable_entities = true;
+			$render->columns = $columns;
+			$render->split_on = $split_on;
+			$render->show_allergy_information = $show_allergy;
+			$render->show_calories = $show_calories;
+			$retval .= $render->get_menu_from_details($omf_details);
+			unset($render);
+			
+			$retval .= '<div class="om_tag"><a href="http://openmenu.com">'.__('powered by').' OpenMenu</a></div>';
 		}
 		
 		return $retval;
