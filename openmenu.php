@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.5.1
+	@version 1.5.2
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.5.1
+	Version: 1.5.2
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -276,10 +276,10 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Custom Post Type:
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	add_action( 'init', 'create_post_type' );
-	add_action( 'admin_head', 'my_custom_posttype_icon' );
+	add_action( 'init', 'om_create_post_type' );
+	add_action( 'admin_head', 'om_custom_posttype_icon' );
 	
-	function create_post_type() {
+	function om_create_post_type() {
 		// ------------------------------------- 
 		//  Register a custom post type
 		//   custom post type = openmenu
@@ -338,7 +338,7 @@
 		
 	}
 
-	function my_custom_posttype_icon() {
+	function om_custom_posttype_icon() {
 		
 		global $post_type;
 		$qry_postype = ( isset($_GET['post_type']) ) ? $_GET['post_type'] : '' ; 
