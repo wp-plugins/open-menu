@@ -1,27 +1,18 @@
 <?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Open Menu, LLC http://OpenMenu.com
+// ** OpenMenu, LLC http://openmenu.com
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Copyright (C) 2011 OpenMenu, All rights reserved
-// **		Authored By: Chris Hanscom
-// **
-// **		This library is copyrighted software by Open Menu; you can not
-// **		redistribute it and/or modify it in any way without expressed written
-// **		consent from Open Menu or Author.
-// **
+// ** Copyright (C) 2010, 2011 Open Menu, LLC
+// **		
+// ** Licensed under the MIT License:
+// ** http://www.opensource.org/licenses/mit-license.php
+// ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.2.1 
-//
+// ** Version: 1.3.4
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Compatible with OpenMenu Format v1.5
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Includes: 
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// ** 
 
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Constants: 
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-	
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Class
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -41,37 +32,42 @@ class cOmfRender {
 	public $disable_entities = false;
 
 	// Switches for data display
+	public $show_logo = true;
 	public $show_allergy_information = true;
-	public $show_calories = false;
+	public $show_calories = true;
 
-	function get_restaurant_information ($omf_details) {
+	function get_restaurant_information ($om) {
 		// ------------------------------------- 
 		//  Create a block of restaurant information
 		// ------------------------------------- 
 		
 		$retval = '';
+		$logo = ($this->show_logo) ? $this->extract_logo($om['logo_urls'], 'Full', 'Web') : false ;
 		
-		if ( !empty($omf_details) ) {
-			$retval .= '<div id="ri_block">';
-			$retval .= '<div id="restaurant_name">'.$omf_details['restaurant_info']['restaurant_name'].'</div>';
-			$retval .= '<div id="restaurant_type"><strong>Type:</strong> ' . $omf_details['environment_info']['cuisine_type_primary']. '</div>';
-			$retval .= '<p>'.$omf_details['restaurant_info']['brief_description'].'</p>';
+		if ( !empty($om) ) {
+			$retval .= '<div id="om_restaurant">';
+			if ( !empty($logo) ) { 
+				$retval .= '<div id="restaurant_logo"><img src="'.$logo.'" alt="'.$om['restaurant_info']['restaurant_name'].'" /></div>';
+			}
+			$retval .= '<div id="restaurant_name">'.$om['restaurant_info']['restaurant_name'].'</div>';
+			$retval .= '<div id="restaurant_type"><strong>Type:</strong> ' . $om['environment_info']['cuisine_type_primary']. '</div>';
+			$retval .= '<p>'.$om['restaurant_info']['brief_description'].'</p>';
 			
 	        $retval .= '<p>';
 			$retval .= '<strong>Address:</strong><br />';
-			$retval .= $omf_details['restaurant_info']['address_1'].'<br />';
-			$retval .= $omf_details['restaurant_info']['city_town'].', '.
-					  	$omf_details['restaurant_info']['state_province'] .' '.
-						$omf_details['restaurant_info']['postal_code'].'<br />'.
-						$omf_details['restaurant_info']['country'];
+			$retval .= $om['restaurant_info']['address_1'].'<br />';
+			$retval .= $om['restaurant_info']['city_town'].', '.
+					  	$om['restaurant_info']['state_province'] .' '.
+						$om['restaurant_info']['postal_code'].'<br />'.
+						$om['restaurant_info']['country'];
 			$retval .= '</p><p>';
-			$retval .= '<strong>Phone: </strong> '.$omf_details['restaurant_info']['phone'].'<br />';
-			$retval .= '<strong>Website: </strong> <a href="' . $omf_details['restaurant_info']['website_url'] . '">' . 
-						$omf_details['restaurant_info']['website_url'] . '</a>';
+			$retval .= '<strong>Phone: </strong> '.$om['restaurant_info']['phone'].'<br />';
+			$retval .= '<strong>Website: </strong> <a href="' . $om['restaurant_info']['website_url'] . '">' . 
+						$om['restaurant_info']['website_url'] . '</a>';
 			$retval .= '</p><p>';
 			$retval .= '<strong>Our Hours:</strong><br />';
-
-			foreach ($omf_details['operating_days']['printable'] AS $daytime) {
+			
+			foreach ($om['operating_days']['printable'] AS $daytime) {
 				$retval .= $daytime.'<br />';
 			}
 
@@ -84,7 +80,7 @@ class cOmfRender {
 		
 	}
 	
-	function get_menu_from_details ($omf_details, $menu_filter = '', $group_filter = '', 
+	function get_menu_from_details ($om, $menu_filter = '', $group_filter = '', 
 				$hl_primary = '', $hl_secondary = '') {
 		// ------------------------------------- 
 		//  Create a menu display from OMF Details
@@ -102,11 +98,12 @@ class cOmfRender {
 		// Make sure a proper split on was passed
 		$this->split_on = ($this->split_on == 'group' || $this->split_on == 'item') ? $this->split_on : 'group' ;
 		
-		if ( !empty($omf_details) ) {
+		if ( !empty($om) ) {
 			$retval .= '<div id="om_menu">';
 
-		  if ( isset($omf_details['menus']) && !empty($omf_details['menus']) ) {
-			foreach ($omf_details['menus'] AS $menu) {
+		  if ( isset($om['menus']) && !empty($om['menus']) ) {
+
+			foreach ($om['menus'] AS $menu) {
 
 				// Check for a filter
 				if ( !$menu_filter || strcasecmp($menu_filter, $menu['menu_name']) == 0 ) {
@@ -194,12 +191,16 @@ class cOmfRender {
 						            $retval .= '<dt class="pepper_' . $item['menu_item_heat_index'] . '">' . $thumbnail . $tags .
 						            		 $this->hl_food( $this->clean($item['menu_item_name']), $hl_primary, $hl_secondary ) . '</dt>';
 						            $retval .= '<dd class="price">'.$price.'</dd>';
-
-						            if ( $this->show_calories && !empty($item['menu_item_calories']) ) {
-						            	$retval .= '<dd class="om_calories">'.$item['menu_item_calories'].' calories</dd>';
-						        	}
-
-						            $retval .= '<dd class="description">' . $this->hl_food( $this->clean($item['menu_item_description']), $hl_primary, $hl_secondary ) . '</dd>';
+									
+									// Calories
+									$calories = '';
+									if ( $this->show_calories && !empty($item['menu_item_calories']) ) {
+										$calories = '<span class="calories"> (' . 
+													$this->clean($item['menu_item_calories']). 
+												   ' calories)</span>';
+									} 
+									
+						            $retval .= '<dd class="description">' . $this->hl_food( $this->clean($item['menu_item_description']), $hl_primary, $hl_secondary ) . $calories . '</dd>';
 
 									// Check for Allergy / Allergen information
 									if ( $this->show_allergy_information && (!empty($item['menu_item_allergy_information']) ||
@@ -215,7 +216,7 @@ class cOmfRender {
 
 										$retval .= '</dd>';
 									} 
-									
+
 						            // Check for item size
 						            if ( !empty($item['menu_item_sizes']) && is_array($item['menu_item_sizes']) ) {
 						            	$retval .= '<dd class="sizes">';
@@ -226,6 +227,8 @@ class cOmfRender {
 							            $retval .= '</dd>';
 							        }
 							        
+							        
+									
 							    	// Check for options
 						            if ( isset($item['menu_item_options']) && !empty($item['menu_item_options']) && is_array($item['menu_item_options']) ) {
 						            	$retval .= '<dd class="item_options">';
@@ -310,7 +313,11 @@ class cOmfRender {
 		} else {
 			$retval .= 'There was an error displaying this menu. Please contact <a href="http://openmenu.com" target="_blank">OpenMenu</a> for assistance.';
 		}
-
+		
+		if (!$this->hide_attribute) {
+			$retval .= '<small><a href="http://openmenu.com" style="font-size:.9em;color:#00f;text-align:center;display:block">powered by OpenMenu</a></small>';
+		}
+		
 		$retval .= '</div><!-- #om_menu -->';
 		}
 		
@@ -326,9 +333,28 @@ class cOmfRender {
 		// -------------------------------------
 		$retval = '' ;
 		if ( !empty($price) ) {
-			$retval = number_format($price, 2);
-			$retval = get_currency_symbol($currency_code, $retval, true);
+			$retval = $this->format_currency($price, $currency_code);
+			$retval = $this->get_currency_symbol($currency_code, $retval, true);
 			$retval = $prefix.$retval.$suffix;
+		}
+		return $retval;
+	}
+
+	function extract_logo( $logo_images, $type = 'Full', $media = 'Web' ) {
+		// ------------------------------------- 
+		//  Attempt to extract a logo image
+		// ------------------------------------- 
+		$retval = '';
+		if ( !empty($logo_images) && is_array($logo_images) ) {
+			foreach ($logo_images AS $img) {
+				if ( strcasecmp($img['image_type'], $type ) === 0 && 
+					 (strcasecmp($img['image_media'], $media ) === 0 || 
+						strcasecmp($img['image_media'], 'All' ) === 0 ) && 
+					 !empty($img['logo_url']) ) {
+					$retval = $img['logo_url'];
+					break;
+				}
+			}
 		}
 		return $retval;
 	}
@@ -413,6 +439,86 @@ class cOmfRender {
 		}
 	}
 
+	private function format_currency ($amount, $currency_code) { 
+		// ------------------------------------- 
+		//  Handle localizing a price into the proper format
+		// ------------------------------------- 
+
+		// Define the format
+		$currency_code_styles = array(
+				"ARS" => "dotThousandsCommaDecimal", 
+				"ATS" => "dotThousandsCommaDecimal", 
+				"BEF" => "dotThousandsCommaDecimal", 
+				"REAL" => "dotThousandsCommaDecimal", 
+				"DKR" => "dotThousandsCommaDecimal", 
+				"FIM" => "spaceThousandsCommaDecimal", 
+				"FRF" => "spaceThousandsCommaDecimal", 
+				"DEM" => "dotThousandsCommaDecimal", 
+				"GRD" => "dotThousandsCommaDecimal", 
+				"ISK" => "dotThousandsCommaDecimal", 
+				"INR" => "indian", 
+				"ITL" => "dotThousandsCommaDecimal", 
+				"YPY" => "noDecimals", 
+				"LTL" => "dotThousandsCommaDecimal", 
+				"NLG" => "dotThousandsCommaDecimal", 
+				"NOK" => "dotThousandsCommaDecimal", 
+				"KRW" => "noDecimals",
+				"ESP" => "dotThousandsCommaDecimal", 
+				"SEK" => "spaceThousandsDotDecimal", 
+				"CHF" => "apostropheThousandsDotDecimal", 
+				"CZK" => "dotThousandsCommaDecimal",
+				"LUF" => "apostropheThousandsDotDecimal",
+				"PLZ" => "spaceThousandsCommaDecimal",
+				"PTE" => "dotThousandsCommaDecimal"
+		);
+		
+		$currency_code = strtoupper($currency_code);
+		$style = array_key_exists($currency_code, $currency_code_styles) ? $currency_code_styles[$currency_code] : '' ;
+
+		switch ($style) {
+			case "dotThousandsCommaDecimal" :
+				$retval = number_format($amount, 2, ",", ".");
+				break;
+			case "dotThousandsNoDecimals" :
+				$str = number_format($amount, 2, "", ".");
+				$retval = substr($str, 0, -3);
+				break;
+			case "spaceThousandsCommaDecimal" :
+				$retval = number_format($amount, 2, ",", " ");
+				break;
+			case "indian" :
+				list( $digits, $decimals ) = explode(".", $amount);
+				if( ($len = strlen($digits)) >= 5 ) {
+					$bit = substr($digits, 0, $len - 3) / 100;
+					$retval = number_format($bit, 2, ",", "," )
+							.",".substr($digits, $len - 3) 
+							.".$decimals";
+				}
+				else
+					$retval = number_format($amount, 2);
+				break;
+			case "noDecimals" :
+				$str = number_format($amount, 2, "", ",");
+				$retval = substr($str, 0, -3);
+				break;
+			case "spaceThousandsDotDecimal" :
+				$retval = number_format($amount, 2, ".", " ");
+				break;
+			case "apostropheThousandsNoDecimals" :
+				$retval = number_format($amount, 2, ".", " ");
+				$retval = substr($str, 0, -3);
+				break;
+			case "apostropheThousandsDotDecimal" :
+				$retval = number_format($amount, 2, ".", "'");
+				break;
+			default :
+				$retval = number_format($amount, 2);
+				break;
+		}
+		
+		return $retval;
+	}
+	
 	private function get_currency_symbol ($currency_code, $amount = '', $html_encode = false) {
 		
 		$currency_symbols = array(
@@ -481,7 +587,7 @@ class cOmfRender {
 			'HTG' => '',
 			'HNL' => 'L',
 			'HKD' => '$',
-			'HUF' => 'Ft',
+			'HUF' => ' Ft',
 			'ISK' => ' kr',
 			'INR' => '',
 			'IDR' => '',
@@ -590,7 +696,7 @@ class cOmfRender {
 		);
 		
 		$symbol_after_amount = array(
-				"ISK", "ITL", "LTL", "NOK", "SEK", "THB", "CZK", "DKK"
+				"ISK", "ITL", "LTL", "NOK", "SEK", "THB", "CZK", "DKK", "HUF"
 		);
 		
 		$currency_symbol = '';
