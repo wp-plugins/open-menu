@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: 1.5.3
+Stable tag: 1.5.4
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's into an existing theme.
 
@@ -135,6 +135,10 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 
 
 == Changelog ==
+= 1.5.3 =
+* Update render class to handle carriage returns in menu item descriptions
+* Fix issue with the OpenMenu attribution appearing twice
+
 = 1.5.3 =
 * Updated Render class to v1.3.4
 * Update to the display of calorie information
