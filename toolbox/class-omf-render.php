@@ -8,7 +8,7 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.3.5
+// ** Version: 1.3.6
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Compatible with OpenMenu Format v1.5
 // ** 
@@ -199,7 +199,7 @@ class cOmfRender {
 												   ' calories)</span>';
 									} 
 									
-						            $retval .= '<dd class="description">' . $this->hl_food( $this->clean(nl2br($item['menu_item_description'])), $hl_primary, $hl_secondary ) . $calories . '</dd>';
+						            $retval .= '<dd class="description">' . $this->hl_food( nl2br($this->clean($item['menu_item_description'])), $hl_primary, $hl_secondary ) . $calories . '</dd>';
 
 									// Check for Allergy / Allergen information
 									if ( $this->show_allergy_information && (!empty($item['menu_item_allergy_information']) ||
