@@ -5,7 +5,7 @@
 
 /**
 	@package OpenMenu
-	@version 1.5.5
+	@version 1.5.6
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
@@ -413,12 +413,12 @@
 // ** OpenMenu Settings:
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-	register_activation_hook(__FILE__, 'add_defaults_fn');
+	register_activation_hook(__FILE__, 'om_add_defaults_fn');
 	add_action('admin_init', 'openmenu_options_init_fn' );
 	add_action('admin_menu', 'openmenu_options_add_page_fn');
 
 	// Define default option settings
-	function add_defaults_fn() {
+	function om_add_defaults_fn() {
 		$tmp = get_option('openmenu_options');
 	    if( !is_array($tmp) ) {
 			$arr = array(
@@ -462,7 +462,7 @@
 
 	// Add sub page to the Settings Menu
 	function openmenu_options_add_page_fn() {
-		add_options_page('OpenMenu Options', 'OpenMenu', 'manage_options', __FILE__, 'options_page_fn');
+		add_options_page('OpenMenu Options', 'OpenMenu', 'manage_options', __FILE__, 'om_options_page_fn');
 	}
 
 	// *************************
@@ -582,7 +582,7 @@
 	}
 
 	// Display the admin options page
-	function options_page_fn() {
+	function om_options_page_fn() {
 	?>
 		<div class="wrap">
 			<div class="icon32" id="icon-options-general"><br></div>
