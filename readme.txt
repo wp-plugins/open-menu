@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: 1.5.6
+Stable tag: 1.5.7
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's into an existing theme.
 
@@ -31,8 +31,8 @@ OpenMenu Custom Post Type:
 		OpenMenu Location (URL) - This is a required field that points to your OpenMenu Format menu
 		
 		Filters
-			Menu Name to display: If your OpenMenu Format menu contains multiple menus (ex. Lunch / Dinner) you can choose which menu to display in your post by entering the menu name here.
-			Group Name to display: If your OpenMenu Format menu contains multiple menu groups (ex. salads / deserts) you can choose which group to display in your post by entering the group name here.
+			Menu Name to display: If your OpenMenu Format menu contains multiple menus (ex. Lunch / Dinner) you can choose which menu to display in your post by entering the menu name here. (supports a comma-separated list)
+			Group Name to display: If your OpenMenu Format menu contains multiple menu groups (ex. salads / deserts) you can choose which group to display in your post by entering the group name here. (supports a comma-separated list)
 
 		Restaurant Information: Stores basic information about the restaurant that is referenced by the menu. This is primarly used in scenarios where many restaurant menu's will be displayed.  Information, along with the excerpt, will be used to generate a single page of all menus.
 
@@ -50,8 +50,8 @@ Short code:
 	Parameters:
 		omf_url          = URL pointing to the OpenMenu Format menu
 		display_type     = menu (only option currently available)
-		menu_filter      = Will display only the menu name matching this filter
-		group_filter     = Will display only the group name matching this filter
+		menu_filter      = Will display only the menu name matching this filter (supports a comma-separated list)
+		group_filter     = Will display only the group name matching this filter (supports a comma-separated list)
 		display_columns  = 1 | 2 - How many columns to display a menu in
 		split_on  		 = item | group - In 2 column display what do we split on
 		background_color = Set the background color the menu will display on
@@ -135,6 +135,9 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 5. Powerful Widgets
 
 == Changelog ==
+= 1.5.7 =
+* Updated Menu and Menu Group filters to support comma-separated lists
+
 = 1.5.6 =
 * Fixed function names to prevent collision with other plugins/themes
 
