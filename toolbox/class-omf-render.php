@@ -8,7 +8,7 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.3.6
+// ** Version: 1.5
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Compatible with OpenMenu Format v1.5
 // ** 
@@ -85,6 +85,7 @@ class cOmfRender {
 		//  Create a menu display from OMF Details
 		//   Compatible with OpenMenu Format v1.5 
 		//   $menu_filter / $group_filter = filter the display to a specific menu or menu group
+		//     this can be a comma-seperata list or just a single entry
 		//   $hl_primary / $hl_secondary = Provide highlighting of text
 		// ------------------------------------- 
 
@@ -97,6 +98,10 @@ class cOmfRender {
 		// Make sure a proper split on was passed
 		$this->split_on = ($this->split_on == 'group' || $this->split_on == 'item') ? $this->split_on : 'group' ;
 		
+		// Split the filters into an array
+		$menu_filter = $this->process_filter($menu_filter);
+		$group_filter = $this->process_filter($group_filter);
+		
 		if ( !empty($om) ) {
 			$retval .= '<div id="om_menu">';
 
@@ -105,20 +110,17 @@ class cOmfRender {
 			foreach ($om['menus'] AS $menu) {
 
 				// Check for a filter
-				if ( !$menu_filter || strcasecmp($menu_filter, $menu['menu_name']) == 0 ) {
+				if ( !$menu_filter || in_array(strtolower($menu['menu_name']), $menu_filter) ) {
 
 					// Start a new menu
-					$retval .= '<div class="menu_name">';
-						if ( !empty($menu['menu_name']) ) {
-							$retval .= $this->clean($menu['menu_name']);
-						} else {
-							$retval .= $this->clean(ucwords($menu['menu_duration_name']));
-						}
+					$om_m = ( !empty($menu['menu_name']) ) ? $this->clean($menu['menu_name']) : $this->clean(ucwords($menu['menu_duration_name']));
+					$retval .= '<div id="om_m_'.$menu['menu_uid'].'" class="menu_name">'.$om_m;
+
 					// Check for a description
 					if ( !empty($menu['menu_description']) ) {
 						$retval .= '<br /><span class="sm_norm">'.$menu['menu_description'].'</span>';
 					}
-					$retval .= '</div><div class="menu_content">';
+					$retval .= '</div><div id="om_mc_'.$menu['menu_uid'].'" class="menu_content">';
 
 					// How many groups or items are there in this menu
 					//  used for 2 column displays
@@ -127,13 +129,13 @@ class cOmfRender {
 					if ( $this->split_on == 'group' && !$one_column ) {
 						$group_count = count($menu['menu_groups']);
 					} elseif ( $this->split_on == 'item' && !$one_column ) {
-						$item_count = $this->get_menu_item_count($menu);
+						$item_count = $this->get_menu_item_count($menu, $group_filter);
 					}
 
 					foreach ($menu['menu_groups'] AS $group) {
 						// Check for a group filter
-						if ( !$group_filter || strcasecmp($group_filter, $group['group_name'] ) == 0 ) {
-								
+						if ( !$group_filter || in_array(strtolower($group['group_name']), $group_filter) ) {
+							
 							// Should we start the left or right column 
 							if ( !$one_column && $this->split_on == 'group' ) {
 								if ($current_group == 1) { 
@@ -147,7 +149,8 @@ class cOmfRender {
 							}
 							
 							// Start a group
-							$retval .= '<h2>'.$this->clean($group['group_name']);
+							$om_g = $this->clean($group['group_name']);
+							$retval .= '<h2 id="om_mg_'.$om_g.'">'.$om_g;
 							
 							if ( !empty($group['group_description']) ) {
 								$retval .= '<br /><span class="sm_norm">'.$group['group_description'].'</span>';
@@ -225,9 +228,7 @@ class cOmfRender {
 							            }
 							            $retval .= '</dd>';
 							        }
-							        
-							        
-									
+
 							    	// Check for options
 						            if ( isset($item['menu_item_options']) && !empty($item['menu_item_options']) && is_array($item['menu_item_options']) ) {
 						            	$retval .= '<dd class="item_options">';
@@ -293,14 +294,14 @@ class cOmfRender {
 					
 					if ( !$one_column ) {
 						// Close the menu colums
-						if ( $current_group > 1 || $item_group > 1 ) {
+						if ( $current_group > 1 || $item_count > 1 ) {
 							$retval .= '</div><!-- END right menu -->';
 						}
 						$retval .= '<div class="clear"></div>';
 					}
 					
 					// Close the menu 
-					$retval .= '</div><br clear="all" /><!-- END #menu -->';
+					$retval .= '</div><!-- END #menu -->';
 					
 					if ( !$one_column ) {
 						$retval .= '<div class="page-break"></div>';
@@ -361,7 +362,7 @@ class cOmfRender {
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Private functions
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	private function get_menu_item_count ($menu) { 
+	private function get_menu_item_count ($menu, $filter = false) { 
 		// -------------------------------------
 		// Count the items in a all groups for a menu
 		// -------------------------------------
@@ -369,7 +370,9 @@ class cOmfRender {
 		$retval = 0;
 		if ( !empty($menu['menu_groups']) ) {
 			foreach ($menu['menu_groups'] AS $group) {
-				$retval += count($group['menu_items']);
+				if ( !$filter || in_array(strtolower($group['group_name']), $filter) ) {
+					$retval += count($group['menu_items']);
+				}
 			}
 		}
 		
@@ -712,6 +715,20 @@ class cOmfRender {
 			$retval = $currency_symbol;
 		}
 		
+		return $retval;
+	}
+
+	private function process_filter( $filter ) {
+		// ------------------------------------- 
+		//  Process a filter by splitting the string into an array
+		// ------------------------------------- 
+		
+		if (!empty($filter)) { 
+			$retval = array_map('trim', explode(',', $filter));
+			$retval = array_map('strtolower', $retval);
+		} else {
+			$retval = false;
+		}
 		return $retval;
 	}
 	
