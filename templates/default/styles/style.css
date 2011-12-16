@@ -9,8 +9,8 @@
 -------------------------------------------------------------------*/
 #openmenu { margin-bottom:10px; }
 
-#openmenu .clear { clear:both; }
-#openmenu small { font-size:.9em }
+#om_menu .clear { clear:both; }
+#om_menu small { font-size:.9em }
 
 #om_restaurant { margin-bottom:20px; }
 #om_restaurant #rest_name { font-weight:bold; font-size:1.1em; }
@@ -31,6 +31,8 @@
 #om_menu .menu_content h2 { color:#131618; font-family: Georgia, "Times New Roman", Times, serif; font-style:italic; margin-top:0; font-size:1.3em; margin-bottom:5px; }
 
 #om_menu #details {margin-top:15px;}
+#om_menu .menu_note { font-weight:normal;font-size:1em;font-style:italic;text-align:center;margin:-8px 0 9px 0 }
+#om_menu .group_note { font-weight:normal;font-size:1em;font-style:italic;text-align:center;margin:5px 0 -10px 0 }
 
 #om_menu dd { margin:0 }
 #om_menu dl { display:block; overflow:hidden; margin: 0 0 0.7em 10px; background: url('../images/menu_dot.gif') repeat-x 0 14px }
@@ -62,10 +64,9 @@
 #om_menu span.item_tag { color:#f1f1f1; font-size:11px; font-weight:bold; padding:1px 3px 0;position:relative; text-transform:uppercase; top:-2px; margin-right:5px }
 #om_menu span.special { background:#579F09 }
 #om_menu span.new { background:#EF1E0E }
-#om_menu span.vegetarian, #om_menu span.vegan, #om_menu span.kosher, #om_menu span.halal { background:#816554 }
+#om_menu span.vegetarian, #om_menu span.vegan, #om_menu span.kosher, #om_menu span.halal, #om_menu span.gluten_free { background:#816554 }
 
-#om_menu .menu_name { font-weight:bold; font-size:1.3em; margin-bottom:5px; padding-left:22px;
-background: transparent no-repeat url('../images/ico-16-menu.png') 0 5px; }
+#om_menu .menu_name { font-weight:bold; font-size:1.3em; margin-bottom:5px; padding-left:22px; background: transparent url('../images/ico-16-menu.png') no-repeat 0 5px; }
 
 #om_menu .goptions { font-size:.9em; text-align:center; padding:5px 0; }
 #om_menu .goptions-title { font-size:1em; font-weight:bold; padding-bottom:3px }
