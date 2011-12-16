@@ -8,7 +8,7 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.5.4
+// ** Version: 1.6.1
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -83,6 +83,7 @@ class cOmfReader {
 		    $om['restaurant_info']['brief_description'] = $this->_clean(@$xml->restaurant_info->brief_description, 255);
 		    $om['restaurant_info']['full_description'] = $this->_clean(@$xml->restaurant_info->full_description, 2000);
 		    $om['restaurant_info']['location_id'] = $this->_clean(@$xml->restaurant_info->location_id, 25);
+		    $om['restaurant_info']['mobile'] = $this->_clean(@$xml->restaurant_info->mobile, 1);
 		    $om['restaurant_info']['business_type'] = $this->_clean(@$xml->restaurant_info->business_type, 11);
 		    $om['restaurant_info']['address_1'] = $this->_clean(@$xml->restaurant_info->address_1, 120);
 		    $om['restaurant_info']['address_2'] = $this->_clean(@$xml->restaurant_info->address_2, 120);
@@ -264,7 +265,9 @@ class cOmfReader {
 					
 					$om['menus'][$menu_id]['menu_name'] = $this->_clean(@$menu['name'], 50);
 					$om['menus'][$menu_id]['menu_description'] = $this->_clean(@$menu->menu_description, 255);
+					$om['menus'][$menu_id]['menu_note'] = $this->_clean(@$menu->menu_note, 255);
 					$om['menus'][$menu_id]['currency_symbol'] = $this->_clean(@$menu['currency_symbol'], 3);
+					$om['menus'][$menu_id]['language'] = $this->_clean(@$menu['language'], 2);
 					$om['menus'][$menu_id]['menu_uid'] = $this->_clean(@$menu['uid']);
 					$om['menus'][$menu_id]['disabled'] = $is_disabled;
 							
@@ -285,6 +288,7 @@ class cOmfReader {
 					    	// Grab the group name
 					    	$om['menus'][$menu_id]['menu_groups'][$group_id]['group_name'] = $this->_clean(@$group['name'], 50);
 					    	$om['menus'][$menu_id]['menu_groups'][$group_id]['group_description'] = $this->_clean(@$group->menu_group_description, 255);
+					    	$om['menus'][$menu_id]['menu_groups'][$group_id]['group_note'] = $this->_clean(@$group->menu_group_note, 255);
 							$om['menus'][$menu_id]['menu_groups'][$group_id]['group_uid'] = $this->_clean(@$group['uid']);
 							$om['menus'][$menu_id]['menu_groups'][$group_id]['disabled'] = $is_disabled;
 
@@ -338,6 +342,7 @@ class cOmfReader {
 									$om['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['vegan'] = $this->check_attribute('vegan', @$item['vegan']);
 									$om['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['kosher'] = $this->check_attribute('kosher', @$item['kosher']);
 									$om['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['halal'] = $this->check_attribute('halal', @$item['halal']);
+									$om['menus'] [$menu_id] ['menu_groups'] [$group_id] ['menu_items'] [$item_id]['gluten_free'] = $this->check_attribute('gluten_free', @$item['gluten_free']);
 									
 									// Options
 							    	$option_id = 0;
@@ -432,6 +437,7 @@ class cOmfReader {
 	    $om['restaurant_info']['brief_description'] = '';
 	    $om['restaurant_info']['full_description'] = '';
 	    $om['restaurant_info']['location_id'] = '';
+	    $om['restaurant_info']['mobile'] = '';
 	    $om['restaurant_info']['address_1'] = '';
 	    $om['restaurant_info']['address_2'] = '';
 	    $om['restaurant_info']['city_town'] = '';

@@ -8,9 +8,9 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.5
+// ** Version: 1.6.2
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Compatible with OpenMenu Format v1.5
+// ** Compatible with OpenMenu Format v1.6
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Class
@@ -31,9 +31,11 @@ class cOmfRender {
 	public $disable_entities = false;
 
 	// Switches for data display
+	public $show_prices = true;
 	public $show_logo = true;
 	public $show_allergy_information = true;
 	public $show_calories = true;
+	public $show_options = true;
 
 	function get_restaurant_information ($om) {
 		// ------------------------------------- 
@@ -176,9 +178,10 @@ class cOmfRender {
 									$is_vegan = ($item['vegan'] == 1) ? '<span class="item_tag vegan">Vegan</span>' : '' ;
 									$is_kosher = ($item['kosher'] == 1) ? '<span class="item_tag kosher">Kosher</span>' : '' ;
 									$is_halal = ($item['halal'] == 1) ? '<span class="item_tag halal">Halal</span>' : '' ;
-									$tags = $is_special.$is_vegetarian.$is_vegan.$is_kosher.$is_halal;
+									$is_gluten_free = ($item['gluten_free'] == 1) ? '<span class="item_tag gluten_free">Gluten Free</span>' : '' ;
+									$tags = $is_special . $is_vegetarian . $is_vegan . $is_kosher . $is_halal. $is_gluten_free;
 									
-									$price = $this->fix_price($item['menu_item_price'], $menu['currency_symbol']);
+									$price = ($this->show_prices) ? $this->fix_price($item['menu_item_price'], $menu['currency_symbol']) : '';
 									// See if a thumbnail exists
 									$thumbnail = '';
 									if ( isset($item['menu_item_images']) ) {
@@ -223,21 +226,21 @@ class cOmfRender {
 						            if ( !empty($item['menu_item_sizes']) && is_array($item['menu_item_sizes']) ) {
 						            	$retval .= '<dd class="sizes">';
 							            foreach ($item['menu_item_sizes'] AS $size) {
-							            	$size_price = ' - '.$this->fix_price($size['menu_item_size_price'], $menu['currency_symbol']);
+							            	$size_price = ($this->show_prices) ? ' - '.$this->fix_price($size['menu_item_size_price'], $menu['currency_symbol']) : '' ;
 							            	$retval .= '<span>'.$this->clean($size['menu_item_size_name']).$size_price.'</span>';
 							            }
 							            $retval .= '</dd>';
 							        }
 
 							    	// Check for options
-						            if ( isset($item['menu_item_options']) && !empty($item['menu_item_options']) && is_array($item['menu_item_options']) ) {
+						            if ( $this->show_options && isset($item['menu_item_options']) && !empty($item['menu_item_options']) && is_array($item['menu_item_options']) ) {
 						            	$retval .= '<dd class="item_options">';
 							            foreach ($item['menu_item_options'] AS $option) {
 							            	$retval .= '<div><strong>'.$this->clean($option['item_options_name']).'</strong>: ';
 
 							            	 if ( isset($option['option_items']) && !empty($option['option_items']) ) {
 							            	 	 foreach($option['option_items'] AS $option_item) { 
-							            	 	 	$opt_price = $this->fix_price($option_item['menu_item_option_additional_cost'], $menu['currency_symbol'], ' - ');
+							            	 	 	$opt_price = ($this->show_prices) ? $this->fix_price($option_item['menu_item_option_additional_cost'], $menu['currency_symbol'], ' - ') : '' ;
 							            	 	 	$retval .= $this->clean($option_item['menu_item_option_name']).$opt_price.' | ';
 							            	 	 }
 							            	 	 // Strip the trailing |
@@ -257,7 +260,7 @@ class cOmfRender {
 								} // end item
 							}
 							// Display Group Options
-							if ( isset($group['menu_group_options']) && is_array($group['menu_group_options']) ) { 
+							if ( $this->show_options && isset($group['menu_group_options']) && is_array($group['menu_group_options']) ) { 
 								foreach($group['menu_group_options'] AS $option) { 
 									$retval .= '<div class="goptions">';
 									$retval .= '<div class="goptions-title">'.$this->clean($option['group_options_name']);
@@ -269,7 +272,7 @@ class cOmfRender {
 									// Check for Option Items
 									if ( isset($option['option_items']) && is_array($option['option_items']) ) { 
 										foreach($option['option_items'] AS $option_item) { 
-											$opt_price = $this->fix_price($option_item['menu_group_option_additional_cost'], $menu['currency_symbol'], ' - ');
+											$opt_price = ($this->show_prices) ?  $this->fix_price($option_item['menu_group_option_additional_cost'], $menu['currency_symbol'], ' - ') : '' ;
 											$retval .= $this->clean($option_item['menu_group_option_name']).$opt_price.' | ';
 										}
 										// Strip the trailing |
@@ -279,11 +282,16 @@ class cOmfRender {
 									$retval .= '</div>';
 								} 
 							}
-
+							
+							// Check for a note
+							if ( !empty($group['group_note']) ) {
+								$retval .= '<div class="group_note">('.$group['group_note'].')</div>';
+							}
+							
 							// End a group
 							if ( $one_column ) {
 								$retval .= '<span class="separator big"></span>';
-							} elseif ( $this->split_on == 'group' ) {
+							} elseif ( true || $this->split_on == 'group' ) {
 								$retval .= '<span class="separator small"></span>';
 							}
 
@@ -293,7 +301,7 @@ class cOmfRender {
 					} // end group
 					
 					if ( !$one_column ) {
-						// Close the menu colums
+						// Close the menu columns
 						if ( $current_group > 1 || $item_count > 1 ) {
 							$retval .= '</div><!-- END right menu -->';
 						}
@@ -307,15 +315,20 @@ class cOmfRender {
 						$retval .= '<div class="page-break"></div>';
 					}
 				
-				} // end menu filter
+					// Check for a note
+					if ( !empty($menu['menu_note']) ) {
+						$retval .= '<div class="menu_note">('.$menu['menu_note'].')</div>';
+					}
 				
+				} // end menu filter
+					
 			} // end menu loop
 		} else {
 			$retval .= 'There was an error displaying this menu. Please contact <a href="http://openmenu.com" target="_blank">OpenMenu</a> for assistance.';
 		}
 		
 		if (!$this->hide_attribute) {
-			$retval .= '<small><a href="http://openmenu.com" style="font-size:.9em;color:#00f;text-align:center;display:block">powered by OpenMenu</a></small>';
+			$retval .= '<small><a href="http://openmenu.com" style="clear:both;font-size:.9em;color:#00f;text-align:center;display:block">powered by OpenMenu</a></small>';
 		}
 		
 		$retval .= '</div><!-- #om_menu -->';
@@ -457,6 +470,7 @@ class cOmfRender {
 				"FRF" => "spaceThousandsCommaDecimal", 
 				"DEM" => "dotThousandsCommaDecimal", 
 				"GRD" => "dotThousandsCommaDecimal", 
+				"HRK" => "dotThousandsCommaDecimal", 
 				"ISK" => "dotThousandsCommaDecimal", 
 				"INR" => "indian", 
 				"ITL" => "dotThousandsCommaDecimal", 
@@ -561,7 +575,7 @@ class cOmfRender {
 			'XPF' => '',
 			'CDF' => '',
 			'CRC' => '',
-			'HRK' => 'kn',
+			'HRK' => ' kn',
 			'CUP' => '',
 			'CYP' => '',
 			'CZK' => ' Kč',
@@ -698,7 +712,7 @@ class cOmfRender {
 		);
 		
 		$symbol_after_amount = array(
-				"ISK", "ITL", "LTL", "NOK", "SEK", "THB", "CZK", "DKK", "HUF"
+				"ISK", "ITL", "LTL", "NOK", "SEK", "THB", "CZK", "DKK", "HUF", "HRK"
 		);
 		
 		$currency_symbol = '';
