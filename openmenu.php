@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.5.7
+	@version 1.6
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.5.7
+	Version: 1.6
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -60,16 +60,25 @@
 	
 	// Include widgets module
 	include OPENMENU_PATH . '/widgets.php';
-	
-	// Register the style so its available site-wide
-	wp_register_style('OpenMenu-Template-Default', OPENMENU_TEMPLATES_URL. '/default/styles/style.css');
-	wp_enqueue_style( 'OpenMenu-Template-Default');
 
 	// Override jquery
 	//wp_deregister_script('jquery');
 	//wp_register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js', false, '1.4.2');
 	//wp_enqueue_script('jquery');
 
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// ** Setup the style
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	add_action( 'init', 'om_add_styles' );
+	
+	function om_add_styles() {
+		// ------------------------------------- 
+		//  Register the stylesheet
+		// ------------------------------------- 
+		wp_register_style('OpenMenu-Template-Default', OPENMENU_TEMPLATES_URL. '/default/styles/style.css');
+		wp_enqueue_style( 'OpenMenu-Template-Default');
+	}
+	
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Activation hook for flushing 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
