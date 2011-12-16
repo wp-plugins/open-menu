@@ -142,8 +142,10 @@
 		            <p>
 		            	<strong><?php _e('Hours') ?>:</strong><br />
 <?php 
-	foreach ($omf_details['operating_days']['printable'] AS $daytime) {
-		echo $daytime.'<br />';
+	if (isset($omf_details['operating_days']) && is_array($omf_details['operating_days'])) {
+		foreach ($omf_details['operating_days']['printable'] AS $daytime) {
+			echo $daytime.'<br />';
+		}
 	}
 ?>
 			        </p>
