@@ -8,7 +8,7 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.6.2
+// ** Version: 1.6.3
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Compatible with OpenMenu Format v1.6
 // ** 
@@ -301,7 +301,7 @@ class cOmfRender {
 					} // end group
 					
 					if ( !$one_column ) {
-						// Close the menu columns
+						// Close the menu colums
 						if ( $current_group > 1 || $item_count > 1 ) {
 							$retval .= '</div><!-- END right menu -->';
 						}
@@ -328,7 +328,7 @@ class cOmfRender {
 		}
 		
 		if (!$this->hide_attribute) {
-			$retval .= '<small><a href="http://openmenu.com" style="clear:both;font-size:.9em;color:#00f;text-align:center;display:block">powered by OpenMenu</a></small>';
+			$retval .= '<small><a href="http://openmenu.com" style="font-size:.9em;color:#00f;text-align:center;display:block">powered by OpenMenu</a></small>';
 		}
 		
 		$retval .= '</div><!-- #om_menu -->';
@@ -735,10 +735,16 @@ class cOmfRender {
 	private function process_filter( $filter ) {
 		// ------------------------------------- 
 		//  Process a filter by splitting the string into an array
+		//   Handles commas and quotes in menu names
+		//     escape character is \
 		// ------------------------------------- 
-		
+
 		if (!empty($filter)) { 
-			$retval = array_map('trim', explode(',', $filter));
+			if ( function_exists('str_getcsv') ) {
+				$retval = array_map('trim', str_getcsv($filter, ',', '"'));
+			} else {
+				$retval = array_map('trim', explode(',', $filter));
+			}
 			$retval = array_map('strtolower', $retval);
 		} else {
 			$retval = false;
