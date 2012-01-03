@@ -19,9 +19,8 @@
 #om_restaurant p { margin-bottom:5px; }
 #om_restaurant #details { margin-top:15px;} 
 
-#om_menu { background-color:#fff; font-size:.9em; padding:5px; 
-		/* font-family: Arial, Verdana, Helvetica, sans-serif; */}
-#om_menu .sm_norm { font-weight:normal; font-size:.8em }
+#om_menu { background-color:#fff; font-size:.9em; padding:5px;}
+#om_menu .sm_norm { font-weight:normal; font-size:.8em; }
 
 #om_menu .full-menu {padding:5px;}
 #om_menu .left-menu {float:left; width:48%; padding:0 }
@@ -63,8 +62,12 @@
 
 #om_menu span.item_tag { color:#f1f1f1; font-size:11px; font-weight:bold; padding:1px 3px 0;position:relative; text-transform:uppercase; top:-2px; margin-right:5px }
 #om_menu span.special { background:#579F09 }
+#om_menu span.gluten_free { background:#09a1a1 }
+#om_menu span.kosher, #om_menu span.halal { background:#c00bba }
 #om_menu span.new { background:#EF1E0E }
-#om_menu span.vegetarian, #om_menu span.vegan, #om_menu span.kosher, #om_menu span.halal, #om_menu span.gluten_free { background:#816554 }
+#om_menu span.vegetarian, #om_menu span.vegan { background:#816554 }
+#om_menu #stk {text-align:center;margin:15px 0 8px 0}
+#om_menu #stk span.item_tag {margin:0 3px 0 5px}
 
 #om_menu .menu_name { font-weight:bold; font-size:1.3em; margin-bottom:5px; padding-left:22px; background: transparent url('../images/ico-16-menu.png') no-repeat 0 5px; }
 
