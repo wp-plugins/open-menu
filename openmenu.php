@@ -1,17 +1,17 @@
 <?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** OpenMenu Plugin, Copyright 2010 - 2011  Open Menu, LLC
+// ** OpenMenu Plugin, Copyright 2010 - 2012  Open Menu, LLC
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
 	@package OpenMenu
-	@version 1.6.1
+	@version 1.6.2
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.6.1
+	Version: 1.6.2
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -436,7 +436,8 @@
 					"display_columns" => "One", 
 					"split_on" => "item",
 					"show_allergy" => "on", 
-					"show_calories" => "on"
+					"show_calories" => "on",
+					"use_short_tag" => "off"
 				);
 			update_option('openmenu_options', $arr);
 		}
@@ -451,6 +452,7 @@
 		add_settings_field('drop_down1', __('Display Type'), 'setting_displaytype_fn', __FILE__, 'lookfeel_section');
 		add_settings_field('radio_buttons', __('How many columns?'), 'setting_displaycolumn_fn', __FILE__, 'lookfeel_section');
 		add_settings_field('radio_buttons_split', __('Split on (2 column menu)'), 'setting_spliton_fn', __FILE__, 'lookfeel_section');
+		add_settings_field('plugin_chk_shorttag', __('Use Short Tag'), 'setting_shorttag_fn', __FILE__, 'lookfeel_section');
 		add_settings_field('drop_down2', __('Theme'), 'setting_theme_fn', __FILE__, 'lookfeel_section');
 		
 		add_settings_section('menu_section', __('Your Menu'), 'section_data_fn', __FILE__);
@@ -492,6 +494,13 @@
 		echo '<p>'.__('What information do you want to show/hide from your menu').'</p>';
 	}
 
+	function setting_shorttag_fn() {
+		$checked = '';
+		$options = get_option('openmenu_options');
+		if( isset($options['use_short_tag']) ) { $checked = ' checked="checked" '; }
+		echo "<input ".$checked." id='plugin_chk_shorttag' name='openmenu_options[use_short_tag]' type='checkbox' /> ".__('(shortens the display of item tags like special and vegetarian)');
+	}
+	
 	function setting_showcalories_fn() {
 		$checked = '';
 		$options = get_option('openmenu_options');
@@ -958,6 +967,7 @@
 		$options = get_option( 'openmenu_options' );
 		$show_allergy = ( isset($options['show_allergy']) && $options['show_allergy'] ) ? true : false ;
 		$show_calories = ( isset($options['show_calories']) && $options['show_calories'] ) ? true : false ;
+		$use_short_tag = ( isset($options['use_short_tag']) && $options['use_short_tag'] ) ? true : false ;
 		// Only get Split On Global if shortcode isn't overriding
 		if (!$split_on) {
 			$split_on = ( isset($options['split_on']) ) ? $options['split_on'] : 'group' ;
@@ -971,6 +981,7 @@
 			$render->split_on = $split_on;
 			$render->show_allergy_information = $show_allergy;
 			$render->show_calories = $show_calories;
+			$render->use_short_tag = $use_short_tag;
 			$retval .= $render->get_menu_from_details($omf_details, $menu_filter, $group_filter);
 			unset($render);
 		}

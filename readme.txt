@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.3
-Stable tag: 1.6.1
+Stable tag: 1.6.2
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's into an existing theme.
 
@@ -82,6 +82,7 @@ Site Wide OpenMenu Settings:
 	Look & Feel: 
 		Display Type: What information will be displayed: Menu, Restaurant Information or Both
 		How many columns: How many columns will be used to display a menu (1 or 2)
+		Use Short Tags: Menu Item tags like special, vegatarian, halal, gluten free and such will be shortened to one or two letters
 		Theme: only default is currently supported
 
 	Your Menu: 
@@ -135,6 +136,10 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 5. Powerful Widgets
 
 == Changelog ==
+= 1.6.2 =
+* Updated menu renderings to include short tag renderings
+* Added a new Use Short Tag option to the global OpenMenu settings - this allows menu item tags like special, vegan, vegatarian to be shortened to one or two letters.
+
 = 1.6.1 =
 * Updated render class to support filters with quotes and commas in their names
 
