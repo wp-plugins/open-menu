@@ -8,7 +8,7 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.6.3
+// ** Version: 1.6.7
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Compatible with OpenMenu Format v1.6
 // ** 
@@ -23,6 +23,10 @@ class cOmfRender {
 	
 	// What do we split the columns on (item | group)
 	public $split_on = 'group';
+
+	// Determines if we use a short item tag (1 or 2 letter)
+	//   i.e. Specials = S / Vegetarian = V / Vegan = VG ...
+	public $use_short_tag = false;
 	
 	// Determines if the attribute to OpenMenu is displayed
 	public $hide_attribute = false;
@@ -152,7 +156,7 @@ class cOmfRender {
 							
 							// Start a group
 							$om_g = $this->clean($group['group_name']);
-							$retval .= '<h2 id="om_mg_'.$om_g.'">'.$om_g;
+							$retval .= '<h2 id="om_mg_'.$group['group_uid'].'">'.$om_g;
 							
 							if ( !empty($group['group_description']) ) {
 								$retval .= '<br /><span class="sm_norm">'.$group['group_description'].'</span>';
@@ -172,13 +176,14 @@ class cOmfRender {
 											$retval .= '<div class="right-menu">';
 										}
 									}
-									
-									$is_special = ($item['special'] == 1) ? '<span class="item_tag special">Special</span>' : '' ;
-									$is_vegetarian = ($item['vegetarian'] == 1) ? '<span class="item_tag vegetarian">Vegetarian</span>' : '' ;
-									$is_vegan = ($item['vegan'] == 1) ? '<span class="item_tag vegan">Vegan</span>' : '' ;
-									$is_kosher = ($item['kosher'] == 1) ? '<span class="item_tag kosher">Kosher</span>' : '' ;
-									$is_halal = ($item['halal'] == 1) ? '<span class="item_tag halal">Halal</span>' : '' ;
-									$is_gluten_free = ($item['gluten_free'] == 1) ? '<span class="item_tag gluten_free">Gluten Free</span>' : '' ;
+
+									// Generate the item option tags list
+									$is_special = $this->get_tag_text('special', $item['special']);
+									$is_vegetarian = $this->get_tag_text('vegetarian', $item['vegetarian']);
+									$is_vegan = $this->get_tag_text('vegan', $item['vegan']);
+									$is_kosher = $this->get_tag_text('kosher', $item['kosher']);
+									$is_halal = $this->get_tag_text('halal', $item['halal']);
+									$is_gluten_free = $this->get_tag_text('gluten_free', $item['gluten_free']);
 									$tags = $is_special . $is_vegetarian . $is_vegan . $is_kosher . $is_halal. $is_gluten_free;
 									
 									$price = ($this->show_prices) ? $this->fix_price($item['menu_item_price'], $menu['currency_symbol']) : '';
@@ -317,7 +322,7 @@ class cOmfRender {
 				
 					// Check for a note
 					if ( !empty($menu['menu_note']) ) {
-						$retval .= '<div class="menu_note">('.$menu['menu_note'].')</div>';
+						$retval .= '<div "om_mn_'.$menu['menu_uid'].'" class="menu_note">('.$menu['menu_note'].')</div>';
 					}
 				
 				} // end menu filter
@@ -325,6 +330,17 @@ class cOmfRender {
 			} // end menu loop
 		} else {
 			$retval .= 'There was an error displaying this menu. Please contact <a href="http://openmenu.com" target="_blank">OpenMenu</a> for assistance.';
+		}
+		
+		// Should we add a key for short tags
+		if ( $this->use_short_tag ) {
+			$retval .=  '<div id="stk">';
+			$retval .=  '<span class="item_tag special">S</span>Special '.
+						'<span class="item_tag vegetarian">V</span>Vegetarian '.
+						'<span class="item_tag vegan">VG</span>Vegan '.
+						'<span class="item_tag halal">H</span>Halal '.
+						'<span class="item_tag kosher">K</span>Kosher '.
+						'<span class="item_tag gluten_free">GF</span>Gluten Free</div>';
 		}
 		
 		if (!$this->hide_attribute) {
@@ -751,7 +767,39 @@ class cOmfRender {
 		}
 		return $retval;
 	}
-	
+
+	function get_tag_text ($type, $value) {
+		// ------------------------------------- 
+		//  Handle getting the test for menu item option tags
+		// ------------------------------------- 
+		
+		// Set the tags text
+		switch ( $type ) {
+			case 'special':
+				$text = ( $this->use_short_tag ) ? 'S' : 'Special' ;
+				break;
+			case 'vegetarian':
+				$text = ( $this->use_short_tag ) ? 'V' : 'Vegetarian' ;
+				break;	
+			case 'vegan':
+				$text = ( $this->use_short_tag ) ? 'VG' : 'Vegan' ;
+				break;
+			case 'kosher':
+				$text = ( $this->use_short_tag ) ? 'K' : 'Kosher' ;
+				break;
+			case 'halal':
+				$text = ( $this->use_short_tag ) ? 'H' : 'Halal' ;
+				break;
+			case 'gluten_free':
+				$text = ( $this->use_short_tag ) ? 'GF' : 'Gluten Free' ;
+				break;
+			default:
+				$retval = '';
+		}
+
+		$retval = ($value == 1) ? '<span class="item_tag '.$type.'">' . $text .'</span>' : '' ;
+		return $retval;
+	}
 } // END CLASS
 
 ?>
