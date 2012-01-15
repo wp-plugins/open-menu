@@ -13,6 +13,8 @@ This plugin allows you to easily create posts that are based on your OpenMenu an
 
 The OpenMenu Plugin is the official plugin for OpenMenu and adding restaurant menus to any Wordpress website.
 
+Get your OpenMenu at: http://OpenMenu.com
+
 Features:
 
 * OpenMenu Custom Post Type
