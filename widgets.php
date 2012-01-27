@@ -1,7 +1,7 @@
 <?php
 /**
  * @package OpenMenu
- * @version 1.6.2
+ * @version 1.6.3
  */
 /*
 
@@ -194,7 +194,7 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 	class openmenu_specials extends WP_Widget {  
 		function openmenu_specials() {  
 			/* Widget settings. */
-			$widget_ops = array( 'classname' => 'om-specials', 'description' => __('Display a list of specials as defined in an Open Menu Format menu') );
+			$widget_ops = array( 'classname' => 'om-specials', 'description' => __('Display a list of specials as defined in an OpenMenu') );
 
 			/* Widget control settings. */
 			$control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-specials' );
@@ -270,7 +270,7 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 	class openmenu_restaurant_location extends WP_Widget {  
 		function openmenu_restaurant_location() {  
 			/* Widget settings. */
-			$widget_ops = array( 'classname' => 'example', 'description' => __('Display a restaurant\'s location as defined in an Open Menu Format menu') );
+			$widget_ops = array( 'classname' => 'example', 'description' => __('Display a restaurant\'s location as defined in an OpenMenu') );
 
 			/* Widget control settings. */
 			$control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-restaurant-location' );
@@ -330,7 +330,7 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 			if ( $title )
 				echo $before_title . $title . $after_title;
 			
-			// Get the Open Menu Format details
+			// Get the OpenMenu details
 			if ( $omf_url ) {
 				$omf_details = _get_menu_details($omf_url);
 
@@ -362,7 +362,8 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 			$defaults = array( 
 							'title' => 'QR Code', 
 							'openmenu_id' => '', 
-							'qr_size' => '128', 
+							'qr_size' => '128',
+							'include_link' => false,
 						);
 			$instance = wp_parse_args( (array) $instance, $defaults ); ?>
 			<p>
@@ -378,6 +379,10 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 				<label for="<?php echo $this->get_field_id( 'qr_size' ); ?>"><?php _e('Size (max: 500): '); ?></label>
 				<input id="<?php echo $this->get_field_id( 'qr_size' ); ?>" name="<?php echo $this->get_field_name( 'qr_size' ); ?>" value="<?php echo $instance['qr_size']; ?>" size="3" />
 			</p>
+			<p>
+				<input class="checkbox" type="checkbox" <?php checked($instance['include_link'], true) ?> id="<?php echo $this->get_field_id('include_link'); ?>" name="<?php echo $this->get_field_name('include_link'); ?>" />
+				<label for="<?php echo $this->get_field_id('include_link'); ?>"><?php _e('Include Mobile Site Link'); ?></label><br />
+			</p>
 		<?php
 		}
 		
@@ -389,6 +394,7 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 			$instance['title'] = strip_tags( $new_instance['title'] );
 			$instance['openmenu_id'] = $new_instance['openmenu_id'];
 			$instance['qr_size'] = $new_instance['qr_size'];
+			$instance['include_link'] = isset($new_instance['include_link']) ? 1 : 0 ;
 			
 			return $instance;
 		}
@@ -400,6 +406,7 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 			$title = apply_filters('widget_title', $instance['title'] );
 			$openmenu_id = isset( $instance['openmenu_id'] ) ? $instance['openmenu_id'] : false;
 			$qr_size = isset( $instance['qr_size'] ) ? $instance['qr_size'] : '128';
+			$include_link = isset( $instance['include_link'] ) ? $instance['include_link'] : false;
 			
 			/* Before widget (defined by themes). */
 			echo $before_widget;
@@ -412,6 +419,9 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 				// QR Code
 				echo '<div style="text-align:center">'.openmenu_qrcode($openmenu_id, $qr_size).'</div>';
 				
+				if ( $include_link ) {
+					echo '<p style="text-align:center"><a href="http://openmenu.com/m/restaurant/'.$openmenu_id.'">'.__('mobile site').'</a></p>';
+				}
 			}
 
 			/* After widget (defined by themes). */
@@ -505,8 +515,9 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 			$location .= '<div style="margin-top:5px;">';
 			$location .= '<p><strong>Address:</strong><br />';
 		    $location .= $omf_details['restaurant_info']['address_1'].'<br />';
-		    $location .= $omf_details['restaurant_info']['city_town'].', '.
-		    			$omf_details['restaurant_info']['country'].' '.
+		    $location .= $omf_details['restaurant_info']['city_town'].', ';
+		    $location .= (!empty($omf_details['restaurant_info']['state_province'])) ? $omf_details['restaurant_info']['state_province'].', ' : '' ;
+		    $location .= $omf_details['restaurant_info']['country'].' '.
 		    		    $omf_details['restaurant_info']['postal_code'].'<br />'.
 		    	        '<strong>Phone: </strong> '.$omf_details['restaurant_info']['phone'];
 		    $location .= '<br /></p>';

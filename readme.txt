@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.3
-Stable tag: 1.6.2
+Stable tag: 1.6.3
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's into an existing theme.
 
@@ -27,14 +27,14 @@ Features:
 
 == Detailed Features ==
 OpenMenu Custom Post Type: 
-	Create custom posts which are menus based off of your OpenMenu Format menu.  Choose what to display, how to display it and the plugin does the rest.
+	Create custom posts which are menus based off of your OpenMenu.  Choose what to display, how to display it and the plugin does the rest.
 	
 	Settings:
-		OpenMenu Location (URL) - This is a required field that points to your OpenMenu Format menu
+		OpenMenu Location (URL) - This is a required field that points to your OpenMenu
 		
 		Filters
-			Menu Name to display: If your OpenMenu Format menu contains multiple menus (ex. Lunch / Dinner) you can choose which menu to display in your post by entering the menu name here. (supports a comma-separated list)
-			Group Name to display: If your OpenMenu Format menu contains multiple menu groups (ex. salads / deserts) you can choose which group to display in your post by entering the group name here. (supports a comma-separated list)
+			Menu Name to display: If your OpenMenu contains multiple menus (ex. Lunch / Dinner) you can choose which menu to display in your post by entering the menu name here. (supports a comma-separated list)
+			Group Name to display: If your OpenMenu contains multiple menu groups (ex. salads / deserts) you can choose which group to display in your post by entering the group name here. (supports a comma-separated list)
 
 		Restaurant Information: Stores basic information about the restaurant that is referenced by the menu. This is primarly used in scenarios where many restaurant menu's will be displayed.  Information, along with the excerpt, will be used to generate a single page of all menus.
 
@@ -50,7 +50,7 @@ Short code:
 	[openmenu]
 	
 	Parameters:
-		omf_url          = URL pointing to the OpenMenu Format menu
+		omf_url          = URL pointing to the OpenMenu
 		display_type     = menu (only option currently available)
 		menu_filter      = Will display only the menu name matching this filter (supports a comma-separated list)
 		group_filter     = Will display only the group name matching this filter (supports a comma-separated list)
@@ -109,10 +109,10 @@ Icon designed by Ben Dunkle, core designer for Wordpress.org. Website: http://fi
 
 == Frequently Asked Questions ==
 
-= How do I get a menu in the OpenMenu Format so I can use this awesome plugin? =
+= How do I get my menu converted to an OpenMenu so I can use this awesome plugin? =
 
 Goto: http://OpenMenu.com/about.php and read about OpenMenu
-Online Menu Creator: http://OpenMenu.com/creator
+OpenMenu Creator: http://OpenMenu.com/creator
 
 = How do I find out about updates to this plugin? =
 
@@ -138,6 +138,12 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 5. Powerful Widgets
 
 == Changelog ==
+= 1.6.3 =
+* Added 'Include Mobile Link' to QR Code widget so a direct link to a restaurants mobile site on OpenMenu is displayed
+* Updated some copy to better align with the OpenMenu brand
+* Fixed state missing from Restaurant Location widget
+* Fixed ref parameter
+
 = 1.6.2 =
 * Updated menu renderings to include short tag renderings
 * Added a new Use Short Tag option to the global OpenMenu settings - this allows menu item tags like special, vegan, vegatarian to be shortened to one or two letters.
