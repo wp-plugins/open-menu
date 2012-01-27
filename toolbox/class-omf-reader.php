@@ -51,7 +51,7 @@ class cOmfReader {
 		
 		// Get the XML contents for the OMF file
 		$xml = $this->get_xml_from_url($omf_file_location);
-		
+
 		// Update the hash
 		$this->menu_hash = md5($xml);
 		
