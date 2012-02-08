@@ -1,6 +1,6 @@
 <?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** OpenMenu, LLC http://openmenu.com
+// ** OpenMenu, LLC http://openmenu.org
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Copyright (C) 2010, 2011 Open Menu, LLC
 // **		
@@ -8,7 +8,7 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.6.7
+// ** Version: 1.6.8
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Compatible with OpenMenu Format v1.6
 // ** 
@@ -120,7 +120,8 @@ class cOmfRender {
 
 					// Start a new menu
 					$om_m = ( !empty($menu['menu_name']) ) ? $this->clean($menu['menu_name']) : $this->clean(ucwords($menu['menu_duration_name']));
-					$retval .= '<div id="om_m_'.$menu['menu_uid'].'" class="menu_name">'.$om_m;
+					$m_disabled = ( $menu['disabled'] ) ? ' m_disabled' : '' ;
+					$retval .= '<div id="om_m_'.$menu['menu_uid'].'" class="menu_name'.$m_disabled.'">'.$om_m;
 
 					// Check for a description
 					if ( !empty($menu['menu_description']) ) {
@@ -156,7 +157,8 @@ class cOmfRender {
 							
 							// Start a group
 							$om_g = $this->clean($group['group_name']);
-							$retval .= '<h2 id="om_mg_'.$group['group_uid'].'">'.$om_g;
+							$g_disabled = ( $group['disabled'] ) ? ' class="g_disabled"' : '' ;
+							$retval .= '<h2 id="om_mg_'.$group['group_uid'].'"'.$g_disabled.'>'.$om_g;
 							
 							if ( !empty($group['group_description']) ) {
 								$retval .= '<br /><span class="sm_norm">'.$group['group_description'].'</span>';
@@ -197,8 +199,8 @@ class cOmfRender {
 									}
 										
 						            $retval .= '<dl>';
-						            
-						            $retval .= '<dt class="pepper_' . $item['menu_item_heat_index'] . '">' . $thumbnail . $tags .
+						            $i_disabled = ( $item['disabled'] ) ? ' i_disabled' : '' ;
+						            $retval .= '<dt class="pepper_' . $item['menu_item_heat_index'] . $i_disabled  . '">' . $thumbnail . $tags .
 						            		 $this->hl_food( $this->clean($item['menu_item_name']), $hl_primary, $hl_secondary ) . '</dt>';
 						            $retval .= '<dd class="price">'.$price.'</dd>';
 									
@@ -480,6 +482,7 @@ class cOmfRender {
 				"ARS" => "dotThousandsCommaDecimal", 
 				"ATS" => "dotThousandsCommaDecimal", 
 				"BEF" => "dotThousandsCommaDecimal", 
+				"BHD" => "dotThousandsNoDecimals", 
 				"REAL" => "dotThousandsCommaDecimal", 
 				"DKR" => "dotThousandsCommaDecimal", 
 				"FIM" => "spaceThousandsCommaDecimal", 
@@ -512,7 +515,7 @@ class cOmfRender {
 				$retval = number_format($amount, 2, ",", ".");
 				break;
 			case "dotThousandsNoDecimals" :
-				$str = number_format($amount, 2, "", ".");
+				$str = number_format($amount, 2, ",", ".");
 				$retval = substr($str, 0, -3);
 				break;
 			case "spaceThousandsCommaDecimal" :
@@ -530,14 +533,14 @@ class cOmfRender {
 					$retval = number_format($amount, 2);
 				break;
 			case "noDecimals" :
-				$str = number_format($amount, 2, "", ",");
+				$str = number_format($amount, 2, ".", ",");
 				$retval = substr($str, 0, -3);
 				break;
 			case "spaceThousandsDotDecimal" :
 				$retval = number_format($amount, 2, ".", " ");
 				break;
 			case "apostropheThousandsNoDecimals" :
-				$retval = number_format($amount, 2, ".", " ");
+				$retval = number_format($amount, 2, ".", "'");
 				$retval = substr($str, 0, -3);
 				break;
 			case "apostropheThousandsDotDecimal" :
@@ -564,7 +567,7 @@ class cOmfRender {
 			'AUD' => '$',
 			'AZN' => '',
 			'BSD' => '$',
-			'BHD' => '',
+			'BHD' => 'BHD ',
 			'BDT' => '',
 			'BBD' => '$',
 			'BYR' => '',
