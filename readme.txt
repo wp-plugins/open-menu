@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.3
-Stable tag: 1.6.3
+Stable tag: 1.6.4
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's into an existing theme.
 
@@ -138,6 +138,9 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 5. Powerful Widgets
 
 == Changelog ==
+= 1.6.4 =
+* Updated render class to better support foreign currencies
+
 = 1.6.3 =
 * Added 'Include Mobile Link' to QR Code widget so a direct link to a restaurants mobile site on OpenMenu is displayed
 * Updated some copy to better align with the OpenMenu brand
