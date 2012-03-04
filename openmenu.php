@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.6.4
+	@version 1.6.5
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.6.4
+	Version: 1.6.5
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -437,6 +437,7 @@
 					"split_on" => "item",
 					"show_allergy" => "on", 
 					"show_calories" => "on",
+					"hide_prices" => "on",
 					"use_short_tag" => "off"
 				);
 			update_option('openmenu_options', $arr);
@@ -458,6 +459,7 @@
 		add_settings_section('menu_section', __('Your Menu'), 'section_data_fn', __FILE__);
 		add_settings_field('plugin_chk_allergy', __('Show Allergy Information'), 'setting_showallergy_fn', __FILE__, 'menu_section');
 		add_settings_field('plugin_chk_calories', __('Show Calories'), 'setting_showcalories_fn', __FILE__, 'menu_section');
+		add_settings_field('plugin_chk_prices', __('Hide Prices'), 'setting_hideprices_fn', __FILE__, 'menu_section');
 		
 		add_settings_section('om_section', __('OpenMenu Listing'), 'section_om_fn', __FILE__);
 		add_settings_field('plugin_om_title', __('Title'), 'setting_om_title_fn', __FILE__, 'om_section');
@@ -499,6 +501,13 @@
 		$options = get_option('openmenu_options');
 		if( isset($options['use_short_tag']) ) { $checked = ' checked="checked" '; }
 		echo "<input ".$checked." id='plugin_chk_shorttag' name='openmenu_options[use_short_tag]' type='checkbox' /> ".__('(shortens the display of item tags like special and vegetarian)');
+	}
+
+	function setting_hideprices_fn() {
+		$checked = '';
+		$options = get_option('openmenu_options');
+		if( isset($options['hide_prices']) ) { $checked = ' checked="checked" '; }
+		echo "<input ".$checked." id='plugin_chk_prices' name='openmenu_options[hide_prices]' type='checkbox' />";
 	}
 	
 	function setting_showcalories_fn() {
@@ -967,6 +976,7 @@
 		$options = get_option( 'openmenu_options' );
 		$show_allergy = ( isset($options['show_allergy']) && $options['show_allergy'] ) ? true : false ;
 		$show_calories = ( isset($options['show_calories']) && $options['show_calories'] ) ? true : false ;
+		$show_prices = ( isset($options['hide_prices']) && $options['hide_prices'] ) ? false : true ;
 		$use_short_tag = ( isset($options['use_short_tag']) && $options['use_short_tag'] ) ? true : false ;
 		// Only get Split On Global if shortcode isn't overriding
 		if (!$split_on) {
@@ -981,6 +991,7 @@
 			$render->split_on = $split_on;
 			$render->show_allergy_information = $show_allergy;
 			$render->show_calories = $show_calories;
+			$render->show_prices = $show_prices;
 			$render->use_short_tag = $use_short_tag;
 			$retval .= $render->get_menu_from_details($omf_details, $menu_filter, $group_filter);
 			unset($render);

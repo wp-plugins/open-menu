@@ -1,7 +1,7 @@
 <?php
 /**
  * @package OpenMenu
- * @version 1.6.4
+ * @version 1.6.5
  */
 /*
 
@@ -543,6 +543,9 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 		//  Return a preformatted HTML list of specials
 		// ------------------------------------- 
 		
+		$options = get_option( 'openmenu_options' );
+		$show_prices = ( isset($options['hide_prices']) && $options['hide_prices'] ) ? false : true ;
+		
 		$specials = '';
 		if ( isset($omf_details['menus']) ) {
 			$specials .= '<div style="margin-top:5px;">';
@@ -553,7 +556,7 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 							if ( isset($group['menu_items']) ) {
 								foreach ($group['menu_items'] AS $item) {
 									if ( $item['special'] ) {
-										$price = ( !empty($item['menu_item_price']) ) ? ' - $'.number_format($item['menu_item_price'], 2) : '' ;
+										$price = ( $show_prices && !empty($item['menu_item_price']) ) ? ' - $'.number_format($item['menu_item_price'], 2) : '' ;
 										$specials .= '<p><strong>'.$item['menu_item_name'].
 											$price.'</strong> ';
 										$specials .= '<br />'.$item['menu_item_description'];
