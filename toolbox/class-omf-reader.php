@@ -1,6 +1,6 @@
 <?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** OpenMenu, LLC http://openmenu.com
+// ** OpenMenu, LLC http://openmenu.org
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Copyright (C) 2010, 2011 Open Menu, LLC
 // **	
@@ -8,9 +8,9 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.6.1
+// ** Version: 1.6.4
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
+//   TEST - TEST - TEST: allowed simplexml_load_file to work
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Constants: 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -32,7 +32,7 @@ class cOmfReader {
 	
 	// Set if the data is being used for display purposes on a website
 	//   this forces special characters into html entities
-	public $use_htmlspecialcahrs = true;
+	public $use_htmlspecialchars = true;
 	
 	// Flags to see if we have things
 	public $has_menu = false;
@@ -40,6 +40,9 @@ class cOmfReader {
 	
 	// Determine whether disabled menus/menu groups/menu items are included
 	public $include_disabled = false;
+	
+	// Allow Private restaurants to be read
+	public $include_private = true;
 	
 	// MD5 Hash of the menu
 	public $menu_hash = '';
@@ -51,16 +54,20 @@ class cOmfReader {
 		
 		// Get the XML contents for the OMF file
 		$xml = $this->get_xml_from_url($omf_file_location);
-
+		
 		// Update the hash
 		$this->menu_hash = md5($xml);
 		
 		$om = array();
 		// Now parse it
 		if ($xml) {
+			$is_private = $this->check_attribute('private', @$xml['private'] );
+			
+		  if ( $this->include_private || !$is_private ) {
 			// OMF information
 			$om['omf_uuid'] = $this->_clean(@$xml['uuid']);
 			$om['omf_accuracy'] = $this->_clean(@$xml['accuracy']);
+			$om['omf_private'] = $is_private;
 			if (isset($xml->openmenu->version)) {
 				$om['omf_version'] = $this->_clean(@$xml->openmenu->version);
 			} else {
@@ -421,7 +428,7 @@ class cOmfReader {
 			    } // disable check
 			    } // efe
 		    } // ei
-		   
+		  } // private check
 		}
 
 		return $om;
@@ -588,7 +595,7 @@ class cOmfReader {
 		}
 		
 		// Return the cleaned and trimmed data
-		return ($this->use_htmlspecialcahrs) ? htmlspecialchars($data) : $data;
+		return ($this->use_htmlspecialchars) ? htmlspecialchars($data) : $data;
 	}
 	
 	private function check_attribute ($expected_value, $set_value) {
@@ -609,7 +616,7 @@ class cOmfReader {
 		$xml = false;
 		
 		// Get the XML contents for the OMF file
-		if ( false && function_exists('simplexml_load_file') ) {
+		if ( function_exists('simplexml_load_file') ) {
 			$xml = @simplexml_load_file($omf_file_location);
 		} else {
 			if ( function_exists( 'curl_init' ) ) {
