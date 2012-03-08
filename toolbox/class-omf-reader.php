@@ -8,9 +8,9 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.6.4
+// ** Version: 1.6.5
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//   TEST - TEST - TEST: allowed simplexml_load_file to work
+// 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Constants: 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -616,7 +616,7 @@ class cOmfReader {
 		$xml = false;
 		
 		// Get the XML contents for the OMF file
-		if ( function_exists('simplexml_load_file') ) {
+		if ( false && function_exists('simplexml_load_file') ) {
 			$xml = @simplexml_load_file($omf_file_location);
 		} else {
 			if ( function_exists( 'curl_init' ) ) {
