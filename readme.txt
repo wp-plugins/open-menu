@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.3.1
-Stable tag: 1.6.5
+Stable tag: 1.6.6
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's into an existing theme.
 
@@ -138,6 +138,9 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 5. Powerful Widgets
 
 == Changelog ==
+= 1.6.6 =
+* Fixed issues where some user experienced blank menus
+
 = 1.6.5 =
 * Added Show/Hide prices to Settings -> OpenMenu
 * Updated render and reader engine

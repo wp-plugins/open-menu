@@ -1,7 +1,7 @@
 <?php
 /**
  * @package OpenMenu
- * @version 1.6.5
+ * @version 1.6.6
  */
 /*
 
