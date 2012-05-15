@@ -2,13 +2,13 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** OpenMenu, LLC http://openmenu.org
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Copyright (C) 2010, 2011 Open Menu, LLC
+// ** Copyright (C) 2010 - 2012 Open Menu, LLC
 // **		
 // ** Licensed under the MIT License:
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.6.8
+// ** Version: 1.6.12
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Compatible with OpenMenu Format v1.6
 // ** 
@@ -35,6 +35,8 @@ class cOmfRender {
 	public $disable_entities = false;
 
 	// Switches for data display
+	public $show_item_images = true;
+	public $allow_image_zoom = false;  // uses the om_item_zoom class for lightboxing
 	public $show_prices = true;
 	public $show_logo = true;
 	public $show_allergy_information = true;
@@ -52,7 +54,7 @@ class cOmfRender {
 		if ( !empty($om) ) {
 			$retval .= '<div id="om_restaurant">';
 			if ( !empty($logo) ) { 
-				$retval .= '<div id="restaurant_logo"><img src="'.$logo.'" alt="'.$om['restaurant_info']['restaurant_name'].'" /></div>';
+				$retval .= '<div id="restaurant_logo"><img src="'.$logo.'" alt="'.$om['restaurant_info']['restaurant_name'].'" alt="" /></div>';
 			}
 			$retval .= '<div id="restaurant_name">'.$om['restaurant_info']['restaurant_name'].'</div>';
 			$retval .= '<div id="restaurant_type"><strong>Type:</strong> ' . $om['environment_info']['cuisine_type_primary']. '</div>';
@@ -191,10 +193,12 @@ class cOmfRender {
 									$price = ($this->show_prices) ? $this->fix_price($item['menu_item_price'], $menu['currency_symbol']) : '';
 									// See if a thumbnail exists
 									$thumbnail = '';
-									if ( isset($item['menu_item_images']) ) {
-										$thumbnail = $this->extract_thumbnail($item['menu_item_images']);
+									if ( $this->show_item_images && isset($item['menu_item_images']) ) {
+										$thumbnail = $this->extract_item_image($item['menu_item_images'], 'thumbnail', 'web');
 										if ($thumbnail) {
-											$thumbnail = '<img class="mi_thumb" src="'.$thumbnail.'" width="32" height="32" />';
+											$full_size = ($this->allow_image_zoom) ? $this->extract_item_image($item['menu_item_images'], 'full', 'web') : false ;
+											$thumbnail = '<img class="mi_thumb" src="'.$thumbnail.'" width="48" height="48" alt="" />';
+											$thumbnail = ($full_size) ? '<a class="om_item_zoom" href="' . $full_size . '" title="' . $this->clean($item['menu_item_name']) . '" target="_blank">'.$thumbnail.'</a>' : $thumbnail ;
 										}
 									}
 										
@@ -324,7 +328,7 @@ class cOmfRender {
 				
 					// Check for a note
 					if ( !empty($menu['menu_note']) ) {
-						$retval .= '<div "om_mn_'.$menu['menu_uid'].'" class="menu_note">('.$menu['menu_note'].')</div>';
+						$retval .= '<div id="om_mn_'.$menu['menu_uid'].'" class="menu_note">('.$menu['menu_note'].')</div>';
 					}
 				
 				} // end menu filter
@@ -418,20 +422,18 @@ class cOmfRender {
 		
 		return ($this->disable_entities) ? $str : htmlentities($str, ENT_COMPAT, 'UTF-8');
 	}
-
-	private function extract_thumbnail( $item_images, $skip = false  ) {
+	
+	private function extract_item_image( $item_images, $type = 'Thumbnail', $media = 'Web'  ) {
 		// ------------------------------------- 
 		//  Attempt to extract a thumbnail image from a menu item's image list
 		//    Looks for a Thumbnail for a media type of Web
 		// ------------------------------------- 
-		if ( $skip ) {
-			return '';
-		}
-		
+
 		$retval = '';
 		foreach ($item_images AS $img) {
-			if ( strcasecmp($img['image_type'], 'Thumbnail' ) === 0 && 
-				 strcasecmp($img['image_media'], 'Web' ) === 0 &&
+			if ( strcasecmp($img['image_type'], $type ) === 0 && 
+				 (strcasecmp($img['image_media'], $media ) === 0 || 
+				  strcasecmp($img['image_media'], 'All' ) === 0 ) && 
 				 !empty($img['image_url']) ) {
 				$retval = $img['image_url'];
 			}
