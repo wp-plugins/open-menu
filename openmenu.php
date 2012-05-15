@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.6.6
+	@version 1.6.7
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.6.6
+	Version: 1.6.7
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -982,7 +982,7 @@
 		if (!$split_on) {
 			$split_on = ( isset($options['split_on']) ) ? $options['split_on'] : 'group' ;
 		}
-
+		
 		if ( !empty($omf_details) ) {
 			include_once OPENMENU_PATH.'/toolbox/class-omf-render.php'; 
 			$render = new cOmfRender; 
