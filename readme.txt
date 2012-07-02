@@ -3,8 +3,8 @@ Contributors: openmenu
 Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
-Tested up to: 3.3.2
-Stable tag: 1.6.7
+Tested up to: 3.4.1
+Stable tag: 1.6.8
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's into an existing theme.
 
@@ -90,6 +90,7 @@ Site Wide OpenMenu Settings:
 	Your Menu: 
 		Show Allergy Information: Determines if Allergy Information is displayed in a menu
 		Show Calories: Determines if Calories are displayed in a menu
+		Hide Prices: Determines if prices are shown for your menu items
 
 	Wordpress Theme: 
 		Show posts on homepage: Determines whether OpenMenu post types are displayed on the homepage blog post listing and in the RSS feed for the website.
@@ -138,6 +139,10 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 5. Powerful Widgets
 
 == Changelog ==
+= 1.6.8 = 
+* Updated aspect ratio issue with image thumbnails
+* Changed name of myfeed_request() function to prevent conflicts
+
 = 1.6.7 = 
 * Updated render class to fix issue with Menu Item Images not showing
 * Updated the default style to better align with the base style provided by OpenMenu on all menu renderings

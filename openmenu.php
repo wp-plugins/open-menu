@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.6.7
+	@version 1.6.8
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.6.7
+	Version: 1.6.8
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -228,9 +228,9 @@
 // ** Update RSS Feed to include custom post type: 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-	add_filter('request', 'myfeed_request');
+	add_filter('request', 'om_myfeed_request');
 
-	function myfeed_request($qv) { 
+	function om_myfeed_request($qv) { 
 		if (isset($qv['feed'])) {
 			$qv['post_type'] = get_post_types();
 		}
@@ -338,7 +338,11 @@
 				 'public' => true,
 				 'labels' => array(
 						'name' => __( 'Cuisine Types' ),
-						'singular_name' => __( 'Cuisine Type' )
+						'singular_name' => __( 'Cuisine Type' ),
+						'parent_item' => __( 'Parent Cuisine Type' ),
+						'add_new_item' => __( 'Add New Cuisine Type' ),
+						'new_item_name' => __( 'New Cuisine Type' ),
+						'update_item' => __( 'Update Cuisine Type' )
 					),
 				 'query_var' => 'cuisine_type',
 				 'rewrite' => array('slug' => 'cuisine_type' )
@@ -437,7 +441,7 @@
 					"split_on" => "item",
 					"show_allergy" => "on", 
 					"show_calories" => "on",
-					"hide_prices" => "on",
+					"hide_prices" => "off",
 					"use_short_tag" => "off"
 				);
 			update_option('openmenu_options', $arr);
