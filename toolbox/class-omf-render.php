@@ -197,7 +197,7 @@ class cOmfRender {
 										$thumbnail = $this->extract_item_image($item['menu_item_images'], 'thumbnail', 'web');
 										if ($thumbnail) {
 											$full_size = ($this->allow_image_zoom) ? $this->extract_item_image($item['menu_item_images'], 'full', 'web') : false ;
-											$thumbnail = '<img class="mi_thumb" src="'.$thumbnail.'" width="48" height="48" alt="" />';
+											$thumbnail = '<img class="mi_thumb" src="'.$thumbnail.'" alt="" />';
 											$thumbnail = ($full_size) ? '<a class="om_item_zoom" href="' . $full_size . '" title="' . $this->clean($item['menu_item_name']) . '" target="_blank">'.$thumbnail.'</a>' : $thumbnail ;
 										}
 									}
