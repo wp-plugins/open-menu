@@ -1,7 +1,7 @@
 <?php
 /**
  * @package OpenMenu
- * @version 1.6.8
+ * @version 1.6.9
  */
 /*
 
@@ -18,6 +18,141 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_tagcloud");'));
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_menu");'));
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_qrcode");'));
+	add_action('widgets_init', create_function('', 'return register_widget("openmenu_filter");'));
+
+	class openmenu_filter extends WP_Widget {  
+		function openmenu_filter() {  
+			/* Widget settings. */
+			$widget_ops = array( 'classname' => 'om-filter', 'description' => __('Display a list of menu items that match all defined filters.') );
+
+			/* Widget control settings. */
+			$control_ops = array( 'width' => 450, 'height' => 350, 'id_base' => 'om-filter' );
+
+		    parent::WP_Widget('om-filter', 'OpenMenu: Filter', $widget_ops, $control_ops );
+		}
+		
+		function form($instance) {  
+		     // outputs the options form on admin
+		     
+			/* Set up some default widget settings. */
+			$defaults = array( 
+							'title' => 'Menu Items', 
+							'omf_url' => 'http://', 
+							'tag_filter' => '', 
+							'menuitem_filter' => '', 
+							'menu_filter' => '', 
+							'group_filter' => '', 
+							'tag_special' => false,
+							'tag_gluten_free' => false,
+							'tag_vegan' => false,
+							'tag_vegetarian' => false,
+							'tag_kosher' => false,
+							'tag_halal' => false
+						);
+			$instance = wp_parse_args( (array) $instance, $defaults ); ?>
+			<p>
+				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e('Title'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
+			</p>
+			<p>
+				<label for="<?php echo $this->get_field_id( 'omf_url' ); ?>"><?php _e('Location of the OpenMenu (URL)'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'omf_url' ); ?>" name="<?php echo $this->get_field_name( 'omf_url' ); ?>" value="<?php echo $instance['omf_url']; ?>" />
+			</p>
+			
+			<strong>Filters:</strong> <br />
+			<p style="padding-left:10px">
+				<label for="<?php echo $this->get_field_id( 'menuitem_filter' ); ?>"><?php _e('All or part of a menu item name / description to filter on'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'menuitem_filter' ); ?>" name="<?php echo $this->get_field_name( 'menuitem_filter' ); ?>" value="<?php echo $instance['menuitem_filter']; ?>" />
+			</p>
+			<p style="padding-left:10px">
+				<label for="<?php echo $this->get_field_id( 'menu_filter' ); ?>"><?php _e('Menu Name to display items from (exact match)'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'menu_filter' ); ?>" name="<?php echo $this->get_field_name( 'menu_filter' ); ?>" value="<?php echo $instance['menu_filter']; ?>" />
+			</p>
+			<p style="padding-left:10px">
+				<label for="<?php echo $this->get_field_id( 'group_filter' ); ?>"><?php _e('Menu Group to display items from (exact match)'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'group_filter' ); ?>" name="<?php echo $this->get_field_name( 'group_filter' ); ?>" value="<?php echo $instance['group_filter']; ?>" />
+			</p>
+				
+			<strong>Item Tags:</strong> <br />
+			<p style="padding-left:10px">
+				<input class="checkbox" type="checkbox" <?php checked($instance['tag_special'], true) ?> id="<?php echo $this->get_field_id('tag_special'); ?>" name="<?php echo $this->get_field_name('tag_special'); ?>" /> 
+				<label for="<?php echo $this->get_field_id('tag_special'); ?>"><?php _e('Special'); ?></label>
+				&nbsp;&nbsp;
+				<input class="checkbox" type="checkbox" <?php checked($instance['tag_gluten_free'], true) ?> id="<?php echo $this->get_field_id('tag_gluten_free'); ?>" name="<?php echo $this->get_field_name('tag_gluten_free'); ?>" /> 
+				<label for="<?php echo $this->get_field_id('tag_gluten_free'); ?>"><?php _e('Gluten Free'); ?></label>
+				&nbsp;&nbsp;
+				<input class="checkbox" type="checkbox" <?php checked($instance['tag_vegetarian'], true) ?> id="<?php echo $this->get_field_id('tag_vegetarian'); ?>" name="<?php echo $this->get_field_name('tag_vegetarian'); ?>" /> 
+				<label for="<?php echo $this->get_field_id('tag_vegetarian'); ?>"><?php _e('Vegetarian'); ?></label>
+				&nbsp;&nbsp;
+				<input class="checkbox" type="checkbox" <?php checked($instance['tag_vegan'], true) ?> id="<?php echo $this->get_field_id('tag_vegan'); ?>" name="<?php echo $this->get_field_name('tag_vegan'); ?>" /> 
+				<label for="<?php echo $this->get_field_id('tag_vegan'); ?>"><?php _e('Vegan'); ?></label>
+				&nbsp;&nbsp;
+				<input class="checkbox" type="checkbox" <?php checked($instance['tag_kosher'], true) ?> id="<?php echo $this->get_field_id('tag_kosher'); ?>" name="<?php echo $this->get_field_name('tag_kosher'); ?>" /> 
+				<label for="<?php echo $this->get_field_id('tag_kosher'); ?>"><?php _e('Kosher'); ?></label>
+				&nbsp;&nbsp;&nbsp;
+				<input class="checkbox" type="checkbox" <?php checked($instance['tag_halal'], true) ?> id="<?php echo $this->get_field_id('tag_halal'); ?>" name="<?php echo $this->get_field_name('tag_halal'); ?>" /> 
+				<label for="<?php echo $this->get_field_id('tag_halal'); ?>"><?php _e('Halal'); ?></label>
+			<p>
+		<?php
+		}
+		
+		function update($new_instance, $old_instance) {  
+		     // processes widget options to be saved  
+			$instance = $old_instance;
+
+			/* Strip tags (if needed) and update the widget settings. */
+			$instance['title'] = strip_tags( $new_instance['title'] );
+			$instance['omf_url'] = $new_instance['omf_url'];
+			$instance['menuitem_filter'] = $new_instance['menuitem_filter'];
+			$instance['menu_filter'] = $new_instance['menu_filter'];
+			$instance['group_filter'] = $new_instance['group_filter'];
+			$instance['tag_special'] = isset($new_instance['tag_special']) ? 1 : 0 ;
+			$instance['tag_gluten_free'] = isset($new_instance['tag_gluten_free']) ? 1 : 0 ;
+			$instance['tag_vegan'] = isset($new_instance['tag_vegan']) ? 1 : 0 ;
+			$instance['tag_vegetarian'] = isset($new_instance['tag_vegetarian']) ? 1 : 0 ;
+			$instance['tag_kosher'] = isset($new_instance['tag_kosher']) ? 1 : 0 ;
+			$instance['tag_halal'] = isset($new_instance['tag_halal']) ? 1 : 0 ;
+			return $instance;
+		}
+		
+		function widget($args, $instance) {  
+			extract( $args );
+
+			/* User-selected settings. */
+			$title = apply_filters('widget_title', $instance['title'] );
+			$omf_url = isset( $instance['omf_url'] ) ? $instance['omf_url'] : false;
+			$menuitem_filter = isset( $instance['menuitem_filter'] ) ? $instance['menuitem_filter'] : false;
+			$menu_filter = isset( $instance['menu_filter'] ) ? $instance['menu_filter'] : false;
+			$group_filter = isset( $instance['group_filter'] ) ? $instance['group_filter'] : false;
+
+			/* Before widget (defined by themes). */
+			echo $before_widget;
+
+			/* Title of widget (before and after defined by themes). */
+			if ( $title )
+				echo $before_title . $title . $after_title;
+			
+			if ( $omf_url ) {
+				$omf_details = _get_menu_details($omf_url);
+				
+				// Build the tag array 
+				$tags = array();
+				if ( isset( $instance['tag_special'] ) && $instance['tag_special'] ) { $tags[] = 'special'; }
+				if ( isset( $instance['tag_gluten_free'] ) && $instance['tag_gluten_free'] ) { $tags[] = 'gluten_free'; }
+				if ( isset( $instance['tag_vegan'] ) && $instance['tag_vegan'] ) { $tags[] = 'vegan'; }
+				if ( isset( $instance['tag_vegetarian'] ) && $instance['tag_vegetarian'] ) { $tags[] = 'vegetarian'; }
+				if ( isset( $instance['tag_kosher'] ) && $instance['tag_kosher'] ) { $tags[] = 'kosher'; }
+				if ( isset( $instance['tag_halal'] ) && $instance['tag_halal'] ) { $tags[] = 'halal'; }
+
+				echo get_items_by_filter( $omf_details, $tags, $menuitem_filter, $menu_filter, $group_filter );
+				unset($omf_details);
+				
+			}
+
+			/* After widget (defined by themes). */
+			echo $after_widget;
+		}  
+	}
 	
 	class openmenu_menu extends WP_Widget {  
 		function openmenu_menu() {  
@@ -256,8 +391,8 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 			
 			if ( $omf_url ) {
 				$omf_details = _get_menu_details($omf_url);
-				
-				echo _get_menu_specials( $omf_details, $menu_filter );
+
+				echo get_items_by_filter( $omf_details, array('special'), false, $menu_filter);
 				unset($omf_details);
 				
 			}
@@ -494,7 +629,7 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 	if ( empty($omf_details) ) {
 		echo '<p>information not available</p>';
 	} else {
-		echo _get_menu_specials( $omf_details );
+		echo get_items_by_filter( $omf_details, array('special'));
 		unset($omf_details);
 	} 
 ?>
@@ -538,41 +673,79 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 		return $location;
 	}
 
-	function _get_menu_specials ( $omf_details, $menu_filter = false ) {
+	function get_items_by_filter ( $omf_details, $tags = false, $menuitem_filter = false, 
+					$menu_filter = false, $group_filter = false ) {
 		// ------------------------------------- 
-		//  Return a preformatted HTML list of specials
+		//  Return a preformatted HTML list of menu items that match set filters
+		//    $tags = array of tags to check if valid (special, vegan, halal...)
 		// ------------------------------------- 
 		
 		$options = get_option( 'openmenu_options' );
 		$show_prices = ( isset($options['hide_prices']) && $options['hide_prices'] ) ? false : true ;
 		
-		$specials = '';
+		$items = '';
 		if ( isset($omf_details['menus']) ) {
-			$specials .= '<div style="margin-top:5px;">';
+			include_once OPENMENU_PATH.'/toolbox/class-omf-render.php'; 
+			$render = new cOmfRender; 
+			
+			$items .= '<div style="margin-top:5px;">';
 			foreach ( $omf_details['menus'] AS $menu ) {
-				if ( !$menu_filter || strcasecmp($menu_filter, $menu['menu_name']) == 0 ) {
-					if ( isset($menu['menu_groups']) ) {
-						foreach ($menu['menu_groups'] AS $group) {
-							if ( isset($group['menu_items']) ) {
-								foreach ($group['menu_items'] AS $item) {
-									if ( $item['special'] ) {
-										$price = ( $show_prices && !empty($item['menu_item_price']) ) ? ' - $'.number_format($item['menu_item_price'], 2) : '' ;
-										$specials .= '<p><strong>'.$item['menu_item_name'].
-											$price.'</strong> ';
-										$specials .= '<br />'.$item['menu_item_description'];
-										$specials .= '</p>';
-									}
+				// Do we have any groups and is this menu not being filtered
+				if ( isset($menu['menu_groups']) && 
+				   (!$menu_filter || strcasecmp($menu_filter, $menu['menu_name']) == 0) ) {
+					foreach ($menu['menu_groups'] AS $group) {
+						//  Do we have any items and is this group no being filtered
+						if ( isset($group['menu_items']) && 
+						   (!$group_filter || strcasecmp($group_filter, $group['group_name']) == 0)) {
+							foreach ($group['menu_items'] AS $item) {
+								if ( item_matches_text($item, $menuitem_filter) && 
+								  item_matches_tag($item, $tags) ) {
+									$price = ( $show_prices && !empty($item['menu_item_price']) ) ? ' - '.$render->fix_price($item['menu_item_price'], $menu['currency_symbol']) : '' ;
+									$items .= '<p><strong>'.$item['menu_item_name'].
+										$price.'</strong> ';
+									$items .= '<br />'.$item['menu_item_description'];
+									$items .= '</p>';
 								}
 							}
 						}
 					}
 				}
 			}
-			$specials .= '</div>';
+			$items .= '</div>';
+			
+			unset($render);
 		}
-		return $specials;
+		return $items;
+	}
+	
+	function item_matches_text ($item, $search = false) {
+		// ------------------------------------- 
+		//  Search a menu item by text
+		// ------------------------------------- 
+		return !$search || 
+				stripos($item['menu_item_name'], $search) !== false || 
+				stripos($item['menu_item_description'], $search) !== false;
 	}
 
+	function item_matches_tag ($item, $tags = false) {
+		// ------------------------------------- 
+		//  Search a menu item by an item tag (all tags must match)
+		//    if tags is not an array or not set than pass back found
+		// ------------------------------------- 
+		$retval = false;
+		if ( is_array($tags) && !empty($tags) ) {
+			foreach ($tags AS $tag) {
+				if (isset($item[$tag]) && $item[$tag] ) {
+					$retval = true;
+				} else { 
+					$retval = false; 
+					break;
+				}
+			}
+		} else { $retval = true; }
+		return $retval;
+	}
+	
 	function _get_menus_and_groups ( $omf_details, $menu_filter = false, $include_groups = false ) {
 		// ------------------------------------- 
 		//  Return a preformatted HTML list of Menus and Menu Groups

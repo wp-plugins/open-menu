@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.4.1
-Stable tag: 1.6.8
+Stable tag: 1.6.9
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's into an existing theme.
 
@@ -18,7 +18,7 @@ Get your OpenMenu at: http://OpenMenu.com
 Features:
 
 * OpenMenu Custom Post Type
-* Widgets: Restaurant Location / Specials / Cuisine Tag Cloud / QR Code
+* Widgets: Restaurant Location / Specials / Cuisine Tag Cloud / QR Code / Filtered OpenMenu
 * [openmenu] and [openmenu_qrcode] Shortcodes
 * Custom Functions
 * Site wide setiings
@@ -45,6 +45,7 @@ Widgets:
 	OpenMenu: Specials  - Displays the menu items marked as special
 	OpenMenu: Tag Cloud - A tag cloud for the cuisine types
 	OpenMenu: QR Code - Displays a QR Code to your mobile site on OpenMenu 
+	OpenMenu: Filter - Displays a list of menu items controlled by many definable filters
 
 Short code:
 	[openmenu]
@@ -139,6 +140,11 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 5. Powerful Widgets
 
 == Changelog ==
+= 1.6.9 = 
+* Add an OpenMenu Filter widget
+* Updated Specials Widget to properly handle currency symbols
+* Removed unused functions and cleaned up existing codebase
+
 = 1.6.8 = 
 * Updated aspect ratio issue with image thumbnails
 * Changed name of myfeed_request() function to prevent conflicts
