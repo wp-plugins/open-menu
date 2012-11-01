@@ -3,8 +3,8 @@ Contributors: openmenu
 Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
-Tested up to: 3.4.1
-Stable tag: 1.6.9
+Tested up to: 3.4.2
+Stable tag: 1.6.10
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's into an existing theme.
 
@@ -19,7 +19,7 @@ Features:
 
 * OpenMenu Custom Post Type
 * Widgets: Restaurant Location / Specials / Cuisine Tag Cloud / QR Code / Filtered OpenMenu
-* [openmenu] and [openmenu_qrcode] Shortcodes
+* [openmenu], [openmenu_qrcode] and [openmenu_deals] Shortcodes
 * Custom Functions
 * Site wide setiings
 * Lots of settings to control the look and feel of the way menus look
@@ -46,6 +46,7 @@ Widgets:
 	OpenMenu: Tag Cloud - A tag cloud for the cuisine types
 	OpenMenu: QR Code - Displays a QR Code to your mobile site on OpenMenu 
 	OpenMenu: Filter - Displays a list of menu items controlled by many definable filters
+	OpenMenu: Deals - Display the deals attached to your OpenMenu
 
 Short code:
 	[openmenu]
@@ -65,6 +66,7 @@ Short code:
 		[openmenu omf_url="http://openmenu.com/menu/sample"]
 		[openmenu omf_url="http://openmenu.com/menu/sample" display_type="menu" display_columns="1"]
 
+
 	[openmenu_qrcode]
 	
 	Parameters:
@@ -75,6 +77,21 @@ Short code:
 		[openmenu_qrcode openmenu_id="sample"]
 		[openmenu_qrcode openmenu_id="sample" size="256"]
 
+
+	[openmenu_deals]
+	
+	Parameters:
+		openmenu_id		= OpenMenu ID (not the OpenMenu URL, just the ID part)
+		deal_id			= Show only a single deal based off of its ID
+		compact_view	= shows the deals in a compact view (only the headline is displayed)
+		show_print		= Determines whether the Clip/Print link is displayed in a deal
+		new_window		= When show_print is true this determines if links are opened in a new window
+		width			= width to display the deal
+		width_units		= sets the units for the width value [px | %]
+
+	Samples: 
+		[openmenu_deals openmenu_id="sample"]
+		[openmenu_deals openmenu_id="sample" width="500" width_units="px" compact_view="1"]
 
 Custom Functions: 
 	Display a location block: openmenu_location( post_id, title );
@@ -138,10 +155,16 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 3. OpenMenu Options
 4. Sample Rendered Menu
 5. Powerful Widgets
+6. Deals and Coupon Widget / Shortcode
 
 == Changelog ==
+= 1.6.10 = 
+* Added option to QR widget to open the mobile site link in a new window
+* Added Deal Widget so an OpenMenu's deals can be placed into a widget ready theme
+* Added [openmenu_deals] shortcode 
+
 = 1.6.9 = 
-* Add an OpenMenu Filter widget
+* Added an OpenMenu Filter widget
 * Updated Specials Widget to properly handle currency symbols
 * Removed unused functions and cleaned up existing codebase
 

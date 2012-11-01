@@ -1,7 +1,7 @@
 <?php
 /**
  * @package OpenMenu
- * @version 1.6.9
+ * @version 1.6.10
  */
 /*
 
@@ -19,6 +19,115 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_menu");'));
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_qrcode");'));
 	add_action('widgets_init', create_function('', 'return register_widget("openmenu_filter");'));
+	add_action('widgets_init', create_function('', 'return register_widget("openmenu_deals");'));
+
+
+	class openmenu_deals extends WP_Widget {  
+		function openmenu_deals() {  
+			/* Widget settings. */
+			$widget_ops = array( 'classname' => 'om-deals', 'description' => __('Display the deals attached to your OpenMenu') );
+
+			/* Widget control settings. */
+			$control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-deals' );
+
+		    parent::WP_Widget('om-deals', 'OpenMenu: Deals / Coupons', $widget_ops, $control_ops );
+		}
+		
+		function form($instance) {  
+		     // outputs the options form on admin
+		     
+			/* Set up some default widget settings. */
+			$defaults = array( 
+							'title' => 'Deals / Coupons', 
+							'openmenu_id' => '',
+							'compact_view' => false,
+							'show_print' => true,
+							'link_in_new_window' => true,
+							'deal_width' => '100',
+							'deal_units' => '%'
+						);
+			$instance = wp_parse_args( (array) $instance, $defaults ); ?>
+			<p>
+				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e('Title'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
+			</p>
+			<p>
+				<label for="<?php echo $this->get_field_id( 'openmenu_id' ); ?>"><?php _e('Your OpenMenu ID (not the full URL)'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'openmenu_id' ); ?>" name="<?php echo $this->get_field_name( 'openmenu_id' ); ?>" value="<?php echo $instance['openmenu_id']; ?>" />
+			</p>
+			<p>
+				<input class="checkbox" type="checkbox" <?php checked($instance['compact_view'], true) ?> id="<?php echo $this->get_field_id('compact_view'); ?>" name="<?php echo $this->get_field_name('compact_view'); ?>" />
+				<label for="<?php echo $this->get_field_id('compact_view'); ?>"><?php _e('Use Compact View'); ?></label><br />
+			</p>
+			<p>
+				<input class="checkbox" type="checkbox" <?php checked($instance['show_print'], true) ?> id="<?php echo $this->get_field_id('show_print'); ?>" name="<?php echo $this->get_field_name('show_print'); ?>" />
+				<label for="<?php echo $this->get_field_id('show_print'); ?>"><?php _e('Show Print / Clip Link (non compact view only)'); ?></label><br />
+			</p>
+			<p>
+				<input class="checkbox" type="checkbox" <?php checked($instance['link_in_new_window'], true) ?> id="<?php echo $this->get_field_id('link_in_new_window'); ?>" name="<?php echo $this->get_field_name('link_in_new_window'); ?>" />
+				<label for="<?php echo $this->get_field_id('link_in_new_window'); ?>"><?php _e('Open Link in a New Window'); ?></label><br />
+			</p>
+			<p>
+				<label for="<?php echo $this->get_field_id( 'deal_width' ); ?>"><?php _e('Width: '); ?></label>
+				<input id="<?php echo $this->get_field_id( 'deal_width' ); ?>" name="<?php echo $this->get_field_name( 'deal_width' ); ?>" value="<?php echo $instance['deal_width']; ?>" size="3" maxlength="4" />
+				&nbsp;
+				<select id="<?php echo $this->get_field_id( 'deal_units' ); ?>" name="<?php echo $this->get_field_name( 'deal_units' ); ?>">
+					<option value="%" <?php selected($instance['deal_units'], '%') ?>>% </option>
+					<option value="px" <?php checked($instance['deal_units'], 'px') ?>>px </option>
+				</select>
+			</p>
+		<?php
+		}
+		
+		function update($new_instance, $old_instance) {  
+		     // processes widget options to be saved  
+			$instance = $old_instance;
+
+			/* Strip tags (if needed) and update the widget settings. */
+			$instance['title'] = strip_tags( $new_instance['title'] );
+			$instance['openmenu_id'] = $new_instance['openmenu_id'];
+			$instance['compact_view'] = isset($new_instance['compact_view']) ? 1 : 0 ;
+			$instance['show_print'] = isset($new_instance['show_print']) ? 1 : 0 ;
+			$instance['link_in_new_window'] = isset($new_instance['link_in_new_window']) ? 1 : 0 ;
+			$instance['deal_width'] = $new_instance['deal_width'];
+			$instance['deal_units'] = $new_instance['deal_units'];
+			
+			return $instance;
+		}
+		
+		function widget($args, $instance) {  
+			extract( $args );
+
+			/* User-selected settings. */
+			$title = apply_filters('widget_title', $instance['title'] );
+			$openmenu_id = isset( $instance['openmenu_id'] ) ? $instance['openmenu_id'] : false;
+			$compact_view = isset( $instance['compact_view'] ) ? $instance['compact_view'] : false;
+			$show_print = isset( $instance['show_print'] ) ? $instance['show_print'] : false;
+			$link_in_new_window = isset( $instance['link_in_new_window'] ) ? $instance['link_in_new_window'] : false;
+			$deal_width = isset( $instance['deal_width'] ) ? $instance['deal_width'] : '100';
+			$deal_units = isset( $instance['deal_units'] ) ? $instance['deal_units'] : '%';
+			
+			/* Before widget (defined by themes). */
+			echo $before_widget;
+
+			/* Title of widget (before and after defined by themes). */
+			if ( $title )
+				echo $before_title . $title . $after_title;
+			
+			if ( $openmenu_id ) {
+				// Get and render any deals
+				$deals = om_get_deal_details($openmenu_id);
+				if ( !empty($deals['deals']) ) {
+					echo om_render_deals($deals, false, $compact_view, $show_print, $link_in_new_window, $deal_width, $deal_units);
+				} else {
+					echo '<p>'.__('No active deals or coupons').'</p>';
+				}
+			}
+
+			/* After widget (defined by themes). */
+			echo $after_widget;
+		}  
+	}
 
 	class openmenu_filter extends WP_Widget {  
 		function openmenu_filter() {  
@@ -499,6 +608,7 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 							'openmenu_id' => '', 
 							'qr_size' => '128',
 							'include_link' => false,
+							'link_in_new_window' => false
 						);
 			$instance = wp_parse_args( (array) $instance, $defaults ); ?>
 			<p>
@@ -518,6 +628,10 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 				<input class="checkbox" type="checkbox" <?php checked($instance['include_link'], true) ?> id="<?php echo $this->get_field_id('include_link'); ?>" name="<?php echo $this->get_field_name('include_link'); ?>" />
 				<label for="<?php echo $this->get_field_id('include_link'); ?>"><?php _e('Include Mobile Site Link'); ?></label><br />
 			</p>
+			<p>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="checkbox" type="checkbox" <?php checked($instance['link_in_new_window'], true) ?> id="<?php echo $this->get_field_id('link_in_new_window'); ?>" name="<?php echo $this->get_field_name('link_in_new_window'); ?>" />
+				<label for="<?php echo $this->get_field_id('link_in_new_window'); ?>"><?php _e('Open Link in a New Window'); ?></label><br />
+			</p>
 		<?php
 		}
 		
@@ -530,6 +644,7 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 			$instance['openmenu_id'] = $new_instance['openmenu_id'];
 			$instance['qr_size'] = $new_instance['qr_size'];
 			$instance['include_link'] = isset($new_instance['include_link']) ? 1 : 0 ;
+			$instance['link_in_new_window'] = isset($new_instance['link_in_new_window']) ? 1 : 0 ;
 			
 			return $instance;
 		}
@@ -542,6 +657,7 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 			$openmenu_id = isset( $instance['openmenu_id'] ) ? $instance['openmenu_id'] : false;
 			$qr_size = isset( $instance['qr_size'] ) ? $instance['qr_size'] : '128';
 			$include_link = isset( $instance['include_link'] ) ? $instance['include_link'] : false;
+			$link_in_new_window = isset( $instance['link_in_new_window'] ) ? $instance['link_in_new_window'] : false;
 			
 			/* Before widget (defined by themes). */
 			echo $before_widget;
@@ -555,7 +671,8 @@ Copyright 2010, 2011, 2012  OpenMenu, LLC
 				echo '<div style="text-align:center">'.openmenu_qrcode($openmenu_id, $qr_size).'</div>';
 				
 				if ( $include_link ) {
-					echo '<p style="text-align:center"><a href="http://openmenu.com/m/restaurant/'.$openmenu_id.'">'.__('mobile site').'</a></p>';
+					$link_in_new_window = ($link_in_new_window) ? ' target="_blank"' : '' ;
+					echo '<p style="text-align:center"><a href="http://openmenu.com/m/restaurant/'.$openmenu_id.'"'.$link_in_new_window.'>'.__('mobile site').'</a></p>';
 				}
 			}
 

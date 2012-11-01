@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.6.9
+	@version 1.6.10
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.6.9
+	Version: 1.6.10
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -77,6 +77,7 @@
 		// ------------------------------------- 
 		wp_register_style('OpenMenu-Template-Default', OPENMENU_TEMPLATES_URL. '/default/styles/style.css');
 		wp_enqueue_style( 'OpenMenu-Template-Default');
+		wp_register_style('OpenMenu-Deal-Default', OPENMENU_TEMPLATES_URL. '/default/styles/style-deal-default.css');
 	}
 	
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -139,7 +140,6 @@
 		return $display;
 	}
 
-
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Add Shortcode [openmenu_qrcode parameter="value"]
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -165,7 +165,40 @@
 		
 		return $display;
 	}
+
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// ** Add Shortcode [openmenu_deals parameter="value"]
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	
+	add_shortcode('openmenu_deals', 'openmenu_deals_shortcode');
+	
+	function openmenu_deals_shortcode($atts, $content = null) { 
+		// ------------------------------------- 
+		//  Create / Handle the openmenu_deals shortcode
+		// ------------------------------------- 
+		
+		$atts = shortcode_atts(array(
+			'openmenu_id' => '',
+			'deal_id' => false,
+			'compact_view' => false,
+			'show_print' => true,
+			'new_window' => true,
+			'width' => '100',
+			'width_units' => '%'
+		), $atts);
+		
+		$display = '';
+		if ( !empty($atts['openmenu_id']) ) {
+			$deals = om_get_deal_details($atts['openmenu_id']);
+			if ( !empty($deals['deals']) ) {
+				$display = om_render_deals($deals, $atts['deal_id'], $atts['compact_view'], $atts['show_print'], $atts['new_window'], $atts['width'], $atts['width_units']);
+				}
+		} else {
+			$display = __('OpenMenu ID must be provided');
+		}
+		
+		return $display;
+	}
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Add Settings link to OpenMenu on the plugin page [REMOVED]
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -944,6 +977,45 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Common Functions:
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	function om_get_deal_details ( $openmenu_id ) {
+		// ------------------------------------- 
+		//  Get any deals and coupons for an OpenMenu ID
+		// ------------------------------------- 
+
+		$deals = false;
+		if ( !empty($openmenu_id) ) {
+			include_once OPENMENU_PATH.'/toolbox/class-omd-reader.php'; 
+			$omdr = new cOmdReader; 
+			$deals = $omdr->read_file('http://openmenu.com/deal/'.$openmenu_id.'?ref=wp'); 
+			unset($omdr);
+		}
+		
+		return $deals;
+	}
+	
+	function om_render_deals ( $deals, $deal_id = false, $compact_view = false, $show_print = false, 
+				$link_in_new_window = true, $deal_width = '100', $deal_units = '%') {
+		// ------------------------------------- 
+		//  Render all deals
+		// ------------------------------------- 
+
+		$retval = '';
+		if ( !empty($deals) ) {
+			wp_enqueue_style( 'OpenMenu-Deal-Default');
+			include_once OPENMENU_PATH.'/toolbox/class-omd-render.php';
+			$render = new cOmdRender;
+			$render->compact_view = $compact_view;
+			$render->width =  $deal_width;
+			$render->width_unit = $deal_units;
+			$render->show_action_bar = $show_print;
+			$render->link_to_new_window = $link_in_new_window;
+			$render->site_url = OPENMENU_TEMPLATES_URL.'/default/';
+			$retval = $render->render_deals_from_details($deals, $deal_id);
+			unset($render);
+		}
+		return $retval;
+	}
+
 	function _get_menu_details ( $omf_url ) {
 		// ------------------------------------- 
 		//  Return the menu details from an OMF URL
