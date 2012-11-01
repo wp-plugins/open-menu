@@ -4,7 +4,7 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
-	@package OpenMenu
+	@package OpenMenu 
 	@version 1.6.10
 
 	Plugin Name: OpenMenu
