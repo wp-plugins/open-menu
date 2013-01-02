@@ -3,10 +3,10 @@ Contributors: openmenu
 Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
-Tested up to: 3.4.2
-Stable tag: 1.6.10
+Tested up to: 3.5
+Stable tag: 1.6.11
  
-Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's into an existing theme.
+Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's and a restaurants Deals/Coupons into an existing theme.
 
 == Description ==
 This plugin allows you to easily create posts that are based on your OpenMenu and thus embedding restaurant menus in any Wordpress website.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
@@ -18,7 +18,7 @@ Get your OpenMenu at: http://OpenMenu.com
 Features:
 
 * OpenMenu Custom Post Type
-* Widgets: Restaurant Location / Specials / Cuisine Tag Cloud / QR Code / Filtered OpenMenu
+* Widgets: Restaurant Location / Deals and Coupons / Specials / Cuisine Tag Cloud / QR Code / Filtered OpenMenu
 * [openmenu], [openmenu_qrcode] and [openmenu_deals] Shortcodes
 * Custom Functions
 * Site wide setiings
@@ -158,6 +158,9 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 6. Deals and Coupon Widget / Shortcode
 
 == Changelog ==
+= 1.6.11 = 
+* Updated the render class to fix issues with currency symbol for some European countries
+
 = 1.6.10 = 
 * Added option to QR widget to open the mobile site link in a new window
 * Added Deal Widget so an OpenMenu's deals can be placed into a widget ready theme

@@ -1,17 +1,17 @@
 <?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** OpenMenu Plugin, Copyright 2010 - 2012  Open Menu, LLC
+// ** OpenMenu Plugin, Copyright 2010 - 2013  Open Menu, LLC
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
-	@package OpenMenu 
-	@version 1.6.10
+	@package OpenMenu
+	@version 1.6.11 
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.6.10
+	Version: 1.6.11
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -1082,7 +1082,7 @@
 		// -------------------------------------
 		
 		$url = urlencode('http://openmenu.com/m/restaurant/'.$openmenu_id);
-		return '<img src="http://chart.apis.google.com/chart?'.
+		return '<img class="qrcode" src="http://chart.apis.google.com/chart?'.
 				'chs='.$size.'x'.$size.
 				'&cht=qr'.
 				'&chld=L|0'.
