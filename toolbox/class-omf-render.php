@@ -2,13 +2,13 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** OpenMenu, LLC http://openmenu.org
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Copyright (C) 2010 - 2012 Open Menu, LLC
+// ** Copyright (C) 2010 - 2013 Open Menu, LLC
 // **		
 // ** Licensed under the MIT License:
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.6.12
+// ** Version: 1.6.14
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Compatible with OpenMenu Format v1.6
 // ** 
@@ -500,6 +500,7 @@ class cOmfRender {
 				"NLG" => "dotThousandsCommaDecimal", 
 				"NOK" => "dotThousandsCommaDecimal", 
 				"KRW" => "noDecimals",
+				"JPY" => "noDecimals",
 				"ESP" => "dotThousandsCommaDecimal", 
 				"SEK" => "spaceThousandsDotDecimal", 
 				"CHF" => "apostropheThousandsDotDecimal", 
@@ -598,7 +599,7 @@ class cOmfRender {
 			'CRC' => '',
 			'HRK' => ' kn',
 			'CUP' => '',
-			'CYP' => '',
+			'CYP' => '€',
 			'CZK' => ' Kč',
 			'DKK' => ' kr',
 			'DJF' => '',
