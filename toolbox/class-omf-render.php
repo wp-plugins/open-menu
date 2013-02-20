@@ -8,7 +8,7 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.6.14
+// ** Version: 1.6.17
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Compatible with OpenMenu Format v1.6
 // ** 
@@ -497,6 +497,7 @@ class cOmfRender {
 				"ITL" => "dotThousandsCommaDecimal", 
 				"YPY" => "noDecimals", 
 				"LTL" => "dotThousandsCommaDecimal", 
+				"LBP" => "noDecimals", 
 				"NLG" => "dotThousandsCommaDecimal", 
 				"NOK" => "dotThousandsCommaDecimal", 
 				"KRW" => "noDecimals",
@@ -605,7 +606,7 @@ class cOmfRender {
 			'DJF' => '',
 			'DOP' => 'RD$',
 			'XCD' => '$',
-			'EGP' => '£',
+			'EGP' => 'LE',
 			'SVC' => '$',
 			'ERN' => '',
 			'EEK' => '',
@@ -646,7 +647,7 @@ class cOmfRender {
 			'KGS' => '',
 			'LAK' => '',
 			'LVL' => '',
-			'LBP' => '£',
+			'LBP' => 'L.L.',
 			'LSL' => '',
 			'LRD' => '$',
 			'LYD' => '',
