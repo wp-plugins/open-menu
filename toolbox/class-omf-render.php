@@ -8,7 +8,7 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.6.17
+// ** Version: 1.6.19
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Compatible with OpenMenu Format v1.6
 // ** 
@@ -42,7 +42,10 @@ class cOmfRender {
 	public $show_allergy_information = true;
 	public $show_calories = true;
 	public $show_options = true;
-
+	
+	// What special tags does this OpenMenu have
+	public $special_tags = array();
+	
 	function get_restaurant_information ($om) {
 		// ------------------------------------- 
 		//  Create a block of restaurant information
@@ -341,12 +344,13 @@ class cOmfRender {
 		// Should we add a key for short tags
 		if ( $this->use_short_tag ) {
 			$retval .=  '<div id="stk">';
-			$retval .=  '<span class="item_tag special">S</span>Special '.
-						'<span class="item_tag vegetarian">V</span>Vegetarian '.
-						'<span class="item_tag vegan">VG</span>Vegan '.
-						'<span class="item_tag halal">H</span>Halal '.
-						'<span class="item_tag kosher">K</span>Kosher '.
-						'<span class="item_tag gluten_free">GF</span>Gluten Free</div>';
+			$retval .=  ( in_array('special', $this->special_tags) ) ? '<span class="item_tag special">S</span>Special ' : '' ;
+			$retval .=  ( in_array('vegetarian', $this->special_tags) ) ? '<span class="item_tag vegetarian">V</span>Vegetarian ' : '' ;
+			$retval .=  ( in_array('vegan', $this->special_tags) ) ? '<span class="item_tag vegan">VG</span>Vegan ' : '' ;
+			$retval .=  ( in_array('halal', $this->special_tags) ) ? '<span class="item_tag halal">H</span>Halal ' : '' ;
+			$retval .=  ( in_array('kosher', $this->special_tags) ) ? '<span class="item_tag kosher">K</span>Kosher ' : '' ;
+			$retval .=  ( in_array('gluten_free', $this->special_tags) ) ? '<span class="item_tag gluten_free">GF</span>Gluten Free' : '' ;
+			$retval .=  '</div>';
 		}
 		
 		if (!$this->hide_attribute) {
@@ -393,6 +397,25 @@ class cOmfRender {
 		}
 		return $retval;
 	}
+
+	function extract_item_image( $item_images, $type = 'Thumbnail', $media = 'Web'  ) {
+		// ------------------------------------- 
+		//  Attempt to extract a thumbnail image from a menu item's image list
+		//    Looks for a Thumbnail for a media type of Web
+		// ------------------------------------- 
+
+		$retval = '';
+		foreach ($item_images AS $img) {
+			if ( strcasecmp($img['image_type'], $type ) === 0 && 
+				 (strcasecmp($img['image_media'], $media ) === 0 || 
+				  strcasecmp($img['image_media'], 'All' ) === 0 ) && 
+				 !empty($img['image_url']) ) {
+				$retval = $img['image_url'];
+			}
+		}
+
+		return $retval;
+	}
 	
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Private functions
@@ -421,25 +444,6 @@ class cOmfRender {
 		// -------------------------------------
 		
 		return ($this->disable_entities) ? $str : htmlentities($str, ENT_COMPAT, 'UTF-8');
-	}
-	
-	private function extract_item_image( $item_images, $type = 'Thumbnail', $media = 'Web'  ) {
-		// ------------------------------------- 
-		//  Attempt to extract a thumbnail image from a menu item's image list
-		//    Looks for a Thumbnail for a media type of Web
-		// ------------------------------------- 
-
-		$retval = '';
-		foreach ($item_images AS $img) {
-			if ( strcasecmp($img['image_type'], $type ) === 0 && 
-				 (strcasecmp($img['image_media'], $media ) === 0 || 
-				  strcasecmp($img['image_media'], 'All' ) === 0 ) && 
-				 !empty($img['image_url']) ) {
-				$retval = $img['image_url'];
-			}
-		}
-
-		return $retval;
 	}
 	
 	private function hl_food ($text, $primary, $secondary = false, $make_bold = false) {
@@ -774,37 +778,53 @@ class cOmfRender {
 		}
 		return $retval;
 	}
-
+	
+	private function add_to_special_tags ( $tag ) {
+		// ------------------------------------- 
+		//  Store a list of special tags in the OpenMenu
+		// ------------------------------------- 
+		if (!in_array($tag, $this->special_tags) ) {
+			$this->special_tags[] = $tag;
+		}
+	}
+	
 	function get_tag_text ($type, $value) {
 		// ------------------------------------- 
 		//  Handle getting the test for menu item option tags
 		// ------------------------------------- 
 		
 		// Set the tags text
-		switch ( $type ) {
-			case 'special':
-				$text = ( $this->use_short_tag ) ? 'S' : 'Special' ;
-				break;
-			case 'vegetarian':
-				$text = ( $this->use_short_tag ) ? 'V' : 'Vegetarian' ;
-				break;	
-			case 'vegan':
-				$text = ( $this->use_short_tag ) ? 'VG' : 'Vegan' ;
-				break;
-			case 'kosher':
-				$text = ( $this->use_short_tag ) ? 'K' : 'Kosher' ;
-				break;
-			case 'halal':
-				$text = ( $this->use_short_tag ) ? 'H' : 'Halal' ;
-				break;
-			case 'gluten_free':
-				$text = ( $this->use_short_tag ) ? 'GF' : 'Gluten Free' ;
-				break;
-			default:
-				$retval = '';
+		$retval = '';
+		if ($value == 1) {
+			$this->add_to_special_tags($type);
+			
+			switch ( $type ) {
+				case 'special':
+					$text = ( $this->use_short_tag ) ? 'S' : 'Special' ;
+					break;
+				case 'vegetarian':
+					$text = ( $this->use_short_tag ) ? 'V' : 'Vegetarian' ;
+					break;	
+				case 'vegan':
+					$text = ( $this->use_short_tag ) ? 'VG' : 'Vegan' ;
+					break;
+				case 'kosher':
+					$text = ( $this->use_short_tag ) ? 'K' : 'Kosher' ;
+					break;
+				case 'halal':
+					$text = ( $this->use_short_tag ) ? 'H' : 'Halal' ;
+					break;
+				case 'gluten_free':
+					$text = ( $this->use_short_tag ) ? 'GF' : 'Gluten Free' ;
+					break;
+				default:
+					$retval = '';
+			}
+			
+			// Contrsuct the tag
+			$retval = '<span class="item_tag '.$type.'">' . $text .'</span>';
 		}
 
-		$retval = ($value == 1) ? '<span class="item_tag '.$type.'">' . $text .'</span>' : '' ;
 		return $retval;
 	}
 } // END CLASS
