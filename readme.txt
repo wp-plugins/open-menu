@@ -4,7 +4,7 @@ Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
 Tested up to: 3.5.1
-Stable tag: 1.6.12
+Stable tag: 1.6.13
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's and a restaurants Deals/Coupons into an existing theme.
 
@@ -158,6 +158,9 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 6. Deals and Coupon Widget / Shortcode
 
 == Changelog ==
+= 1.6.13 = 
+* Updated the render class to show a key for short tags showing only the tags used in the OpenMenu
+
 = 1.6.12 = 
 * Updated the render class to fix issues with currency symbol for some European countries
 
