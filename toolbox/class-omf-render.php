@@ -8,9 +8,9 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.6.19
+// ** Version: 1.6.20
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Compatible with OpenMenu Format v1.6
+// ** Compatible with OpenMenu Format v1.6.1
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Class
@@ -23,6 +23,10 @@ class cOmfRender {
 	
 	// What do we split the columns on (item | group)
 	public $split_on = 'group';
+	
+	// Use a Group break rendering (2 columns with a hard break for each group)
+	//   this overrides the number of columns and split type
+	public $group_break = false;
 
 	// Determines if we use a short item tag (1 or 2 letter)
 	//   i.e. Specials = S / Vegetarian = V / Vegan = VG ...
@@ -148,12 +152,24 @@ class cOmfRender {
 						// Check for a group filter
 						if ( !$group_filter || in_array(strtolower($group['group_name']), $group_filter) ) {
 							
-							// Should we start the left or right column 
-							if ( !$one_column && $this->split_on == 'group' ) {
+							// Group name for the Group Break option
+							if ( $this->group_break ) {
+								$om_g = $this->clean($group['group_name']);
+								$g_disabled = ( $group['disabled'] ) ? ' class="g_disabled"' : '' ;
+								$retval .= '<h2 id="om_mg_'.$group['group_uid'].'"'.$g_disabled.'>'.$om_g;
+								
+								if ( !empty($group['group_description']) ) {
+									$retval .= '<br /><span class="sm_norm">'.$group['group_description'].'</span>';
+								}
+								$retval .= '</h2>';
+							}
+							
+							// Should we start the left or right column (not when using the group break)
+							if ( !$one_column && !$this->group_break && $this->split_on == 'group' ) {
 								if ($current_group == 1) { 
 									// Start the left Column
 									$retval .= '<div class="left-menu">';
-								} elseif ($current_group == (1 + (int)($group_count/2)) ) {
+								} elseif ( $current_group == (1 + (int)($group_count/2)) ) {
 									// Close the left column and start the right
 									$retval .= '</div><!-- END left menu -->';
 									$retval .= '<div class="right-menu">';
@@ -161,25 +177,33 @@ class cOmfRender {
 							}
 							
 							// Start a group
-							$om_g = $this->clean($group['group_name']);
-							$g_disabled = ( $group['disabled'] ) ? ' class="g_disabled"' : '' ;
-							$retval .= '<h2 id="om_mg_'.$group['group_uid'].'"'.$g_disabled.'>'.$om_g;
-							
-							if ( !empty($group['group_description']) ) {
-								$retval .= '<br /><span class="sm_norm">'.$group['group_description'].'</span>';
+							if ( !$this->group_break ) {
+								$om_g = $this->clean($group['group_name']);
+								$g_disabled = ( $group['disabled'] ) ? ' class="g_disabled"' : '' ;
+								$retval .= '<h2 id="om_mg_'.$group['group_uid'].'"'.$g_disabled.'>'.$om_g;
+								
+								if ( !empty($group['group_description']) ) {
+									$retval .= '<br /><span class="sm_norm">'.$group['group_description'].'</span>';
+								}
+								$retval .= '</h2>';
 							}
-							$retval .= '</h2>'."\n";
 							
 							if ( !empty($group['menu_items']) ) {
+								$group_item_count = count($group['menu_items']);
 								foreach ($group['menu_items'] AS $item) {
 									// Should we start the left or right column 
-									if ( !$one_column && $this->split_on == 'item' ) {
+									//  The group break is forced to use this
+									if ( $this->group_break || (!$one_column && $this->split_on == 'item') ) {
 										if ($current_item == 1) { 
 											// Start the left Column
 											$retval .= '<div class="left-menu">';
-										} elseif ($current_item == (1 + (int)($item_count/2)) ) {
+										} elseif (!$this->group_break && $current_item == (1 + (int)($item_count/2)) ) {
 											// Close the left column and start the right
 											$retval .= '</div><!-- END left menu -->';
+											$retval .= '<div class="right-menu">';
+										} elseif ($this->group_break && $current_item == (1 + (int)($group_item_count/2)) ) {
+											// Close the left column and start the right
+											$retval .= '</div><!-- END left group -->';
 											$retval .= '<div class="right-menu">';
 										}
 									}
@@ -271,8 +295,16 @@ class cOmfRender {
 						            
 									$current_item++;
 									
-								} // end item
+								} // end items
+								
 							}
+
+							// Reset current item for Group Breaks (and close any column)
+							if ( $this->group_break ) {
+								$current_item = 1;
+								$retval .= '</div><!-- END group --><div class="clear"></div>';
+							}
+							
 							// Display Group Options
 							if ( $this->show_options && isset($group['menu_group_options']) && is_array($group['menu_group_options']) ) { 
 								foreach($group['menu_group_options'] AS $option) { 
@@ -303,18 +335,19 @@ class cOmfRender {
 							}
 							
 							// End a group
-							if ( $one_column ) {
+							if ( $one_column || $this->group_break ) {
 								$retval .= '<span class="separator big"></span>';
-							} elseif ( true || $this->split_on == 'group' ) {
+							} else {
 								$retval .= '<span class="separator small"></span>';
 							}
 
 							$current_group++;
 							
 						} // end group filter
-					} // end group
+						
+					} // end groups
 					
-					if ( !$one_column ) {
+					if ( !$one_column && !$this->group_break ) {
 						// Close the menu colums
 						if ( $current_group > 1 || $item_count > 1 ) {
 							$retval .= '</div><!-- END right menu -->';
