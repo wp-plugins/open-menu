@@ -4,8 +4,13 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
+<<<<<<< .mine
+	@package OpenMenu 
+	@version 1.6.15 
+=======
 	@package OpenMenu
 	@version 1.6.15 
+>>>>>>> .r732278
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
