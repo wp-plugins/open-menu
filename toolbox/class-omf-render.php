@@ -8,7 +8,7 @@
 // ** http://www.opensource.org/licenses/mit-license.php
 // ** 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Version: 1.6.20
+// ** Version: 1.6.23
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Compatible with OpenMenu Format v1.6.1
 // ** 
@@ -121,7 +121,6 @@ class cOmfRender {
 			$retval .= '<div id="om_menu">';
 
 		  if ( isset($om['menus']) && !empty($om['menus']) ) {
-
 			foreach ($om['menus'] AS $menu) {
 
 				// Check for a filter
@@ -199,7 +198,7 @@ class cOmfRender {
 											$retval .= '<div class="left-menu">';
 										} elseif (!$this->group_break && $current_item == (1 + (int)($item_count/2)) ) {
 											// Close the left column and start the right
-											$retval .= '</div><!-- END left menu -->';
+											$retval .= '</div><!-- END left group -->';
 											$retval .= '<div class="right-menu">';
 										} elseif ($this->group_break && $current_item == (1 + (int)($group_item_count/2)) ) {
 											// Close the left column and start the right
@@ -348,7 +347,7 @@ class cOmfRender {
 					} // end groups
 					
 					if ( !$one_column && !$this->group_break ) {
-						// Close the menu colums
+						// Close the menu columns
 						if ( $current_group > 1 || $item_count > 1 ) {
 							$retval .= '</div><!-- END right menu -->';
 						}
@@ -453,7 +452,7 @@ class cOmfRender {
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Private functions
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	private function get_menu_item_count ($menu, $filter = false) { 
+	protected function get_menu_item_count ($menu, $filter = false) { 
 		// -------------------------------------
 		// Count the items in a all groups for a menu
 		// -------------------------------------
@@ -471,7 +470,7 @@ class cOmfRender {
 	}
 	
 	
-	private function clean ($str) { 
+	protected function clean ($str) { 
 		// -------------------------------------
 		// Clean menu information for displaying
 		// -------------------------------------
@@ -479,7 +478,7 @@ class cOmfRender {
 		return ($this->disable_entities) ? $str : htmlentities($str, ENT_COMPAT, 'UTF-8');
 	}
 	
-	private function hl_food ($text, $primary, $secondary = false, $make_bold = false) {
+	protected function hl_food ($text, $primary, $secondary = false, $make_bold = false) {
 		// ------------------------------------- 
 		//  Highlight food in a passed string
 		//   If primary is found then its highlight is passed back
@@ -511,7 +510,7 @@ class cOmfRender {
 		}
 	}
 
-	private function format_currency ($amount, $currency_code) { 
+	protected function format_currency ($amount, $currency_code) { 
 		// ------------------------------------- 
 		//  Handle localizing a price into the proper format
 		// ------------------------------------- 
@@ -529,12 +528,14 @@ class cOmfRender {
 				"DEM" => "dotThousandsCommaDecimal", 
 				"GRD" => "dotThousandsCommaDecimal", 
 				"HRK" => "dotThousandsCommaDecimal", 
+				"IDR" => "noDecimals", 
 				"ISK" => "dotThousandsCommaDecimal", 
 				"INR" => "indian", 
 				"ITL" => "dotThousandsCommaDecimal", 
 				"YPY" => "noDecimals", 
 				"LTL" => "dotThousandsCommaDecimal", 
 				"LBP" => "noDecimals", 
+				"KWD" => "threeDecimals", 
 				"NLG" => "dotThousandsCommaDecimal", 
 				"NOK" => "dotThousandsCommaDecimal", 
 				"KRW" => "noDecimals",
@@ -552,6 +553,9 @@ class cOmfRender {
 		$style = array_key_exists($currency_code, $currency_code_styles) ? $currency_code_styles[$currency_code] : '' ;
 
 		switch ($style) {
+			case "threeDecimals" :
+				$retval = number_format($amount, 3);
+				break;
 			case "dotThousandsCommaDecimal" :
 				$retval = number_format($amount, 2, ",", ".");
 				break;
@@ -595,7 +599,7 @@ class cOmfRender {
 		return $retval;
 	}
 	
-	private function get_currency_symbol ($currency_code, $amount = '', $html_encode = false) {
+	protected function get_currency_symbol ($currency_code, $amount = '', $html_encode = false) {
 		
 		$currency_symbols = array(
 			'AFN' => '',
@@ -666,7 +670,7 @@ class cOmfRender {
 			'HUF' => ' Ft',
 			'ISK' => ' kr',
 			'INR' => '',
-			'IDR' => '',
+			'IDR' => 'Rp ',
 			'XDR' => '',
 			'IRR' => '',
 			'IQD' => '',
@@ -680,7 +684,7 @@ class cOmfRender {
 			'KES' => '',
 			'KPW' => '',
 			'KRW' => '',
-			'KWD' => '',
+			'KWD' => ' KD',
 			'KGS' => '',
 			'LAK' => '',
 			'LVL' => '',
@@ -772,7 +776,7 @@ class cOmfRender {
 		);
 		
 		$symbol_after_amount = array(
-				"ISK", "ITL", "LTL", "NOK", "SEK", "THB", "CZK", "DKK", "HUF", "HRK"
+				"ISK", "ITL", "LTL", "NOK", "SEK", "THB", "CZK", "DKK", "HUF", "HRK", "KWD" 
 		);
 		
 		$currency_symbol = '';
@@ -792,7 +796,7 @@ class cOmfRender {
 		return $retval;
 	}
 
-	private function process_filter( $filter ) {
+	protected function process_filter( $filter ) {
 		// ------------------------------------- 
 		//  Process a filter by splitting the string into an array
 		//   Handles commas and quotes in menu names
@@ -812,7 +816,7 @@ class cOmfRender {
 		return $retval;
 	}
 	
-	private function add_to_special_tags ( $tag ) {
+	protected function add_to_special_tags ( $tag ) {
 		// ------------------------------------- 
 		//  Store a list of special tags in the OpenMenu
 		// ------------------------------------- 
