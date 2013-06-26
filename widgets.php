@@ -1,7 +1,11 @@
 <?php
 /**
  * @package OpenMenu
+<<<<<<< .mine
+ * @version 1.6.15 
+=======
  * @version 1.6.15
+>>>>>>> .r732278
  */
 /*
 
