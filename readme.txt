@@ -3,13 +3,8 @@ Contributors: openmenu
 Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
-<<<<<<< .mine
-Tested up to: 3.5.2
-Stable tag: 1.6.15 
-=======
-Tested up to: 3.5.2
-Stable tag: 1.6.15
->>>>>>> .r732278
+Tested up to: 3.7
+Stable tag: 1.6.16
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's and a restaurants Deals/Coupons into an existing theme.
 
@@ -133,6 +128,10 @@ Icon designed by Ben Dunkle, core designer for Wordpress.org. Website: http://fi
 
 == Frequently Asked Questions ==
 
+= Do you provide any online help? =
+
+Yes.  We have a complete help system at: http://OpenMenu.com/help
+
 = How do I get my menu converted to an OpenMenu so I can use this awesome plugin? =
 
 Goto: http://OpenMenu.com/about.php and read about OpenMenu
@@ -163,6 +162,11 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 6. Deals and Coupon Widget / Shortcode
 
 == Changelog ==
+= 1.6.16 = 
+* Support for Wordpress 3.7
+* Updated the menu/group filtering in shortcodes to handle an ampersand properly
+* Updated the single-openmenu custom post page to properly support an ampersand in filtering
+
 = 1.6.15 = 
 * Support for Wordpress 3.5.2
 * Updated the render class to fix issues with currency symbol for some European countries 

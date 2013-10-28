@@ -4,19 +4,14 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
-<<<<<<< .mine
-	@package OpenMenu 
-	@version 1.6.15 
-=======
 	@package OpenMenu
-	@version 1.6.15 
->>>>>>> .r732278
+	@version 1.6.16 
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.6.15
+	Version: 1.6.16
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -127,6 +122,10 @@
 			'split_on' => $split_on,
 			'display_type' => $display_type
 		), $atts);
+		
+		// Clean up for the ampersand
+		$atts['group_filter'] = (!empty($atts['group_filter'])) ? str_replace('&#038;', '&amp;', $atts['group_filter']) : '' ;
+		$atts['menu_filter'] = (!empty($atts['menu_filter'])) ? str_replace('&#038;', '&amp;', $atts['menu_filter']) : '' ;
 		
 		$display = '';
 		if ( !empty($atts['omf_url']) ) {
