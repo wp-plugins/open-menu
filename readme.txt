@@ -3,8 +3,8 @@ Contributors: openmenu
 Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
-Tested up to: 3.7
-Stable tag: 1.6.16
+Tested up to: 3.8
+Stable tag: 1.6.17
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's and a restaurants Deals/Coupons into an existing theme.
 
@@ -162,6 +162,10 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 6. Deals and Coupon Widget / Shortcode
 
 == Changelog ==
+= 1.6.17 = 
+* Support for Wordpress 3.8
+* Add group_break parameter to the openmenu shortcode. This can override the global setting
+
 = 1.6.16 = 
 * Support for Wordpress 3.7
 * Updated the menu/group filtering in shortcodes to handle an ampersand properly

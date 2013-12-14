@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 1.6.16 
+	@version 1.6.17 
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.6.16
+	Version: 1.6.17
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -112,11 +112,13 @@
 		$display_type = ( isset($options['display_type']) ) ? $options['display_type'] : 'Menu' ;
 		$split_on = ( isset($options['split_on']) ) ? $options['split_on'] : 'item' ;
 		$background_color = ( isset($options['background_color']) && !empty($options['background_color']) ) ? $options['background_color'] : '#fff' ;
+		$group_break = ( isset($options['group_break']) ) ? $options['group_break'] : true ;
 		
 		$atts = shortcode_atts(array(
 			'omf_url' => '',
 			'menu_filter' => '',
 			'group_filter' => '',
+			'group_break' => $group_break,
 			'background_color' => $background_color,
 			'display_columns' => $display_columns,
 			'split_on' => $split_on,
@@ -134,7 +136,7 @@
 			
 			if ( strcasecmp($atts['display_type'], 'restaurant information / menu') == 0 || 
 	 strcasecmp($atts['display_type'], 'menu') == 0 ) {
-				$display .= build_menu_from_details($omf_details, $atts['display_columns'], $atts['menu_filter'], $atts['group_filter'], $atts['background_color'], $atts['split_on']);
+				$display .= build_menu_from_details($omf_details, $atts['display_columns'], $atts['menu_filter'], $atts['group_filter'], $atts['background_color'], $atts['split_on'], $atts['group_break']);
 			}
 			
 		} else {
@@ -1046,7 +1048,7 @@
 	}
 
 	function build_menu_from_details ($omf_details, $columns = '1', $menu_filter = '', $group_filter = '', 
-					$background_color = false, $split_on = false) {
+					$background_color = false, $split_on = false, $group_break = NULL) {
 		// ------------------------------------- 
 		//  Create a menu display from OMF Details 
 		//   shortcode can override some of the Global settings
@@ -1067,7 +1069,13 @@
 		$show_calories = ( isset($options['show_calories']) && $options['show_calories'] ) ? true : false ;
 		$show_prices = ( isset($options['hide_prices']) && $options['hide_prices'] ) ? false : true ;
 		$use_short_tag = ( isset($options['use_short_tag']) && $options['use_short_tag'] ) ? true : false ;
-		$group_break = ( isset($options['group_break']) && $options['group_break'] ) ? true : false ;
+		
+		// If Group Break is not passed pull the global setting
+		//   shortcode can override
+		if (is_null($group_break)) {
+			$group_break = ( isset($options['group_break']) && $options['group_break'] ) ? true : false ;
+		}
+		
 		// Only get Split On Global if shortcode isn't overriding
 		if (!$split_on) {
 			$split_on = ( isset($options['split_on']) ) ? $options['split_on'] : 'group' ;
