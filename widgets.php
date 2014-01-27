@@ -1,11 +1,11 @@
 <?php
 /**
  * @package OpenMenu
- * @version 1.6.17
+ * @version 1.6.18
  */
 /*
 
-Copyright 2010 - 2013  OpenMenu, LLC
+Copyright 2010 - 2014  OpenMenu, LLC
 
 */
 
