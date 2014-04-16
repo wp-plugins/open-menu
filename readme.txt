@@ -6,7 +6,7 @@ Requires at least: 3.0
 Tested up to: 3.9
 Stable tag: 1.6.19
  
-Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's and a restaurants Deals/Coupons into an existing theme.
+Easily create posts that are based on your OpenMenu..  Fully integrates an OpenMenu or OpenMenu's and a restaurants Deals/Coupons into an existing theme.
 
 == Description ==
 This plugin allows you to easily create posts that are based on your OpenMenu and thus embedding restaurant menus in any Wordpress website.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
