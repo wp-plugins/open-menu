@@ -3,7 +3,7 @@ Contributors: openmenu
 Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
-Tested up to: 4.0
+Tested up to: 4.0.1
 Stable tag: 1.6.19
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's and a restaurants Deals/Coupons into an existing theme.
