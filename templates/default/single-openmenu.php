@@ -14,10 +14,15 @@
  	the_post();
 	$custom = get_post_custom(); 
 	$restaurant_name = (isset($custom["_restaurant_name"][0])) ? $custom["_restaurant_name"][0] : '' ;
-	$omf_url = (isset($custom["_omf_url"][0])) ? $custom["_omf_url"][0] : '' ;
+	$openmenu_id = (isset($custom["_openmenu_id"][0])) ? $custom["_openmenu_id"][0] : '' ;
+	$omf_url = (isset($custom["_omf_url"][0])) ? $custom["_omf_url"][0] : '' ; // backwards compatibility
 	$menu_filter = ( !empty($custom["_menu_filter"][0]) ) ? htmlentities($custom["_menu_filter"][0]) : false ;
 	$group_filter = ( !empty($custom["_group_filter"][0]) ) ? htmlentities($custom["_group_filter"][0]) : false ;
-	
+
+	if (!$openmenu_id && !empty($omf_url) ) {
+		$openmenu_id = str_replace('http://openmenu.com/menu/', '', $omf_url);
+	}
+			
 	// Get the Open Menu Options
 	$options = get_option( 'openmenu_options' );
 	
@@ -34,15 +39,16 @@
 	} 
 	
 	// Get the menu
-	$omf_details = _get_menu_details( $omf_url ); 
+	$omf_details = _get_menu_details( $openmenu_id ); 
 ?>
-
+	
 <?php get_header() ?>
 
 	<style type="text/css">
 		#om_menu, #om_menu dt, #om_menu dd.price { background-color:<?php echo $background_color; ?> }
+		#om_menu dd.price { padding-top:2px; }
 	</style>
-
+	
 	<div id="container">
 		<div id="content" class="openmenu" <?php echo $content_width_css; ?>>
 			<h1 class="entry-title"><?php the_title(); ?></h1>
