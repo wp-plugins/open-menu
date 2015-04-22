@@ -1,17 +1,17 @@
 <?php
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** OpenMenu Plugin, Copyright 2010 - 2014  Open Menu, LLC
+// ** OpenMenu Plugin, Copyright 2010 - 2015  Open Menu, LLC
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /**
 	@package OpenMenu
-	@version 1.6.19
+	@version 2.0
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 1.6.19
+	Version: 2.0
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -94,7 +94,7 @@
 		// plugin uses WP Rewrite, need to flush rules so they get added properly
 		flush_rewrite_rules();
 	}
-	
+
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Add Shortcode [openmenu parameter="value"]
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -108,13 +108,15 @@
 		
 		// Get the OpenMenu Options
 		$options = get_option( 'openmenu_options' );
-		$display_columns = ( $options['display_columns'] == 'Two' ) ? '2' : '1' ;
+		$display_columns = ( $options['display_columns'] == '2' ) ? '2' : '1' ;
 		$display_type = ( isset($options['display_type']) ) ? $options['display_type'] : 'Menu' ;
 		$split_on = ( isset($options['split_on']) ) ? $options['split_on'] : 'item' ;
 		$background_color = ( isset($options['background_color']) && !empty($options['background_color']) ) ? $options['background_color'] : '#fff' ;
 		$group_break = ( isset($options['group_break']) ) ? $options['group_break'] : true ;
+		$short_tags = ( isset($options['short_tags']) ) ? $options['short_tags'] : true ;
 		
 		$atts = shortcode_atts(array(
+			'openmenu_id' => '',
 			'omf_url' => '',
 			'menu_filter' => '',
 			'group_filter' => '',
@@ -122,7 +124,13 @@
 			'background_color' => $background_color,
 			'display_columns' => $display_columns,
 			'split_on' => $split_on,
-			'display_type' => $display_type
+			'display_type' => $display_type,
+			'embedded' => '0',
+			'generic_colors' => '0',
+			'short_tags' => $short_tags,
+			'width' => '100%',
+			'scrollbars' => '0',
+			'height' => '650',
 		), $atts);
 		
 		// Turn off group break if one column is requested
@@ -135,22 +143,32 @@
 		$atts['menu_filter'] = (!empty($atts['menu_filter'])) ? str_replace('&#038;', '&amp;', $atts['menu_filter']) : '' ;
 		
 		$display = '';
-		if ( !empty($atts['omf_url']) ) {
-			// Get the menu
-			$omf_details = _get_menu_details( $atts['omf_url'] ); 
-			
-			if ( strcasecmp($atts['display_type'], 'restaurant information / menu') == 0 || 
-	 strcasecmp($atts['display_type'], 'menu') == 0 ) {
-				$display .= build_menu_from_details($omf_details, $atts['display_columns'], $atts['menu_filter'], $atts['group_filter'], $atts['background_color'], $atts['split_on'], $atts['group_break']);
+		if ( !empty($atts['openmenu_id']) || !empty($atts['omf_url'])  ) {
+			if ($atts['embedded']) { 
+				$scrollbars = ($atts['scrollbars']) ? 'yes' : 'no' ;
+				$gc = ($atts['generic_colors']) ? '&gc=1' : '' ;
+				$st = ($atts['short_tags']) ? '&st=' : '' ;
+				$display = '<iframe width="' . $atts['width'] . '" height="' . $atts['height'] . '" frameborder="0" scrolling="' . $scrollbars . '" marginheight="0" marginwidth="0" src="http://openmenu.com/api/e/index.php?menu=' . $atts['openmenu_id'] . '&col=' . $atts['display_columns'] . '&mf=' . $atts['menu_filter'] . '&gf=' . $atts['group_filter'] . $gc . $st . '"></iframe>';
+			} else {
+				if (!$atts['openmenu_id'] && !empty($atts['omf_url']) ) {
+					$atts['openmenu_id'] = str_replace('http://openmenu.com/menu/', '', $atts['omf_url']);
+				}
+				
+				// Get the menu
+				$omf_details = _get_menu_details( $atts['openmenu_id'] ); 
+				
+				if ( strcasecmp($atts['display_type'], 'restaurant information / menu') == 0 || 
+		 strcasecmp($atts['display_type'], 'menu') == 0 ) {
+					$display .= build_menu_from_details($omf_details, $atts['display_columns'], $atts['menu_filter'], $atts['group_filter'], $atts['background_color'], $atts['split_on'], $atts['group_break']);
+				}
 			}
-			
 		} else {
-			$display = __('OpenMenu URL must be provided');
+			$display = __('OpenMenu ID must be provided');
 		}
 		
 		return $display;
 	}
-
+	
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Add Shortcode [openmenu_qrcode parameter="value"]
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -768,7 +786,7 @@
 		
 		// Get custom data
 		$custom = get_post_custom($id);
-		$omf_url = (isset($custom["_omf_url"][0])) ? $custom["_omf_url"][0] : '' ;
+		$openmenu_id = (isset($custom["_openmenu_id"][0])) ? $custom["_openmenu_id"][0] : '' ;
 		$restaurant_name = (isset($custom["_restaurant_name"][0])) ? $custom["_restaurant_name"][0] : '' ;
 		$location = (isset($custom["_restaurant_location"][0])) ? $custom["_restaurant_location"][0] : '' ;
 		
@@ -777,9 +795,9 @@
 			case 'id':
 				echo $id;
 				break;
-			case 'omf_url':
-				if ( !empty($omf_url) ) {
-					echo '<a href="'.$omf_url.'" target="_blank">'.$omf_url.'</a>';
+			case 'openmenu_id':
+				if ( !empty($openmenu_id) ) {
+					echo '<a href="'.$openmenu_id.'" target="_blank">'.$openmenu_id.'</a>';
 				}
 				break;
 			case 'restaurant_location':
@@ -810,7 +828,7 @@
 		$new_columns['cb'] = '<input type="checkbox" />';
 		// $new_columns['id'] = __('ID');
 		$new_columns['title'] = _x('Title', 'column name');
-		$new_columns['omf_url'] = __('Menu Location');
+		$new_columns['openmenu_id'] = __('OpenMenu ID');
 		$new_columns['restaurant_location'] = __('Restaurant / Location');
 		$new_columns['cuisine_type'] = __('Cuisine Types');
 
@@ -842,8 +860,8 @@
 */
 
 	$sp_boxes = array (
-		'OpenMenu Location (required)' => array (
-			array( '_omf_url', 'Location of the OpenMenu (URL):', 'text', '(sample menu: http://openmenu.com/menu/sample)' )
+		'OpenMenu ID (required)' => array (
+			array( '_openmenu_id', 'OpenMenu ID:', 'text', '(sample OpenMenu ID: <em>sample</em>)' )
 		),
 		'Menu Settings' => array (
 			array( '_menu_filter', 'Menu Filter - Menu Name to display:', 'text', '(Use the <strong>Menu Name</strong> field to display that menu only)' ),
@@ -1036,16 +1054,16 @@
 		return $retval;
 	}
 
-	function _get_menu_details ( $omf_url ) {
+	function _get_menu_details ( $openmenu_id ) {
 		// ------------------------------------- 
-		//  Return the menu details from an OMF URL
+		//  Return the menu details from an an OpenMenu ID
 		// ------------------------------------- 
 
 		$omf_details = false;
-		if ( !empty($omf_url) ) {
+		if ( !empty($openmenu_id) ) {
 			include_once OPENMENU_PATH.'/toolbox/class-omf-reader.php'; 
 			$omfr = new cOmfReader; 
-			$omf_details = $omfr->read_file($omf_url.'?ref=wp'); 
+			$omf_details = $omfr->read_file('http://openmenu.com/menu/'.$openmenu_id.'?ref=wp'); 
 			unset($omfr);
 		}
 		
@@ -1109,7 +1127,7 @@
 		// Create a QR Code image for an OpenMenu ID
 		// -------------------------------------
 		
-		$url = urlencode('http://openmenu.com/m/restaurant/'.$openmenu_id);
+		$url = urlencode('http://openmenu.com/restaurant/'.$openmenu_id);
 		return '<img class="qrcode" src="http://chart.apis.google.com/chart?'.
 				'chs='.$size.'x'.$size.
 				'&cht=qr'.

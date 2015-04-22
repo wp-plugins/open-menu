@@ -1,11 +1,11 @@
 <?php
 /**
  * @package OpenMenu
- * @version 1.6.19
+ * @version 2.0
  */
 /*
 
-Copyright 2010 - 2014  OpenMenu, LLC
+Copyright 2010 - 2015  OpenMenu, LLC
 
 */
 
@@ -146,7 +146,7 @@ Copyright 2010 - 2014  OpenMenu, LLC
 			/* Set up some default widget settings. */
 			$defaults = array( 
 							'title' => 'Menu Items', 
-							'omf_url' => 'http://', 
+							'openmenu_id' => '', 
 							'tag_filter' => '', 
 							'menuitem_filter' => '', 
 							'menu_filter' => '', 
@@ -164,8 +164,8 @@ Copyright 2010 - 2014  OpenMenu, LLC
 				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
 			</p>
 			<p>
-				<label for="<?php echo $this->get_field_id( 'omf_url' ); ?>"><?php _e('Location of the OpenMenu (URL)'); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'omf_url' ); ?>" name="<?php echo $this->get_field_name( 'omf_url' ); ?>" value="<?php echo $instance['omf_url']; ?>" />
+				<label for="<?php echo $this->get_field_id( 'openmenu_id' ); ?>"><?php _e('OpenMenu ID'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'openmenu_id' ); ?>" name="<?php echo $this->get_field_name( 'openmenu_id' ); ?>" value="<?php echo $instance['openmenu_id']; ?>" />
 			</p>
 			
 			<strong>Filters:</strong> <br />
@@ -211,7 +211,7 @@ Copyright 2010 - 2014  OpenMenu, LLC
 
 			/* Strip tags (if needed) and update the widget settings. */
 			$instance['title'] = strip_tags( $new_instance['title'] );
-			$instance['omf_url'] = $new_instance['omf_url'];
+			$instance['openmenu_id'] = $new_instance['openmenu_id'];
 			$instance['menuitem_filter'] = $new_instance['menuitem_filter'];
 			$instance['menu_filter'] = $new_instance['menu_filter'];
 			$instance['group_filter'] = $new_instance['group_filter'];
@@ -229,11 +229,16 @@ Copyright 2010 - 2014  OpenMenu, LLC
 
 			/* User-selected settings. */
 			$title = apply_filters('widget_title', $instance['title'] );
-			$omf_url = isset( $instance['omf_url'] ) ? $instance['omf_url'] : false;
+			$openmenu_id = isset( $instance['openmenu_id'] ) ? $instance['openmenu_id'] : false;
+			$omf_url = isset( $instance['omf_url'] ) ? $instance['omf_url'] : false; // for backwards compatibility
 			$menuitem_filter = isset( $instance['menuitem_filter'] ) ? $instance['menuitem_filter'] : false;
 			$menu_filter = isset( $instance['menu_filter'] ) ? $instance['menu_filter'] : false;
 			$group_filter = isset( $instance['group_filter'] ) ? $instance['group_filter'] : false;
-
+			
+			if (!$openmenu_id && ! empty($omf_url) ) {
+				$openmenu_id = str_replace('http://openmenu.com/menu/', '', $omf_url);
+			}
+			
 			/* Before widget (defined by themes). */
 			echo $before_widget;
 
@@ -241,8 +246,8 @@ Copyright 2010 - 2014  OpenMenu, LLC
 			if ( $title )
 				echo $before_title . $title . $after_title;
 			
-			if ( $omf_url ) {
-				$omf_details = _get_menu_details($omf_url);
+			if ( $openmenu_id ) {
+				$omf_details = _get_menu_details($openmenu_id);
 				
 				// Build the tag array 
 				$tags = array();
@@ -280,7 +285,7 @@ Copyright 2010 - 2014  OpenMenu, LLC
 			/* Set up some default widget settings. */ 
 			$defaults = array( 
 							'title' => 'Our Menu', 
-							'omf_url' => 'http://', 
+							'openmenu_id' => '', 
 							'menu_url' => '', 
 							'menu_url_title' => 'See Our Menu', 
 							'display_menugroups' => true,
@@ -292,8 +297,8 @@ Copyright 2010 - 2014  OpenMenu, LLC
 				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
 			</p>
 			<p>
-				<label for="<?php echo $this->get_field_id( 'omf_url' ); ?>"><?php _e('Location of the OpenMenu (URL)'); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'omf_url' ); ?>" name="<?php echo $this->get_field_name( 'omf_url' ); ?>" value="<?php echo $instance['omf_url']; ?>" />
+				<label for="<?php echo $this->get_field_id( 'openmenu_id' ); ?>"><?php _e('OpenMenu ID'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'openmenu_id' ); ?>" name="<?php echo $this->get_field_name( 'openmenu_id' ); ?>" value="<?php echo $instance['openmenu_id']; ?>" />
 			</p>
 			<p>
 				<label for="<?php echo $this->get_field_id( 'menu_filter' ); ?>"><?php _e('Menu Filter'); ?></label>
@@ -320,7 +325,7 @@ Copyright 2010 - 2014  OpenMenu, LLC
 
 			/* Strip tags (if needed) and update the widget settings. */
 			$instance['title'] = strip_tags( $new_instance['title'] );
-			$instance['omf_url'] = $new_instance['omf_url'];
+			$instance['openmenu_id'] = $new_instance['openmenu_id'];
 			$instance['menu_url'] = $new_instance['menu_url'];
 			$instance['menu_url_title'] = $new_instance['menu_url_title'];
 			$instance['menu_filter'] = strip_tags($new_instance['menu_filter']);
@@ -334,11 +339,16 @@ Copyright 2010 - 2014  OpenMenu, LLC
 
 			/* User-selected settings. */
 			$title = apply_filters('widget_title', $instance['title'] );
-			$omf_url = isset( $instance['omf_url'] ) ? $instance['omf_url'] : false;
+			$openmenu_id = isset( $instance['openmenu_id'] ) ? $instance['openmenu_id'] : false;
+			$omf_url = isset( $instance['omf_url'] ) ? $instance['omf_url'] : false; // for backwards compatibility
 			$menu_url = isset( $instance['menu_url'] ) ? $instance['menu_url'] : false;
 			$menu_url_title = isset( $instance['menu_url_title'] ) && !empty($instance['menu_url_title']) ? $instance['menu_url_title'] : 'See Our menu';
 			$menu_filter = isset( $instance['menu_filter'] ) ? $instance['menu_filter'] : false;
 			$display_menugroups = isset( $instance['display_menugroups'] ) ? $instance['display_menugroups'] : false;
+			
+			if (!$openmenu_id && ! empty($omf_url) ) {
+				$openmenu_id = str_replace('http://openmenu.com/menu/', '', $omf_url);
+			}
 			
 			/* Before widget (defined by themes). */
 			echo $before_widget;
@@ -347,8 +357,8 @@ Copyright 2010 - 2014  OpenMenu, LLC
 			if ( $title )
 				echo $before_title . $title . $after_title;
 			
-			if ( $omf_url ) {
-				$omf_details = _get_menu_details($omf_url);
+			if ( $openmenu_id ) {
+				$omf_details = _get_menu_details($openmenu_id);
 
 				echo _get_menus_and_groups( $omf_details, $menu_filter, $display_menugroups);
 
@@ -452,7 +462,7 @@ Copyright 2010 - 2014  OpenMenu, LLC
 			/* Set up some default widget settings. */
 			$defaults = array( 
 							'title' => 'Our Specials', 
-							'omf_url' => 'http://', 
+							'openmenu_id' => '', 
 							'menu_filter' => '', 
 						);
 			$instance = wp_parse_args( (array) $instance, $defaults ); ?>
@@ -461,8 +471,8 @@ Copyright 2010 - 2014  OpenMenu, LLC
 				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
 			</p>
 			<p>
-				<label for="<?php echo $this->get_field_id( 'omf_url' ); ?>"><?php _e('Location of the OpenMenu (URL)'); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'omf_url' ); ?>" name="<?php echo $this->get_field_name( 'omf_url' ); ?>" value="<?php echo $instance['omf_url']; ?>" />
+				<label for="<?php echo $this->get_field_id( 'openmenu_id' ); ?>"><?php _e('OpenMenu ID'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'openmenu_id' ); ?>" name="<?php echo $this->get_field_name( 'openmenu_id' ); ?>" value="<?php echo $instance['openmenu_id']; ?>" />
 			</p>
 			<p>
 				<label for="<?php echo $this->get_field_id( 'menu_filter' ); ?>"><?php _e('Filter - Menu Name to display specials from'); ?></label>
@@ -477,7 +487,7 @@ Copyright 2010 - 2014  OpenMenu, LLC
 
 			/* Strip tags (if needed) and update the widget settings. */
 			$instance['title'] = strip_tags( $new_instance['title'] );
-			$instance['omf_url'] = $new_instance['omf_url'];
+			$instance['openmenu_id'] = $new_instance['openmenu_id'];
 			$instance['menu_filter'] = $new_instance['menu_filter'];
 			
 			return $instance;
@@ -488,8 +498,13 @@ Copyright 2010 - 2014  OpenMenu, LLC
 
 			/* User-selected settings. */
 			$title = apply_filters('widget_title', $instance['title'] );
-			$omf_url = isset( $instance['omf_url'] ) ? $instance['omf_url'] : false;
+			$openmenu_id = isset( $instance['openmenu_id'] ) ? $instance['openmenu_id'] : false;
+			$omf_url = isset( $instance['omf_url'] ) ? $instance['omf_url'] : false; // for backwards compatibility
 			$menu_filter = isset( $instance['menu_filter'] ) ? $instance['menu_filter'] : false;
+			
+			if (!$openmenu_id && ! empty($omf_url) ) {
+				$openmenu_id = str_replace('http://openmenu.com/menu/', '', $omf_url);
+			}
 			
 			/* Before widget (defined by themes). */
 			echo $before_widget;
@@ -498,8 +513,8 @@ Copyright 2010 - 2014  OpenMenu, LLC
 			if ( $title )
 				echo $before_title . $title . $after_title;
 			
-			if ( $omf_url ) {
-				$omf_details = _get_menu_details($omf_url);
+			if ( $openmenu_id ) {
+				$omf_details = _get_menu_details($openmenu_id);
 
 				echo get_items_by_filter( $omf_details, array('special'), false, $menu_filter);
 				unset($omf_details);
@@ -528,7 +543,7 @@ Copyright 2010 - 2014  OpenMenu, LLC
 			/* Set up some default widget settings. */
 			$defaults = array( 
 							'title' => 'Our Location', 
-							'omf_url' => 'http://',
+							'openmenu_id' => '',
 							'include_hours' => true,
 						);
 			$instance = wp_parse_args( (array) $instance, $defaults ); ?>
@@ -537,8 +552,8 @@ Copyright 2010 - 2014  OpenMenu, LLC
 				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
 			</p>
 			<p>
-				<label for="<?php echo $this->get_field_id( 'omf_url' ); ?>"><?php _e('Location of the OpenMenu (URL)'); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'omf_url' ); ?>" name="<?php echo $this->get_field_name( 'omf_url' ); ?>" value="<?php echo $instance['omf_url']; ?>" />
+				<label for="<?php echo $this->get_field_id( 'openmenu_id' ); ?>"><?php _e('OpenMenu ID'); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'openmenu_id' ); ?>" name="<?php echo $this->get_field_name( 'openmenu_id' ); ?>" value="<?php echo $instance['openmenu_id']; ?>" />
 			</p>
 			<p>
 				<input class="checkbox" type="checkbox" <?php checked($instance['include_hours'], true) ?> id="<?php echo $this->get_field_id('include_hours'); ?>" name="<?php echo $this->get_field_name('include_hours'); ?>" />
@@ -553,7 +568,7 @@ Copyright 2010 - 2014  OpenMenu, LLC
 
 			/* Strip tags (if needed) and update the widget settings. */
 			$instance['title'] = strip_tags( $new_instance['title'] );
-			$instance['omf_url'] = $new_instance['omf_url'];
+			$instance['openmenu_id'] = $new_instance['openmenu_id'];
 			$instance['include_hours'] = isset($new_instance['include_hours']) ? 1 : 0 ;
 			
 			return $instance;
@@ -564,8 +579,13 @@ Copyright 2010 - 2014  OpenMenu, LLC
 
 			/* User-selected settings. */
 			$title = apply_filters('widget_title', $instance['title'] );
-			$omf_url = isset( $instance['omf_url'] ) ? $instance['omf_url'] : false;
+			$openmenu_id = isset( $instance['openmenu_id'] ) ? $instance['openmenu_id'] : false;
+			$omf_url = isset( $instance['omf_url'] ) ? $instance['omf_url'] : false; // for backwards compatibility
 			$include_hours = isset( $instance['include_hours'] ) ? $instance['include_hours'] : false;
+			
+			if (!$openmenu_id && ! empty($omf_url) ) {
+				$openmenu_id = str_replace('http://openmenu.com/menu/', '', $omf_url);
+			}
 			
 			/* Before widget (defined by themes). */
 			echo $before_widget;
@@ -575,8 +595,8 @@ Copyright 2010 - 2014  OpenMenu, LLC
 				echo $before_title . $title . $after_title;
 			
 			// Get the OpenMenu details
-			if ( $omf_url ) {
-				$omf_details = _get_menu_details($omf_url);
+			if ( $openmenu_id ) {
+				$omf_details = _get_menu_details($openmenu_id);
 
 		        echo _get_restaurant_location($omf_details, $include_hours);
 				unset($omf_details);
@@ -672,7 +692,7 @@ Copyright 2010 - 2014  OpenMenu, LLC
 				
 				if ( $include_link ) {
 					$link_in_new_window = ($link_in_new_window) ? ' target="_blank"' : '' ;
-					echo '<p style="text-align:center"><a href="http://openmenu.com/m/restaurant/'.$openmenu_id.'"'.$link_in_new_window.'>'.__('mobile site').'</a></p>';
+					echo '<p style="text-align:center"><a href="http://openmenu.com/restaurant/'.$openmenu_id.'"'.$link_in_new_window.'>'.__('mobile site').'</a></p>';
 				}
 			}
 
@@ -697,8 +717,8 @@ Copyright 2010 - 2014  OpenMenu, LLC
 		$title = ( !empty($title) ) ? $title : __('Our Location') ;
 		
 		$custom = get_post_custom( $post_id );
-		$omf_url = $custom["_omf_url"][0];
-		$omf_details = _get_menu_details($omf_url);
+		$openmenu_id = $custom["_openmenu_id"][0];
+		$omf_details = _get_menu_details($openmenu_id);
 		
 		?>
 		<style type="text/css">
@@ -732,8 +752,8 @@ Copyright 2010 - 2014  OpenMenu, LLC
 		$title = ( !empty($title) ) ? $title : __('Our Specials') ;
 		
 		$custom = get_post_custom( $post_id );
-		$omf_url = $custom["_omf_url"][0];
-		$omf_details = _get_menu_details($omf_url);
+		$openmenu_id = $custom["_openmenu_id"][0];
+		$omf_details = _get_menu_details($openmenu_id);
 			
 		?>
 		<style type="text/css">

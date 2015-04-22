@@ -3,8 +3,8 @@ Contributors: openmenu
 Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
-Tested up to: 4.0.1
-Stable tag: 1.6.19
+Tested up to: 4.2
+Stable tag: 2.0
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's and a restaurants Deals/Coupons into an existing theme.
 
@@ -30,7 +30,7 @@ OpenMenu Custom Post Type:
 	Create custom posts which are menus based off of your OpenMenu.  Choose what to display, how to display it and the plugin does the rest.
 	
 	Settings:
-		OpenMenu Location (URL) - This is a required field that points to your OpenMenu
+		OpenMenu ID - This is a required field that is your OpenMenu ID
 		
 		Filters
 			Menu Name to display: If your OpenMenu contains multiple menus (ex. Lunch / Dinner) you can choose which menu to display in your post by entering the menu name here. (supports a comma-separated list)
@@ -52,20 +52,27 @@ Short code:
 	[openmenu]
 	
 	Parameters:
-		omf_url          = URL pointing to the OpenMenu
+		openmenu_id	 = Your OpenMenu ID (not the OpenMenu URL, just the ID part)
 		display_type     = menu (only option currently available)
 		menu_filter      = Will display only the menu name matching this filter (supports a comma-separated list)
 		group_filter     = Will display only the group name matching this filter (supports a comma-separated list)
 		display_columns  = 1 | 2 - How many columns to display a menu in
-		split_on  		 = item | group - In 2 column display what do we split on
+		split_on	 = item | group - In 2 column display what do we split on
 		background_color = Set the background color the menu will display on
+		group_break 	 = 0 | 1 - Forces a 2-column display with hard breaks between groups
+		embedded	 = 0 | 1 - Uses OpenMenu Embedded instead of rendering the menu locally
+		generic_colors   = 0 | 1 - [embedding] Forces the use of the  generic colors for a menu 
+		short_tags       = 0 | 1 - [embedding] Uses short tags for the special tags on menu items
+		width            = [embedding] - Define the width of the embedded window (leave off for 100%)
+		height		 = [embedding] - Define the height of the embedded window
+		scrollbars	 = 0 | 1 - [embedding] Adds scrollbars to the embedded window
 
 		[defaults to OpenMenu Option setting]
 
 	Samples: 
-		[openmenu omf_url="http://openmenu.com/menu/sample"]
-		[openmenu omf_url="http://openmenu.com/menu/sample" display_type="menu" display_columns="1"]
-
+		[openmenu openmenu_id="sample"]
+		[openmenu openmenu_id="sample" display_type="menu" display_columns="1"]
+		[openmenu openmenu_id="sample" embedded="1" height="750" scrollbars="1"]
 
 	[openmenu_qrcode]
 	
@@ -83,7 +90,7 @@ Short code:
 	Parameters:
 		openmenu_id		= OpenMenu ID (not the OpenMenu URL, just the ID part)
 		deal_id			= Show only a single deal based off of its ID
-		compact_view	= shows the deals in a compact view (only the headline is displayed)
+		compact_view		= shows the deals in a compact view (only the headline is displayed)
 		show_print		= Determines whether the Clip/Print link is displayed in a deal
 		new_window		= When show_print is true this determines if links are opened in a new window
 		width			= width to display the deal
@@ -134,7 +141,7 @@ Yes.  We have a complete help system at: http://OpenMenu.com/help
 
 = How do I get my menu converted to an OpenMenu so I can use this awesome plugin? =
 
-Goto: http://OpenMenu.com/about.php and read about OpenMenu
+Goto: http://OpenMenu.com and read about OpenMenu
 OpenMenu Creator: http://OpenMenu.com/creator
 
 = How do I find out about updates to this plugin? =
@@ -162,6 +169,10 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 6. Deals and Coupon Widget / Shortcode
 
 == Changelog ==
+= 2.0 = 
+* Updated OpenMenu inputs now take the OpenMenu ID instead of the OpenMenu URL
+* Add embedded option to the openmenu shortcode. This builds the menu using OpenMenu Embedded instead of building locally.
+
 = 1.6.19 = 
 * Fixed issue with one-column rendering not working from shortcodes
 
