@@ -1,7 +1,7 @@
 <?php
 /**
  * @package OpenMenu
- * @version 2.0
+ * @version 2.1
  */
 /*
 
@@ -30,7 +30,7 @@ Copyright 2010 - 2015  OpenMenu, LLC
 			/* Widget control settings. */
 			$control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-deals' );
 
-		    parent::WP_Widget('om-deals', 'OpenMenu: Deals / Coupons', $widget_ops, $control_ops );
+		    parent::__construct('om-deals', 'OpenMenu: Deals / Coupons', $widget_ops, $control_ops );
 		}
 		
 		function form($instance) {  
@@ -137,7 +137,7 @@ Copyright 2010 - 2015  OpenMenu, LLC
 			/* Widget control settings. */
 			$control_ops = array( 'width' => 450, 'height' => 350, 'id_base' => 'om-filter' );
 
-		    parent::WP_Widget('om-filter', 'OpenMenu: Filter', $widget_ops, $control_ops );
+		    parent::__construct('om-filter', 'OpenMenu: Filter', $widget_ops, $control_ops );
 		}
 		
 		function form($instance) {  
@@ -276,7 +276,7 @@ Copyright 2010 - 2015  OpenMenu, LLC
 			/* Widget control settings. */
 			$control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-menu' );
 
-		    parent::WP_Widget('om-menu', 'OpenMenu: Menu Listing', $widget_ops, $control_ops );
+		    parent::__construct('om-menu', 'OpenMenu: Menu Listing', $widget_ops, $control_ops );
 		}
 		
 		function form($instance) {  
@@ -383,7 +383,7 @@ Copyright 2010 - 2015  OpenMenu, LLC
 			// $control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-tagcloud' );
 			$control_ops = array( 'id_base' => 'om-tagcloud' );
 			
-		    parent::WP_Widget('om-tagcloud', 'OpenMenu: Tag Cloud', $widget_ops, $control_ops );
+		    parent::__construct('om-tagcloud', 'OpenMenu: Tag Cloud', $widget_ops, $control_ops );
 		}
 		
 		function form($instance) {  
@@ -453,7 +453,7 @@ Copyright 2010 - 2015  OpenMenu, LLC
 			/* Widget control settings. */
 			$control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-specials' );
 
-		    parent::WP_Widget('om-specials', 'OpenMenu: Specials', $widget_ops, $control_ops );
+		    parent::__construct('om-specials', 'OpenMenu: Specials', $widget_ops, $control_ops );
 		}
 		
 		function form($instance) {  
@@ -534,7 +534,7 @@ Copyright 2010 - 2015  OpenMenu, LLC
 			/* Widget control settings. */
 			$control_ops = array( 'width' => 400, 'height' => 350, 'id_base' => 'om-restaurant-location' );
 
-		    parent::WP_Widget('om-restaurant-location', 'OpenMenu: Restaurant Location', $widget_ops, $control_ops );
+		    parent::__construct('om-restaurant-location', 'OpenMenu: Restaurant Location', $widget_ops, $control_ops );
 		}
 		
 		function form($instance) {  
@@ -616,7 +616,7 @@ Copyright 2010 - 2015  OpenMenu, LLC
 			/* Widget control settings. */
 			$control_ops = array( 'id_base' => 'om-qrcode' );
 
-		    parent::WP_Widget('om-qrcode', 'OpenMenu: QR Code', $widget_ops, $control_ops );
+		    parent::__construct('om-qrcode', 'OpenMenu: QR Code', $widget_ops, $control_ops );
 		}
 		
 		function form($instance) {  

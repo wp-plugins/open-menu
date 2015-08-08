@@ -3,8 +3,8 @@ Contributors: openmenu
 Donate link: http://openmenu.com
 Tags: openmenu, restaurant, menu, restaurants, menus, open menu, dining, food
 Requires at least: 3.0
-Tested up to: 4.2
-Stable tag: 2.0
+Tested up to: 4.3
+Stable tag: 2.1
  
 Easily create posts that are based on your OpenMenu.  Fully integrates an OpenMenu or OpenMenu's and a restaurants Deals/Coupons into an existing theme.
 
@@ -169,6 +169,9 @@ An issue that sometimes comes up is the slug of the page conflicts with theme st
 6. Deals and Coupon Widget / Shortcode
 
 == Changelog ==
+= 2.1 = 
+* Support for Wordpress 4.3
+
 = 2.0 = 
 * Updated OpenMenu inputs now take the OpenMenu ID instead of the OpenMenu URL
 * Add embedded option to the openmenu shortcode. This builds the menu using OpenMenu Embedded instead of building locally.

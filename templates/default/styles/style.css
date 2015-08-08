@@ -37,7 +37,7 @@
 #om_menu dl { display:block; overflow:hidden; margin: 0 0 0.7em 10px; background: url('../images/menu_dot.gif') repeat-x 0 14px }
 #om_menu dt, #openmenu dd.price { font-size:1em; font-weight:bold }
 
-#om_menu dl .mi_thumb { float:left; padding-right:5px }
+#om_menu dl .mi_thumb { float:left; padding-right:5px; border: none; box-shadow: none;  }
 
 #om_menu dt { background-color:#fff; color:#4D595F; font-size:16px; font-weight:normal; float:left; padding-right:5px }
 
@@ -51,13 +51,13 @@
 #om_menu dd.om_calories { font-size:1em; font-weight:normal; float:left; width:100%; text-align:left; color:#646464 }
 #om_menu dd.description { color:#7D898F; font-size:14px; font-style:italic; font-weight:normal; line-height:20px; float:left; width:100%; padding: 3px 0 0 0; }
 #om_menu span.calories { font-size:10px;}
-#om_menu dd.sizes { font-size:1.1em; font-weight:normal; float:left; width:100%; text-align:left }
+#om_menu dd.sizes { font-size:.9em; font-weight:normal; float:left; width:100%; text-align:left }
 #om_menu dd.sizes span { padding-right:15px }
 
 #om_menu dd.allergy { font-size:.9em; font-weight:normal; float:left; width:100%; text-align:left; color:#4d595f }
 #om_menu dd.allergy span { padding-right:10px }
 
-#om_menu dd.item_options { font-size:1.1em; font-weight:normal; float:left; width:100%; text-align:center; }
+#om_menu dd.item_options { font-size:.9em; font-weight:normal; float:left; width:100%; text-align:center; }
 #om_menu dd.item_options div { padding-bottom:3px;}
 
 #om_menu span.item_tag { color:#f1f1f1; font-size:11px; font-weight:bold; padding:1px 3px 0;position:relative; text-transform:uppercase; top:-2px; margin-right:5px }

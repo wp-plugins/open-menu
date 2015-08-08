@@ -5,13 +5,13 @@
 
 /**
 	@package OpenMenu
-	@version 2.0
+	@version 2.1
 
 	Plugin Name: OpenMenu
 	Plugin URI: http://openmenu.com/wordpress-plugin.php
 	Description: This plugin allows you to easily create posts that are based on your OpenMenu.  This plugin fully integrates an OpenMenu or OpenMenus into an existing theme.  Widget / Menu ready themes work best.
 	Author: OpenMenu, LLC
-	Version: 2.0
+	Version: 2.1
 	Author URI: http://openmenu.com
 
 	*Icon designed by Ben Dunkle, core designer for Wordpress.org. 
@@ -229,41 +229,16 @@
 		return $display;
 	}
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// ** Add Settings link to OpenMenu on the plugin page [REMOVED]
+// ** Add links to OpenMenu on the plugin page
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-	//add_filter('plugin_action_links', 'myplugin_plugin_action_links', 10, 2);
+	add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'my_plugin_action_links' );
 
-	function myplugin_plugin_action_links($links, $file) {
-	    static $this_plugin;
-
-	    if (!$this_plugin) {
-	        $this_plugin = plugin_basename(__FILE__);
-	    }
-
-	    if ($file == $this_plugin) {
-	        // The "page" query string value must be equal to the slug
-	        // of the Settings admin page we defined earlier, which in
-	        // this case equals "myplugin-settings".
-	        $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page='. OPENMENU_POSTYPE . '">'.__("Settings", "openmenu-settings").'</a>';
-	        array_unshift($links, $settings_link);
-	    }
-
-	    return $links;
+	function my_plugin_action_links( $links ) {
+	   $links[] = '<a href="'. esc_url( get_admin_url(null, 'options-general.php?page=openmenu') ) .'">Settings</a>';
+	   $links[] = '<a href="http://openmenu.com target="_blank">Get an OpenMenu</a>';
+	   return $links;
 	}
-
-//	add_filter('plugin_action_links', 'add_settings_link', 10, 2 );
-
-//	function add_settings_link($links, $file) {
-//		static $this_plugin;
-//		if (!$this_plugin) $this_plugin = plugin_basename(__FILE__);
-
-//		if ($file == $this_plugin){
-//			$settings_link = '<a href="'.admin_url( 'options-general.php?page='. OPENMENU_POSTYPE . '/openmenu.php' ) . '">'.__("Settings", "openmenu-settings").'</a>';
-//			array_unshift($links, $settings_link);
-//		}
-//		return $links;
-//	}
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // ** Determines if OpenMenu posts are shown on the homepage 
@@ -543,7 +518,7 @@
 
 	// Add sub page to the Settings Menu
 	function openmenu_options_add_page_fn() {
-		add_options_page('OpenMenu Options', 'OpenMenu', 'manage_options', __FILE__, 'om_options_page_fn');
+		add_options_page('OpenMenu Options', 'OpenMenu', 'manage_options', 'openmenu', 'om_options_page_fn');
 	}
 
 	// *************************
